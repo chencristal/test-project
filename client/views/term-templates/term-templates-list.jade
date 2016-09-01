@@ -1,0 +1,33 @@
+include ../navbar.jade
+
+.container
+  .row
+    .col-md-12
+      h2 Term templates
+  .row
+    .col-md-12
+      a.btn.btn-default.btn-primary(href="/term-templates/new") New term template
+  .row
+    .col-md-12
+      table.table.table-striped.term-templates
+        thead
+          tr
+            td
+              strong Display name
+            td.term-type
+              strong Term type
+            td.variable
+              strong Variable
+            td
+        tbody
+          tr(ng-repeat="termTemplate in termTemplates")
+            td {{ termTemplate.displayName }}
+            td {{ termTemplate.termType }}
+            td {{ termTemplate.variable }}
+            td.actions
+              button.btn.btn-info.btn-sm(title="View" ng-click="termTemplateDetails(termTemplate)" ng-disabled="isSaving")
+                span.glyphicon.glyphicon-eye-open
+              button.btn.btn-warning.btn-sm(title="Edit" ng-click="editTermTemplate(termTemplate)" ng-disabled="isSaving")
+                span.glyphicon.glyphicon-pencil
+              button.btn.btn-danger.btn-sm(title="Delete" ng-click="deleteTermTemplate(termTemplate)" ng-disabled="isSaving")
+                span.glyphicon.glyphicon-trash

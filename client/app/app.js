@@ -16,23 +16,22 @@ angular.module('app', [
       templateUrl: 'views/home.html',
       controller: 'HomeCtrl'
     })
-    /* TODO: use real endpoints
-    .when('/users', {
-      templateUrl: 'views/users/users-list.html',
-      controller: 'UsersListCtrl'
+    .when('/term-templates', {
+      templateUrl: 'views/term-templates/term-templates-list.html',
+      controller: 'TermTemplatesListCtrl'
     })
-    .when('/users/new', {
-      templateUrl: 'views/users/user-new.html',
-      controller: 'UserNewCtrl'
+    .when('/term-templates/new', {
+      templateUrl: 'views/term-templates/term-template-new.html',
+      controller: 'TermTemplateNewCtrl'
     })
-    .when('/users/:_id', {
-      templateUrl: 'views/users/user-details.html',
-      controller: 'UserDetailsCtrl'
+    .when('/term-templates/:_id', {
+      templateUrl: 'views/term-templates/term-template-details.html',
+      controller: 'TermTemplateDetailsCtrl'
     })
-    .when('/users/:_id/edit', {
-      templateUrl: 'views/users/user-edit.html',
-      controller: 'UserEditCtrl'
-    })*/
+    .when('/term-templates/:_id/edit', {
+      templateUrl: 'views/term-templates/term-template-edit.html',
+      controller: 'TermTemplateEditCtrl'
+    })
     .otherwise({
       redirectTo: '/not-found'
     });
