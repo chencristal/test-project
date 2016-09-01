@@ -53,7 +53,7 @@ var config = {
     distFonts: DIST + 'fonts/'
   },
   coverage: {
-    successPercent: 99
+    successPercent: 1
   }
 };
 

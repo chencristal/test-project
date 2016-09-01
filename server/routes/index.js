@@ -3,8 +3,7 @@
 var log = require('../util/logger').logger;
 
 module.exports = function(app) {
-  // TODO: use real routes
-  // require('./users')(app);
+  require('./term-templates')(app);
 
   app.get('*', function(req, res) {
     res.render('index', {
