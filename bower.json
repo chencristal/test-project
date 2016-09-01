@@ -1,0 +1,32 @@
+{
+  "name": "celant",
+  "version": "0.0.1",
+  "description": "celant",
+  "author": {
+    "name": "Alexander Mac",
+    "email": "amatsibarov@gmail.com"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "angular": "~1.5.3",
+    "angular-resource": "~1.5.3",
+    "angular-route": "~1.5.3",
+    "angular-bootstrap": "^2.1.3",
+    "bootstrap": "~3.3.4",
+    "lodash": "~3.10.1",
+    "SpinKit": "spinkit#^1.2.5",
+    "toastr": "^2.1.3"
+  },
+  "resolutions": {
+    "angular": "~1.5.x"
+  },
+  "overrides": {
+    "bootstrap": {
+      "main": [
+        "dist/css/bootstrap.css",
+        "dist/js/bootstrap.js",
+        "fonts/*"
+      ]
+    }
+  }
+}
