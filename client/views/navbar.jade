@@ -1,0 +1,14 @@
+.navbar.navbar-default.navbar-static-top(ng-controller="NavbarCtrl")
+  .container
+    .navbar-header
+      a.navbar-brand(href="/") Celant
+    div
+      ul.nav.navbar-nav
+        li(ng-class="{ active: isActive('/users/') }")
+          a(href="/users") Users
+      ul.nav.navbar-nav.navbar-right
+        li
+          p.navbar-text Hello Guest
+        li
+          a(href="#" ng-click="logout()" title="Log out")
+            span.glyphicon.glyphicon-log-out
