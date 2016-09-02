@@ -1,14 +1,22 @@
 include ../navbar.jade
 
-.container
+.container-fluid
   .row
-    .col-md-12
-      h2 Create New term template
-  .row
-    .col-md-12
-      include ./form.jade
-  .row
-    .col-md-12
-      .buttons.text-right
-        a.btn.btn-default(href="/term-templates") Cancel
-        button.btn.btn-primary(ng-click="createTermTemplate()" ng-disabled="termTemplateForm.$invalid || isSaving") Create
+    .col-sm-3.col-md-2.sidebar
+      include ../sidebar.jade
+    .col-sm-9.col-sm-offset-3.col-md-10.col-md-offset-2.main
+      .row
+        .col-md-12
+          h1.page-header Create New term template
+      .row(ng-show="isLoading")
+        .col-md-12
+          include ../common/spinner.jade
+      div(ng-hide="isLoading")
+        .row
+          .col-md-12
+            include ./form.jade
+        .row
+          .col-md-12
+            .buttons.text-right
+              a.btn.btn-default(href="/term-templates") Cancel
+              button.btn.btn-primary(ng-click="createTermTemplate()" ng-disabled="termTemplateForm.$invalid || isSaving") Create

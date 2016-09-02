@@ -24,10 +24,6 @@ angular.module('app', [
       templateUrl: 'views/term-templates/term-template-new.html',
       controller: 'TermTemplateNewCtrl'
     })
-    .when('/term-templates/:_id', {
-      templateUrl: 'views/term-templates/term-template-details.html',
-      controller: 'TermTemplateDetailsCtrl'
-    })
     .when('/term-templates/:_id/edit', {
       templateUrl: 'views/term-templates/term-template-edit.html',
       controller: 'TermTemplateEditCtrl'

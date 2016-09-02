@@ -15,10 +15,6 @@ angular.module('app').controller('TermTemplatesListCtrl',
       });
   })();
 
-  $scope.termTemplateDetails = function(termTemplate) {
-    $location.path('/term-templates/' + termTemplate._id);
-  };
-
   $scope.editTermTemplate = function(termTemplate) {
     $location.path('/term-templates/' + termTemplate._id + '/edit');
   };
