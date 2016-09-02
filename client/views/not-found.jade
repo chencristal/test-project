@@ -1,8 +1,11 @@
 include ./navbar.jade
 
-.not-found
-  .container
-    .well.message-container
-      h2 Not found
-        span :(
-      p Sorry, but the page you were trying to view does not exist.
+.container-fluid
+  .row
+    .col-sm-3.col-md-2.sidebar
+      include ./sidebar.jade
+    .col-sm-9.col-sm-offset-3.col-md-10.col-md-offset-2.main
+      .well.message-container
+        h2 Not found
+          span :(
+        p Sorry, but the page you were trying to view does not exist.
