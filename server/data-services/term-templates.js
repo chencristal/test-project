@@ -33,6 +33,6 @@ exports.deleteTermTemplateById = function(termTemplId) {
     .getTermTemplate({ _id: termTemplId })
     .then(termTempl => {
       termTempl.deleted = new Date();
-      termTempl.save()
+      return termTempl.save();
     });
 };
