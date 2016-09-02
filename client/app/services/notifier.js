@@ -19,22 +19,19 @@ angular.module('app').factory('Notifier', function(Toastr) {
   };
 
   function _getErrorMessage(err, prefix) {
-    var msg = _getErrorMessage(err);
-    if (prefix) {
-      prefix = prefix + (_.endsWith(prefix, '.') ? ' ' : '. ');
-    } else {
-      prefix = '';
-    }
-    return prefix + msg;
-  }
-
-  function _getErrorMessage(err) {
     var msg;
     if (typeof err === 'string') {
       msg = err;
     } else if (err) {
       msg = _.get(err, 'data.reason') || err.reason || err.message;
     }
-    return msg || 'Unknown server error';
+    msg = msg || 'Unknown server error';
+
+    if (prefix) {
+      prefix = prefix + (_.endsWith(prefix, '.') ? ' ' : '. ');
+    } else {
+      prefix = '';
+    }
+    return prefix + msg;
   }
 });
