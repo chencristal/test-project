@@ -23,8 +23,8 @@ var config = {
     stylDeep: '**/*.styl',
     css: '*.css',
     cssDeep: '**/*.css',
-    jade: '*.jade',
-    jadeDeep: '**/*.jade',
+    pug: '*.pug',
+    pugDeep: '**/*.pug',
     images: '*.{ico,png,jpg,jpeg,gif,webp,svg}',
     imagesDeep: '**/*.{ico,png,jpg,jpeg,gif,webp,svg}',
     fonts: '*.{eot,svg,ttf,woff,woff2}',
@@ -70,8 +70,8 @@ var taskConfigs = {
       },
       {
         src: [
-          config.paths.clientViews + config.filters.jadeDeep,
-          config.paths.serverViews + config.filters.jadeDeep
+          config.paths.clientViews + config.filters.pugDeep,
+          config.paths.serverViews + config.filters.pugDeep
         ],
         tasks: ['build-app-views']
       },

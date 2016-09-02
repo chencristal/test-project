@@ -17,7 +17,10 @@ gulp.task('lint-client', () => {
 
 gulp.task('lint-views', () => {
   return gulp
-    .src(paths.clientViews + filters.jadeDeep)
+    .src([
+      paths.clientViews + filters.pugDeep,
+      paths.serverViews + filters.pugDeep
+    ])
     .pipe(gpuglint());
 });
 

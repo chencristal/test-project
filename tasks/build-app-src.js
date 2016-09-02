@@ -13,7 +13,7 @@ var guglify     = require('gulp-uglify');
 var gminifyCss  = require('gulp-minify-css');
 var gorder      = require('gulp-order');
 var gngAnnotate = require('gulp-ng-annotate');
-var gjade       = require('gulp-jade');
+var gpug        = require('gulp-pug');
 var gstylus     = require('gulp-stylus');
 var args        = require('../config/gulp').args;
 var paths       = require('../config/gulp').paths;
@@ -65,10 +65,10 @@ gulp.task('build-app-css', () => {
 
 gulp.task('build-app-views', () => {
   return gulp
-    .src(paths.clientViews + filters.jadeDeep)
+    .src(paths.clientViews + filters.pugDeep)
     .pipe(gplumber())
     .pipe(gif(args.isNotProduction, gchanged(paths.distViews, { extension: '.html' })))
-    .pipe(gjade())
+    .pipe(gpug())
     .pipe(gsize({
       title: 'app.views'
     }))

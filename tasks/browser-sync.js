@@ -14,7 +14,7 @@ gulp.task('browser-sync', ['nodemon'], () => {
     files: [
       paths.dist + '**',
       '!' + paths.dist + '**/*.map',
-      paths.server + 'views/**/*.jade'
+      paths.server + 'views/**/*.pug'
     ]
   }); 
 });

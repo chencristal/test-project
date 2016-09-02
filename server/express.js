@@ -8,7 +8,7 @@ var log        = require('./util/logger');
 module.exports = function(app) {
   app.set('views', config.get('viewsPath'));
   app.set('port', config.get('port'));
-  app.set('view engine', 'jade');
+  app.set('view engine', 'pug');
 
   app.use(express.static(config.get('publicPath')));
 
