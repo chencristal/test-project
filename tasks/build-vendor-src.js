@@ -25,6 +25,12 @@ gulp.task('build-vendor-js', () => {
       'lodash.js',
       'angular.js',
       'angular*.js',
+      'ui-bootstrap*.js',
+      'rangy-core.js',
+      'rangy*.js',
+      'textAngular-rangy.min.js',
+      'textAngularSetup.js',
+      'textAngular-sanitize.js',
       '*'
     ]))
     .pipe(gif(args.isProduction, guglify({ mangle: false })))
