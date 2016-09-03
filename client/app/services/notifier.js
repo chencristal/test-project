@@ -29,9 +29,13 @@ angular.module('app').factory('Notifier', function(Toastr) {
 
     if (prefix) {
       prefix = prefix + (_.endsWith(prefix, '.') ? ' ' : '. ');
+      if (msg) {
+        prefix += '<br/>';
+      }
     } else {
       prefix = '';
     }
+
     return prefix + msg;
   }
 });
