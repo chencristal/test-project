@@ -3,11 +3,11 @@ extends ../layout/layout.pug
 block content
   .row
     .col-md-12
-      h1.page-header Create New term template
-  .row(ng-show="isLoading")
+      h1.page-header Create New Term Template
+  .row(ng-show="isSaving")
     .col-md-12
       include ../common/spinner.pug
-  div(ng-hide="isLoading")
+  div
     .row
       .col-md-12
         include ./form.pug

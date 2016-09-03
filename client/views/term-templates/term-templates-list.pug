@@ -3,14 +3,14 @@ extends ../layout/layout.pug
 block content
   .row
     .col-md-12
-      h1.page-header Term templates
+      h1.page-header Term Templates
   .row(ng-show="isLoading")
     .col-md-12
       include ../common/spinner.pug
   div(ng-hide="isLoading")
     .row
       .col-md-12
-        a.btn.btn-default.btn-primary(href="/term-templates/new") New term template
+        a.btn.btn-default.btn-primary(href="/term-templates/new") New Term Template
     .row
       .col-md-12
         table.table.table-striped.term-templates

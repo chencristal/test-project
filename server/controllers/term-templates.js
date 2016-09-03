@@ -31,9 +31,9 @@ exports.getTermTemplateById = (req, res, next) => {
 
 // TODO: validate boolean and date variables
 exports.createTermTemplate = (req, res, next) => {
-  function parseParams() {
+  function parseParams(body) {
     var allowedFields = ['termType', 'variable', 'displayName', 'placeholder', 'help'];
-    var termTemplData = _.pick(req.body, allowedFields);
+    var termTemplData = _.pick(body, allowedFields);
     return Promise.resolve(termTemplData);
   }
 
@@ -46,7 +46,7 @@ exports.createTermTemplate = (req, res, next) => {
     return termTempl;
   }
 
-  parseParams()
+  parseParams(req.body)
     .then(validateParams)
     .then(doEdits)
     .then(termTempl => termTsSrvc.createTermTemplate(termTempl))
@@ -56,9 +56,9 @@ exports.createTermTemplate = (req, res, next) => {
 
 // TODO: validate boolean and date variables
 exports.updateTermTemplate = (req, res, next) => {
-  function parseParams() {
+  function parseParams(body) {
     var allowedFields = ['termType', 'variable', 'displayName', 'placeholder', 'help'];
-    var termTemplData = _.pick(req.body, allowedFields);
+    var termTemplData = _.pick(body, allowedFields);
     termTemplData._id = req.params._id;
     return Promise.resolve(termTemplData);
   }
@@ -75,7 +75,7 @@ exports.updateTermTemplate = (req, res, next) => {
     return data.termTempl;
   }
 
-  parseParams()
+  parseParams(req.body)
     .then(validateParams)
     .then(termTemplData => termTsSrvc
       .getTermTemplate({ _id: termTemplData._id })
@@ -115,8 +115,9 @@ function _validateTermTemplData(termTemplData) {
   if (!termTemplData.displayName) {
     return customErrors.rejectWithUnprocessableRequestError({paramName: 'displayName', errMsg: 'is required'});
   }
+  /* TODO
   if (!termTemplData.placeholder) {
     return customErrors.rejectWithUnprocessableRequestError({paramName: 'placeholder', errMsg: 'is required'});
-  }
+  }*/
   return Promise.resolve(termTemplData);
 }

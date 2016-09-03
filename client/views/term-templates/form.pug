@@ -1,24 +1,24 @@
 form.form-horizontal(name="termTemplateForm")
-  .form-group
+  .form-group(ng-class="{ 'has-error': termTemplateForm.termType.$error.required }")
       label.col-md-3.control-label(for="termType") Term type
       .col-md-9
-        select.form-control(name="termType" ng-model="termTemplate.termType" ng-required="true" ng-disabled="isSaving") 
+        select.form-control(name="termType" ng-model="termTemplate.termType" ng-required="true" ng-disabled="isSaving")
           option(value="" disabled="true") Select term type
-          option(value="TEXT") Text
-          option(value="BOOLEAN") Boolean
-          option(value="DATE") Date
+          option(value="text") Text
+          option(value="boolean") Boolean
+          option(value="date") Date
 
-  .form-group
+  .form-group(ng-class="{ 'has-error': termTemplateForm.variable.$error.required }")
      label.col-md-3.control-label(for="variable") Variable
      .col-md-9
        input.form-control(name="variable" placeholder="Variable"
                           ng-model="termTemplate.variable" ng-required="true" ng-disabled="isSaving")
 
-  .form-group
+  .form-group(ng-class="{ 'has-error': termTemplateForm.displayName.$error.required }")
      label.col-md-3.control-label(for="displayName") Display name
      .col-md-9
        input.form-control(name="displayName" placeholder="Display name"
-                          ng-model="termTemplate.displayName"  ng-required="true" ng-disabled="isSaving")
+                          ng-model="termTemplate.displayName" ng-required="true" ng-disabled="isSaving")
 
   .form-group
      label.col-md-3.control-label(for="help") Help
