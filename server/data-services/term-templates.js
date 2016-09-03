@@ -3,10 +3,20 @@
 var customErrors = require('n-custom-errors');
 var TermTemplate = require('mongoose').model('termTemplate');
 
-exports.getTermTemplate = function(filter, keys) {
+exports.getTermTemplates = (filter, fields) => {
+  return TermTemplate.find(filter, fields);
+};
+
+exports.getActiveTermTemplates = (filter, fields) => {
+  filter = filter || {};
+  filter.deleted = { $exists: false };
+  return exports.getTermTemplates(filter, fields);
+};
+
+exports.getTermTemplate = (filter, fields) => {
   return TermTemplate
     .findOne(filter)
-    .select(keys)
+    .select(fields)
     .exec()
     .then(termTempl => {
       if (!termTempl) {
@@ -16,19 +26,15 @@ exports.getTermTemplate = function(filter, keys) {
     });
 };
 
-exports.getTermTemplates = function(filter, keys) {
-  return TermTemplate.find(filter, keys);
-};
-
-exports.createTermTemplate = function(termTemplData) {
+exports.createTermTemplate = (termTemplData) => {
   return TermTemplate.create(termTemplData);
 };
 
-exports.saveTermTemplate = function(termTempl) {
+exports.saveTermTemplate = termTempl => {
   return termTempl.save();
 };
 
-exports.deleteTermTemplateById = function(termTemplId) {
+exports.deleteTermTemplateById = termTemplId => {
   return exports
     .getTermTemplate({ _id: termTemplId })
     .then(termTempl => {

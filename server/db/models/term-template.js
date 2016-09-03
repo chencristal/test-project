@@ -17,6 +17,9 @@ var termTemplateSchema = new mongoose.Schema({
     index: true,
     unique: true
   },
+  text: {
+    placeholder: String
+  },
   boolean: {
     default: {
       type: Boolean,
@@ -35,19 +38,15 @@ var termTemplateSchema = new mongoose.Schema({
     }
   },
   date: {
-    default: {
-      type: Date,
+    useCurrentDate: {
+      type: Boolean,
       required: true,
-      default: '2016-01-01' // TODO: use real date
+      default: false
     }
   },
   displayName: {
     type: String,
     required: true
-  },
-  placeholder: {
-    type: String,
-    required: false
   },
   help: String,
   deleted: Date

@@ -6,10 +6,9 @@ var customErrors   = require('n-custom-errors');
 var termTsSrvc     = require('../data-services/term-templates');
 var validationUtil = require('../util/validation-util');
 
-// TODO: don't load tts with existing `deleted`
 exports.getTermTemplates = (req, res, next) => {
   termTsSrvc
-    .getTermTemplates({}, 'displayName termType variable')
+    .getActiveTermTemplates({}, 'displayName termType variable')
     .then(termTempls => res.send(termTempls))
     .catch(next);
 };
@@ -39,19 +38,7 @@ exports.createTermTemplate = (req, res, next) => {
   }
 
   function validateParams(termTemplData) {
-    if (!termTemplData.termType) {
-      return customErrors.rejectWithUnprocessableRequestError({paramName: 'termType', errMsg: 'is required'});
-    }
-    if (!termTemplData.variable) {
-      return customErrors.rejectWithUnprocessableRequestError({paramName: 'variable', errMsg: 'is required'});
-    }
-    if (!termTemplData.displayName) {
-      return customErrors.rejectWithUnprocessableRequestError({paramName: 'displayName', errMsg: 'is required'});
-    }
-    if (!termTemplData.placeholder) {
-      return customErrors.rejectWithUnprocessableRequestError({paramName: 'placeholder', errMsg: 'is required'});
-    }
-    return termTemplData;
+    return _validateTermTemplData(termTemplData);
   }
 
   function doEdits(termTemplData) {
@@ -80,19 +67,7 @@ exports.updateTermTemplate = (req, res, next) => {
     if (!validationUtil.isValidObjectId(termTemplData._id)) {
       return customErrors.rejectWithUnprocessableRequestError({paramName: 'id', errMsg: 'must be a valid id'});
     }
-    if (!termTemplData.termType) {
-      return customErrors.rejectWithUnprocessableRequestError({paramName: 'termType', errMsg: 'is required'});
-    }
-    if (!termTemplData.variable) {
-      return customErrors.rejectWithUnprocessableRequestError({paramName: 'variable', errMsg: 'is required'});
-    }
-    if (!termTemplData.displayName) {
-      return customErrors.rejectWithUnprocessableRequestError({paramName: 'displayName', errMsg: 'is required'});
-    }
-    if (!termTemplData.placeholder) {
-      return customErrors.rejectWithUnprocessableRequestError({paramName: 'placeholder', errMsg: 'is required'});
-    }
-    return termTemplData;
+    return _validateTermTemplData(termTemplData);
   }
 
   function doEdits(data) {
@@ -114,7 +89,6 @@ exports.updateTermTemplate = (req, res, next) => {
     .catch(next);
 };
 
-// TODO: check relations
 exports.deleteTermTemplate = (req, res, next) => {
   var termTemplId = req.params._id;
 
@@ -126,7 +100,23 @@ exports.deleteTermTemplate = (req, res, next) => {
   }
 
   validateParams()
-    .then(() => termTsSrvc.deleteTemplateById(termTemplId))
+    .then(() => termTsSrvc.deleteTermTemplateById(termTemplId))
     .then(() => res.status(203).end())
     .catch(next);
 };
+
+function _validateTermTemplData(termTemplData) {
+  if (!termTemplData.termType) {
+    return customErrors.rejectWithUnprocessableRequestError({paramName: 'termType', errMsg: 'is required'});
+  }
+  if (!termTemplData.variable) {
+    return customErrors.rejectWithUnprocessableRequestError({paramName: 'variable', errMsg: 'is required'});
+  }
+  if (!termTemplData.displayName) {
+    return customErrors.rejectWithUnprocessableRequestError({paramName: 'displayName', errMsg: 'is required'});
+  }
+  if (!termTemplData.placeholder) {
+    return customErrors.rejectWithUnprocessableRequestError({paramName: 'placeholder', errMsg: 'is required'});
+  }
+  return Promise.resolve(termTemplData);
+}
