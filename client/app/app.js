@@ -17,6 +17,20 @@ angular.module('app', [
       templateUrl: 'views/home.html',
       controller: 'HomeCtrl'
     })
+
+    .when('/users', {
+      templateUrl: 'views/users/users-list.html',
+      controller: 'UsersListCtrl'
+    })
+    .when('/users/new', {
+      templateUrl: 'views/users/user-new.html',
+      controller: 'UserNewCtrl'
+    })
+    .when('/users/:_id/edit', {
+      templateUrl: 'views/users/user-edit.html',
+      controller: 'UserEditCtrl'
+    })
+
     .when('/term-templates', {
       templateUrl: 'views/term-templates/term-templates-list.html',
       controller: 'TermTemplatesListCtrl'
@@ -29,6 +43,7 @@ angular.module('app', [
       templateUrl: 'views/term-templates/term-template-edit.html',
       controller: 'TermTemplateEditCtrl'
     })
+
     .otherwise({
       redirectTo: '/not-found'
     });

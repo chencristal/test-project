@@ -3,6 +3,7 @@
 var log = require('../util/logger').logger;
 
 module.exports = function(app) {
+  require('./users')(app);
   require('./term-templates')(app);
 
   app.get('*', function(req, res) {

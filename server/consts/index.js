@@ -1,5 +1,9 @@
 'use strict';
 
 module.exports = {
-  TERM_TEMPLATES: ['TEXT', 'BOOLEAN', 'DATE']
+  USER: {
+    ROLES: ['admin', 'user'],
+    STATUSES: ['active', 'inactive']
+  },
+  TERM_TEMPLATES: ['text', 'boolean', 'date']
 };
