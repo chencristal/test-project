@@ -6,7 +6,7 @@ var termTs = require('../controllers/term-templates');
 
 var apiVer = config.get('api:version');
 
-module.exports = function(app) {
+module.exports = app => {
   app.get(`/api/${apiVer}/term-templates/:_id`, auth.requireRolesWrapper('admin'), termTs.getTermTemplateById);
   app.get(`/api/${apiVer}/term-templates`, auth.requireRolesWrapper('admin'), termTs.getTermTemplates);
   app.post(`/api/${apiVer}/term-templates`, auth.requireRolesWrapper('admin'), termTs.createTermTemplate);

@@ -6,7 +6,7 @@ var users  = require('../controllers/users');
 
 var apiVer = config.get('api:version');
 
-module.exports = function(app) {
+module.exports = app => {
   app.get(`/api/${apiVer}/users/:_id`, auth.requireRolesWrapper('admin'), users.getUserById);
   app.get(`/api/${apiVer}/users`, auth.requireRolesWrapper('admin'), users.getUsers);
   app.post(`/api/${apiVer}/users`, auth.requireRolesWrapper('admin'), users.createUser);

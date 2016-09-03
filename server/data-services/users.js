@@ -3,6 +3,10 @@
 var customErrors = require('n-custom-errors');
 var User         = require('mongoose').model('user');
 
+exports.getUsers = function(filter, keys) {
+  return User.find(filter, keys);
+};
+
 exports.getUser = function(filter, keys) {
   return User
     .findOne(filter)
@@ -14,10 +18,6 @@ exports.getUser = function(filter, keys) {
       }
       return user;
     });
-};
-
-exports.getUsers = function(filter, keys) {
-  return User.find(filter, keys);
 };
 
 exports.createUser = function(userData) {
