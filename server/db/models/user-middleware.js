@@ -15,12 +15,10 @@ module.exports = userSchema => {
   });
 
   userSchema.methods = {
-    // TODO: is used?
     authenticate: function(plainText) {
       return this.encryptPassword(plainText) === this.hashedPassword;
     },
 
-    // TODO: is used?
     encryptPassword: function(password) {
       if (!password || !this.salt) {
         return '';
@@ -29,7 +27,6 @@ module.exports = userSchema => {
       return crypto.pbkdf2Sync(password, salt, 10000, 64).toString('base64');
     },
 
-    // TODO: is used?
     makeSalt: function() {
       return crypto.randomBytes(16).toString('base64');
     }

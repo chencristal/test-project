@@ -1,5 +1,11 @@
 {
   "api": {
     "version": "v1"
+  },
+
+  "session": {
+    "encryptionKey": "ghtvNoqp7gmbZughq",
+    "sessionKey": "celant_redux_session",
+    "sessionExpirationTime": 604800000
   }
 }

@@ -1,9 +1,14 @@
 'use strict';
 
-var express    = require('express');
-var bodyParser = require('body-parser');
-var config     = require('../config/environment');
-var log        = require('./util/logger');
+var express      = require('express');
+var bodyParser   = require('body-parser');
+var cookieParser = require('cookie-parser');
+var bodyParser   = require('body-parser');
+var passport     = require('passport');
+var session      = require('express-session');
+var MongoStore   = require('connect-mongo')(session);
+var config       = require('../config/environment');
+var log          = require('./util/logger');
 
 module.exports = function(app) {
   app.set('views', config.get('viewsPath'));
@@ -19,7 +24,18 @@ module.exports = function(app) {
   // TODO: uncomment for favicon:
   // app.use(favicon(path.join(config.get('rootPath'), 'client', 'images', 'favicon.ico')));
   app.use(bodyParser.json());
-  app.use(bodyParser.urlencoded({
-    extended: true
+  app.use(bodyParser.urlencoded({ extended: false }));
+  app.use(cookieParser());
+  app.use(session({
+    store: new MongoStore({ url: config.get('db') }),
+    secret: config.get('session:encryptionKey'),
+    name: config.get('session:sessionKey'),
+    resave: true,
+    saveUninitialized: true,
+    cookie: {
+      maxAge: config.get('session:sessionExpirationTime')
+    }
   }));
+  app.use(passport.initialize());
+  app.use(passport.session());
 };

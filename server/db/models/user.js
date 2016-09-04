@@ -14,6 +14,7 @@ var userSchema = new mongoose.Schema({
   lastName: String,
   role: {
     type: String,
+    required: true,
     enum: consts.USER.ROLES,
     default: 'user'
   },

@@ -19,7 +19,12 @@ TODO
 ### How to use
 1. Clone this repository.
 2. Install dependencies: `npm i`
-3. Configure database (here - `config/environment/development.json`)
+3. Install gulp globally: `npm i -g gulp`
+4. Configure database (`config/environment/development.json`, `db` field).
+5. Seed db: `npm run db:seed`
+6. Build frontend: `npm run build`
+7. Start the server: `npm start`
+8. In browser open `http://localhost:3001`
 
 
 ### Commands
@@ -27,6 +32,8 @@ TODO
 ```sh
 # Install dependencies
 $ npm i
+# Run seeder scripts:
+$ npm run db:seed
 # Build frontend:
 $ npm run build # build development version
 $ npm run build:production # build production version
