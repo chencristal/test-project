@@ -3,19 +3,33 @@
 angular.module('app', [
   'ngResource',
   'ngRoute',
+  'ngCookies',
   'ui.bootstrap',
   'textAngular'
 ])
-.config(function($routeProvider, $locationProvider) {
+.config(function($routeProvider, $locationProvider, $httpProvider) {
   $locationProvider.html5Mode(true);
-  
+  $httpProvider.interceptors.push('HttpInterceptor');
+
   $routeProvider
     .when('/not-found', {
       templateUrl: 'views/not-found.html',
     })
     .when('/', {
       templateUrl: 'views/home.html',
-      controller: 'HomeCtrl'
+    })
+
+    .when('/login', {
+      templateUrl: 'views/account/login.html',
+      controller: 'AccountLoginCtrl'
+    })
+    .when('/forget-password', {
+      templateUrl: 'views/account/forget-password.html',
+      controller: 'AccountForgetPasswordCtrl'
+    })
+    .when('/restore-password', {
+      templateUrl: 'views/account/restore-password.html',
+      controller: 'AccountRestorePasswordCtrl'
     })
 
     .when('/users', {
