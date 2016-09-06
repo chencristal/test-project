@@ -13,7 +13,7 @@ exports.ensureAuthenticated = (req, res, next) => {
       req.user = data.user;
       return next();
     })
-    .catch(err => {
+    .catch(() => {
       var err2 = customErrors.getUnauthorizedRequestError('Invalid token');
       next(err2);
     });
