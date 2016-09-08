@@ -5,5 +5,6 @@ module.exports = {
     ROLES: ['admin', 'user'],
     STATUSES: ['active', 'inactive']
   },
-  TERM_TYPES: ['text', 'boolean', 'variant', 'date']
+  TERM_TYPES: ['text', 'boolean', 'variant', 'date'],
+  PROVISION_STYLES: ['sheet', 'normal']
 };

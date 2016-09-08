@@ -2,21 +2,22 @@
 
 var log = require('../util/logger').logger;
 
-module.exports = function(app) {
+module.exports = app => {
   require('./auth')(app);
   require('./users')(app);
   require('./term-templates')(app);
+  require('./provision-templates')(app);
+
+  app.use('/api', (req, res, next) => {
+    var err = new Error('Invalid API end point');
+    err.statusCode = 404;
+    next(err);
+  });
 
   app.get('*', function(req, res) {
     res.render('index', {
       version: '0.0.1'
     });
-  });
-
-  app.use(function(req, res, next) {
-    var err = new Error('Invalid end point');
-    err.statusCode = 404;
-    next(err);
   });
 
   /* jshint unused: false */

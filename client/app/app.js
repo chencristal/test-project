@@ -58,6 +58,19 @@ angular.module('app', [
       controller: 'TermTemplateEditCtrl'
     })
 
+    .when('/provision-templates', {
+      templateUrl: 'views/provision-templates/provision-templates-list.html',
+      controller: 'ProvisionTemplatesListCtrl'
+    })
+    .when('/provision-templates/new', {
+      templateUrl: 'views/provision-templates/provision-template-new.html',
+      controller: 'ProvisionTemplateNewCtrl'
+    })
+    .when('/provision-templates/:_id/edit', {
+      templateUrl: 'views/provision-templates/provision-template-edit.html',
+      controller: 'ProvisionTemplateEditCtrl'
+    })
+
     .otherwise({
       redirectTo: '/not-found'
     });
