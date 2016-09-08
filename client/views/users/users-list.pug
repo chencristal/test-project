@@ -32,7 +32,7 @@ block content
               td {{ user.email }}
               td {{ user.status }}
               td.actions.text-right
-                button.btn.btn-warning.btn-sm(title="Edit" ng-click="editUser(user)" ng-disabled="isSaving")
+                button.btn.btn-info.btn-sm(title="Edit" ng-click="editUser(user)" ng-disabled="isSaving")
                   span.glyphicon.glyphicon-pencil
                 button.btn.btn-warning.btn-sm(title="Activate"
                                               ng-if="user.status === 'inactive'"

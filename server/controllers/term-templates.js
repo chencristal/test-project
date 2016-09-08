@@ -38,9 +38,7 @@ exports.createTermTemplate = (req, res, next) => {
   }
 
   function validateParams(termTemplData) {
-    return _validateTermTemplData(termTemplData)
-      .then(() => termTsSrvc.isUniqueVariable(termTemplData.variable))
-      .then(() => termTemplData);
+    return _validateTermTemplData(termTemplData);
   }
 
   function doEdits(termTemplData) {

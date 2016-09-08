@@ -29,7 +29,7 @@ block content
               td {{ termTemplate.variable }}
               td {{ termTemplate.displayName }}
               td.actions
-                button.btn.btn-warning.btn-sm(title="Edit" ng-click="editTermTemplate(termTemplate)" ng-disabled="isSaving")
+                button.btn.btn-info.btn-sm(title="Edit" ng-click="editTermTemplate(termTemplate)" ng-disabled="isSaving")
                   span.glyphicon.glyphicon-pencil
                 button.btn.btn-danger.btn-sm(title="Delete" ng-click="deleteTermTemplate(termTemplate)" ng-disabled="isSaving")
                   span.glyphicon.glyphicon-trash

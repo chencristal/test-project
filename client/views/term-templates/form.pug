@@ -86,4 +86,4 @@ form.form-horizontal(name="termTemplateForm")
   .form-group
      label.col-md-3.control-label(for="help") Help
      .col-md-9
-       text-angular.formt-control(name="help" ng-model="termTemplate.help")
+       text-angular.formt-control(name="help" ng-model="termTemplate.help" ng-disabled="isSaving")

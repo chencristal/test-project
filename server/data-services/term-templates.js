@@ -26,19 +26,15 @@ exports.getTermTemplate = (filter, fields) => {
     });
 };
 
-exports.isUniqueVariable = (variable) => {
+exports.createTermTemplate = termTemplData => {
   return TermTemplate
-    .count({ variable })
+    .count({ variable: termTemplData.variable })
     .then(cnt => {
       if (cnt > 0) {
-        return customErrors.rejectWithDuplicateObjectError(`variable '${variable}' is already in use`);
+        return customErrors.rejectWithDuplicateObjectError(`This variable is already in use`);
       }
-      return true;
+      return TermTemplate.create(termTemplData);
     });
-};
-
-exports.createTermTemplate = (termTemplData) => {
-  return TermTemplate.create(termTemplData);
 };
 
 exports.saveTermTemplate = termTempl => {

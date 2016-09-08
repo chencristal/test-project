@@ -32,7 +32,7 @@ exports.getUserById = function(req, res, next) {
 
 exports.createUser = function(req, res, next) {
   function parseParams(body) {
-    var allowedFields = ['email', 'firstName', 'lastName', 'role', 'status'];
+    var allowedFields = ['email', 'firstName', 'lastName', 'role'];
     var userData = _.pick(body, allowedFields);
     return Promise.resolve(userData);
   }
@@ -43,6 +43,7 @@ exports.createUser = function(req, res, next) {
 
   function doEdits(userData) {
     var user = _.assign({}, userData);
+    user.status = 'active';
     return user;
   }
 
@@ -67,7 +68,7 @@ exports.updateUser = function(req, res, next) {
       return customErrors.rejectWithUnprocessableRequestError({ paramName: 'id', errMsg: 'must be a valid id' });
     }
     var allowedStatuses = consts.USER.STATUSES;
-    if (_.includes(allowedStatuses, userData.status)) {
+    if (!_.includes(allowedStatuses, userData.status)) {
       return customErrors.rejectWithUnprocessableRequestError({ paramName: 'status', errMsg: 'must be a valid value'});
     }
     return _validateUserData(userData);

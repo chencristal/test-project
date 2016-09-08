@@ -3,11 +3,11 @@
 var customErrors = require('n-custom-errors');
 var User         = require('mongoose').model('user');
 
-exports.getUsers = function(filter, keys) {
+exports.getUsers = (filter, keys) => {
   return User.find(filter, keys);
 };
 
-exports.getUser = function(filter, keys) {
+exports.getUser = (filter, keys) => {
   return User
     .findOne(filter)
     .select(keys)
@@ -20,7 +20,7 @@ exports.getUser = function(filter, keys) {
     });
 };
 
-exports.createUser = function(userData) {
+exports.createUser = userData => {
   var filter = {
     email: (userData.email || '').toLowerCase()
   };
@@ -35,6 +35,6 @@ exports.createUser = function(userData) {
     });
 };
 
-exports.saveUser = function(user) {
+exports.saveUser = user => {
   return user.save();
 };
