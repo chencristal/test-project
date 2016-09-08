@@ -3,8 +3,33 @@
 angular.module('app').controller('TermTemplateNewCtrl',
   function($scope, $location, Notifier, TermTemplate) {
 
-  $scope.termTemplate = {};
+  $scope.termTemplate = {
+    text: {},
+    boolean: {
+      default: false,
+      inclusionText: 'Include',
+      exclusionText: 'Exclude'
+    },
+    variant: {
+      options: []
+    },
+    date: {
+      showCurrent: false
+    }
+  };
+  $scope.isNew = true;
   $scope.isSaving = false;
+
+  $scope.addOption = function() {
+    $scope.termTemplate.variant.options.push({
+      id: $scope.termTemplate.variant.options.length + 1,
+      value: ''
+    });
+  };
+
+  $scope.removeOption = function(option) {
+    _.remove($scope.termTemplate.variant.options, option);
+  };
 
   $scope.createTermTemplate = function() {
     $scope.isSaving = true;

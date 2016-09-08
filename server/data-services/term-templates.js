@@ -26,6 +26,17 @@ exports.getTermTemplate = (filter, fields) => {
     });
 };
 
+exports.isUniqueVariable = (variable) => {
+  return TermTemplate
+    .count({ variable })
+    .then(cnt => {
+      if (cnt > 0) {
+        return customErrors.rejectWithDuplicateObjectError(`variable '${variable}' is already in use`);
+      }
+      return true;
+    });
+};
+
 exports.createTermTemplate = (termTemplData) => {
   return TermTemplate.create(termTemplData);
 };

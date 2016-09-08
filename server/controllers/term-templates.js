@@ -3,6 +3,7 @@
 var _              = require('lodash');
 var Promise        = require('bluebird');
 var customErrors   = require('n-custom-errors');
+var consts         = require('../consts');
 var termTsSrvc     = require('../data-services/term-templates');
 var validationUtil = require('../util/validation-util');
 
@@ -18,7 +19,7 @@ exports.getTermTemplateById = (req, res, next) => {
 
   function validateParams() {
     if (!validationUtil.isValidObjectId(termTemplId)) {
-      return customErrors.rejectWithUnprocessableRequestError({ paramName: 'id', errMsg: 'must be a valid id'});
+      return customErrors.rejectWithUnprocessableRequestError({ paramName: 'id', errMsg: 'must be a valid id' });
     }
     return Promise.resolve();
   }
@@ -29,16 +30,17 @@ exports.getTermTemplateById = (req, res, next) => {
     .catch(next);
 };
 
-// TODO: validate boolean and date variables
 exports.createTermTemplate = (req, res, next) => {
   function parseParams(body) {
-    var allowedFields = ['termType', 'variable', 'displayName', 'placeholder', 'help'];
+    var allowedFields = ['termType', 'variable', 'displayName', 'help', 'text', 'boolean', 'variant', 'date'];
     var termTemplData = _.pick(body, allowedFields);
     return Promise.resolve(termTemplData);
   }
 
   function validateParams(termTemplData) {
-    return _validateTermTemplData(termTemplData);
+    return _validateTermTemplData(termTemplData)
+      .then(() => termTsSrvc.isUniqueVariable(termTemplData.variable))
+      .then(() => termTemplData);
   }
 
   function doEdits(termTemplData) {
@@ -54,10 +56,9 @@ exports.createTermTemplate = (req, res, next) => {
     .catch(next);
 };
 
-// TODO: validate boolean and date variables
 exports.updateTermTemplate = (req, res, next) => {
   function parseParams(body) {
-    var allowedFields = ['termType', 'variable', 'displayName', 'placeholder', 'help'];
+    var allowedFields = ['termType', 'variable', 'displayName', 'help', 'text', 'boolean', 'variant', 'date'];
     var termTemplData = _.pick(body, allowedFields);
     termTemplData._id = req.params._id;
     return Promise.resolve(termTemplData);
@@ -65,12 +66,14 @@ exports.updateTermTemplate = (req, res, next) => {
 
   function validateParams(termTemplData) {
     if (!validationUtil.isValidObjectId(termTemplData._id)) {
-      return customErrors.rejectWithUnprocessableRequestError({paramName: 'id', errMsg: 'must be a valid id'});
+      return customErrors.rejectWithUnprocessableRequestError({ paramName: 'id', errMsg: 'must be a valid id' });
     }
     return _validateTermTemplData(termTemplData);
   }
 
   function doEdits(data) {
+    delete data.termTemplData.termType;
+    delete data.termTemplData.variable;
     _.extend(data.termTempl, data.termTemplData);
     return data.termTempl;
   }
@@ -94,7 +97,7 @@ exports.deleteTermTemplate = (req, res, next) => {
 
   function validateParams() {
     if (!validationUtil.isValidObjectId(termTemplId)) {
-      return customErrors.rejectWithUnprocessableRequestError({ paramName: 'id', errMsg: 'must be a valid id'});
+      return customErrors.rejectWithUnprocessableRequestError({ paramName: 'id', errMsg: 'must be a valid id' });
     }
     return Promise.resolve();
   }
@@ -106,18 +109,91 @@ exports.deleteTermTemplate = (req, res, next) => {
 };
 
 function _validateTermTemplData(termTemplData) {
-  if (!termTemplData.termType) {
-    return customErrors.rejectWithUnprocessableRequestError({paramName: 'termType', errMsg: 'is required'});
+  if (!_.includes(consts.TERM_TYPES, termTemplData.termType)) {
+    return customErrors.rejectWithUnprocessableRequestError(
+      { paramName: 'termType', errMsg: 'must be defined and has a valid value' }
+    );
   }
   if (!termTemplData.variable) {
-    return customErrors.rejectWithUnprocessableRequestError({paramName: 'variable', errMsg: 'is required'});
+    return customErrors.rejectWithUnprocessableRequestError(
+      { paramName: 'variable', errMsg: 'is required' }
+    );
   }
   if (!termTemplData.displayName) {
-    return customErrors.rejectWithUnprocessableRequestError({paramName: 'displayName', errMsg: 'is required'});
+    return customErrors.rejectWithUnprocessableRequestError(
+      { paramName: 'displayName', errMsg: 'is required' }
+    );
   }
-  /* TODO
-  if (!termTemplData.placeholder) {
-    return customErrors.rejectWithUnprocessableRequestError({paramName: 'placeholder', errMsg: 'is required'});
-  }*/
+
+  switch (termTemplData.termType) {
+    case 'text':
+      return validateTextTermType(termTemplData);
+    case 'boolean':
+      return validateBooleanTermType(termTemplData);
+    case 'variant':
+      return validateVariantTermType(termTemplData);
+    case 'date':
+      return validateDateTermType(termTemplData);
+  }
+}
+
+function validateTextTermType(termTemplData) {
+  if (!_.get(termTemplData, 'text.placeholder')) {
+    return customErrors.rejectWithUnprocessableRequestError(
+      { paramName: 'text.placeholder', errMsg: 'is required' }
+    );
+  }
+  return Promise.resolve(termTemplData);
+}
+
+function validateBooleanTermType(termTemplData) {
+  if (!_.get(termTemplData, 'boolean.inclusionText')) {
+    return customErrors.rejectWithUnprocessableRequestError(
+      { paramName: 'boolean.inclusionText', errMsg: 'is required' }
+    );
+  }
+  if (!_.get(termTemplData, 'boolean.exclusionText')) {
+    return customErrors.rejectWithUnprocessableRequestError(
+      { paramName: 'boolean.exclusionText', errMsg: 'is required' }
+    );
+  }
+  var def = _.get(termTemplData, 'boolean.default');
+  if (!_.isBoolean(def)) {
+    return customErrors.rejectWithUnprocessableRequestError(
+      { paramName: 'boolean.default', errMsg: 'is required' }
+    );
+  }
+  return Promise.resolve(termTemplData);
+}
+
+function validateVariantTermType(termTemplData) {
+  var opts = _.get(termTemplData, 'variant.options');
+  var defValue = _.get(termTemplData, 'variant.default');
+  if (!_.isArray(opts) || opts.length === 0) {
+    return customErrors.rejectWithUnprocessableRequestError(
+      { paramName: 'variant.options', errMsg: 'must be not empty array' }
+    );
+  }
+  var optValues = _(opts).map('value').uniq().value();
+  if (optValues.length !== opts.length) {
+    return customErrors.rejectWithUnprocessableRequestError(
+      { paramName: 'variant.options', errMsg: 'shouldn\'t have duplicates' }
+    );
+  }
+  if (!_.isNumber(defValue) || defValue < 0 || defValue >= opts.length) {
+    return customErrors.rejectWithUnprocessableRequestError(
+      { paramName: 'variant.default', errMsg: 'must be a positive number and no more than options count' }
+    );
+  }
+  return Promise.resolve(termTemplData);
+}
+
+function validateDateTermType(termTemplData) {
+  var showCurrent = _.get(termTemplData, 'date.showCurrent');
+  if (!_.isBoolean(showCurrent)) {
+    return customErrors.rejectWithUnprocessableRequestError(
+      { paramName: 'date.showCurrent', errMsg: 'is required' }
+    );
+  }
   return Promise.resolve(termTemplData);
 }

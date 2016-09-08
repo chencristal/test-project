@@ -16,18 +16,18 @@ block content
         table.table.table-striped.term-templates
           thead
             tr
-              td
-                strong Display name
               td.term-type
                 strong Term type
               td.variable
                 strong Variable
               td
+                strong Display name
+              td
           tbody
             tr(ng-repeat="termTemplate in termTemplates")
-              td {{ termTemplate.displayName }}
               td {{ termTemplate.termType }}
               td {{ termTemplate.variable }}
+              td {{ termTemplate.displayName }}
               td.actions
                 button.btn.btn-warning.btn-sm(title="Edit" ng-click="editTermTemplate(termTemplate)" ng-disabled="isSaving")
                   span.glyphicon.glyphicon-pencil

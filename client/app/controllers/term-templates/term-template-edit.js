@@ -22,6 +22,17 @@ angular.module('app').controller('TermTemplateEditCtrl',
       });
   })();
 
+  $scope.addOption = function() {
+    $scope.termTemplate.variant.options.push({
+      id: $scope.termTemplate.variant.options.length + 1,
+      value: ''
+    });
+  };
+
+  $scope.removeOption = function(option) {
+    _.remove($scope.termTemplate.variant.options, option);
+  };
+
   $scope.saveTermTemplate = function() {
     $scope.isSaving = true;
     $scope.termTemplate
