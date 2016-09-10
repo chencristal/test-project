@@ -9,7 +9,7 @@ var validationUtil  = require('../util/validation-util');
 
 exports.getProvisionTemplates = (req, res, next) => {
   provisionTsSrvc
-    .getActiveProvisionTemplates({}, 'displayName')
+    .getProvisionTemplates({}, 'displayName')
     .then(provisionTempls => res.send(provisionTempls))
     .catch(next);
 };
@@ -38,7 +38,7 @@ exports.createProvisionTemplate = (req, res, next) => {
   }
 
   function validateParams(provisionTemplData) {
-    return _validateProvisionTemplData(provisionTemplData);
+    return _validateProvisionTemplateData(provisionTemplData);
   }
 
   function doEdits(provisionTemplData) {
@@ -66,7 +66,7 @@ exports.updateProvisionTemplate = (req, res, next) => {
     if (!validationUtil.isValidObjectId(provisionTemplData._id)) {
       return customErrors.rejectWithUnprocessableRequestError({ paramName: 'id', errMsg: 'must be a valid id' });
     }
-    return _validateProvisionTemplData(provisionTemplData);
+    return _validateProvisionTemplateData(provisionTemplData);
   }
 
   function doEdits(data) {
@@ -88,7 +88,7 @@ exports.updateProvisionTemplate = (req, res, next) => {
     .catch(next);
 };
 
-function _validateProvisionTemplData(provisionTemplData) {
+function _validateProvisionTemplateData(provisionTemplData) {
   if (!provisionTemplData.displayName) {
     return customErrors.rejectWithUnprocessableRequestError(
       { paramName: 'displayName', errMsg: 'is required' }

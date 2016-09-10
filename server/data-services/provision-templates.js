@@ -7,12 +7,6 @@ exports.getProvisionTemplates = (filter, fields) => {
   return ProvisionTemplate.find(filter, fields);
 };
 
-exports.getActiveProvisionTemplates = (filter, fields) => {
-  filter = filter || {};
-  filter.deleted = { $exists: false };
-  return exports.getProvisionTemplates(filter, fields);
-};
-
 exports.getProvisionTemplate = (filter, fields) => {
   return ProvisionTemplate
     .findOne(filter)
