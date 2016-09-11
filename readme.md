@@ -18,13 +18,13 @@ TODO
 
 ### How to use
 1. Clone this repository.
-2. Install dependencies: `npm i`
-3. Install gulp globally: `npm i -g gulp`
-4. Configure database (`config/environment/development.json`, `db` field).
+2. Install gulp and bower globally: `npm i -g gulp bower`
+3. Install server and client dependencies: `npm i && bower i`
+4. Configure database (`config/environment/development.json`, `db` field)
 5. Seed db: `npm run db:seed`
 6. Build frontend: `npm run build`
 7. Start the server: `npm start`
-8. In browser open `http://localhost:3001`
+8. Open in the browser `http://localhost:3001`
 
 
 ### Commands
