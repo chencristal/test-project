@@ -71,6 +71,19 @@ angular.module('app', [
       controller: 'ProvisionTemplateEditCtrl'
     })
 
+    .when('/document-template-types', {
+      templateUrl: 'views/document-template-types/document-template-types-list.html',
+      controller: 'DocumentTemplateTypesListCtrl'
+    })
+    .when('/document-template-types/new', {
+      templateUrl: 'views/document-template-types/document-template-type-new.html',
+      controller: 'DocumentTemplateTypeNewCtrl'
+    })
+    .when('/document-template-types/:_id/edit', {
+      templateUrl: 'views/document-template-types/document-template-type-edit.html',
+      controller: 'DocumentTemplateTypeEditCtrl'
+    })
+
     .otherwise({
       redirectTo: '/not-found'
     });
