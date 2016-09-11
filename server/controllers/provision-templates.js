@@ -8,8 +8,43 @@ var provisionTsSrvc = require('../data-services/provision-templates');
 var validationUtil  = require('../util/validation-util');
 
 exports.getProvisionTemplates = (req, res, next) => {
-  provisionTsSrvc
-    .getProvisionTemplates({}, 'displayName')
+  function parseParams(query) {
+    var params = {
+      query: query.query,
+      includes: query.includes
+    };
+    return Promise.resolve(params);
+  }
+
+  function validateParams(params) {
+    if (params.includes && !_.every(params.includes, validationUtil.isValidObjectId)) {
+      return customErrors.rejectWithUnprocessableRequestError({
+        paramName: 'includes',
+        errMsg: 'must be an array with valid ids'
+      });
+    }
+    return params;
+  }
+
+  function buildFilter(params) {
+    var filter = {};
+    if (params.query) {
+      filter.displayName = {
+        $regex: new RegExp('^' + params.query, 'i')
+      };
+    }
+    if (params.includes) {
+      filter._id = {
+        $in: [params.includes]
+      };
+    }
+    return filter;
+  }
+
+  parseParams(req.query)
+    .then(validateParams)
+    .then(buildFilter)
+    .then(filter => provisionTsSrvc.getProvisionTemplates(filter, 'displayName'))
     .then(provisionTempls => res.send(provisionTempls))
     .catch(next);
 };

@@ -5,6 +5,7 @@ angular.module('app', [
   'ngRoute',
   'ngCookies',
   'ui.bootstrap',
+  'ui.select',
   'textAngular'
 ])
 .config(function($routeProvider, $locationProvider, $httpProvider) {
@@ -82,6 +83,19 @@ angular.module('app', [
     .when('/document-template-types/:_id/edit', {
       templateUrl: 'views/document-template-types/document-template-type-edit.html',
       controller: 'DocumentTemplateTypeEditCtrl'
+    })
+
+    .when('/document-templates', {
+      templateUrl: 'views/document-templates/document-templates-list.html',
+      controller: 'DocumentTemplatesListCtrl'
+    })
+    .when('/document-templates/new', {
+      templateUrl: 'views/document-templates/document-template-new.html',
+      controller: 'DocumentTemplateNewCtrl'
+    })
+    .when('/document-templates/:_id/edit', {
+      templateUrl: 'views/document-templates/document-template-edit.html',
+      controller: 'DocumentTemplateEditCtrl'
     })
 
     .otherwise({

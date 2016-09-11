@@ -1,0 +1,24 @@
+form.form-horizontal(name="documentTemplateForm")
+  .form-group(ng-class="{ 'has-error': documentTemplateForm.name.$error.required }")
+    label.col-md-3.control-label(for="name") Name
+    .col-md-9
+      input.form-control(name="name" type="text" placeholder="Name"
+                         ng-model="documentTemplate.name" ng-required="true" ng-disabled="isSaving")
+
+  .form-group(ng-class="{ 'has-error': documentTemplateForm.documentType.$error.required }")
+    label.col-md-3.control-label(for="documentType") Document Type
+    .col-md-9
+      ui-select(name="documentType"
+                ng-model="documentTemplate.documentType" ng-required="true" ng-disabled="isSaving")
+        ui-select-match(placeholder="Select Type") {{ $select.selected.name }}
+        ui-select-choices(refresh="refreshDocumentTypes($select.search)" refresh-delay="300" repeat="docType._id as docType in documentTypes")
+          span(ng-bind-html="docType.name | highlight: $select.search")
+
+  .form-group(ng-class="{ 'has-error': documentTemplateForm.provisionTemplates.$error.required }")
+    label.col-md-3.control-label(for="provisionTemplates") Provision Templates
+    .col-md-9
+      ui-select(name="provisionTemplates" multiple="true"
+                ng-model="documentTemplate.provisionTemplates" ng-required="true" ng-disabled="isSaving")
+        ui-select-match(placeholder="Add Provision Templates") {{ $item.displayName }}
+        ui-select-choices(refresh="refreshProvisionTemplates($select.search)" refresh-delay="300" repeat="provTempl._id as provTempl in provisionTemplates")
+          span(ng-bind-html="provTempl.displayName | highlight: $select.search")
