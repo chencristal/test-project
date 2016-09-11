@@ -1,7 +1,8 @@
 'use strict';
 
 angular.module('app').controller('DocumentTemplateEditCtrl',
-  function($scope, $q, $routeParams, $location, Notifier, DocumentTemplate, DocumentTemplateType, ProvisionTemplate) {
+  function($scope, $q, $routeParams, $location, Notifier,
+           DocumentTemplate, DocumentTemplateType, ProvisionTemplate) {
 
   $scope.isLoading = true;
   $scope.isSaving = false;
