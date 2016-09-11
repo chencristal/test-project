@@ -35,7 +35,7 @@ exports.getProvisionTemplates = (req, res, next) => {
     }
     if (params.includes) {
       filter._id = {
-        $in: [params.includes]
+        $in: params.includes
       };
     }
     return filter;

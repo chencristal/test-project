@@ -1,0 +1,15 @@
+form.form-horizontal(name="projectTemplateForm")
+  .form-group(ng-class="{ 'has-error': projectTemplateForm.name.$error.required }")
+    label.col-md-3.control-label(for="name") Name
+    .col-md-9
+      input.form-control(name="name" type="text" placeholder="Name"
+                         ng-model="projectTemplate.name" ng-required="true" ng-disabled="isSaving")
+
+  .form-group(ng-class="{ 'has-error': projectTemplateForm.documentTemplates.$error.required }")
+    label.col-md-3.control-label(for="documentTemplates") Document Templates
+    .col-md-9
+      ui-select(name="documentTemplates" multiple="true"
+                ng-model="projectTemplate.documentTemplates" ng-required="true" ng-disabled="isSaving")
+        ui-select-match(placeholder="Add Document Templates") {{ $item.name }}
+        ui-select-choices(refresh="refreshDocumentTemplates($select.search)" refresh-delay="300" repeat="docTempl._id as docTempl in documentTemplates")
+          span(ng-bind-html="docTempl.name | highlight: $select.search")

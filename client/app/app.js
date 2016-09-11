@@ -98,6 +98,19 @@ angular.module('app', [
       controller: 'DocumentTemplateEditCtrl'
     })
 
+    .when('/project-templates', {
+      templateUrl: 'views/project-templates/project-templates-list.html',
+      controller: 'ProjectTemplatesListCtrl'
+    })
+    .when('/project-templates/new', {
+      templateUrl: 'views/project-templates/project-template-new.html',
+      controller: 'ProjectTemplateNewCtrl'
+    })
+    .when('/project-templates/:_id/edit', {
+      templateUrl: 'views/project-templates/project-template-edit.html',
+      controller: 'ProjectTemplateEditCtrl'
+    })
+
     .otherwise({
       redirectTo: '/not-found'
     });

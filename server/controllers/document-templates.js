@@ -7,8 +7,43 @@ var docTemplsSrvc  = require('../data-services/document-templates');
 var validationUtil = require('../util/validation-util');
 
 exports.getDocumentTemplates = (req, res, next) => {
-  docTemplsSrvc
-    .getDocumentTemplates({}, 'name')
+  function parseParams(query) {
+    var params = {
+      query: query.query,
+      includes: query.includes
+    };
+    return Promise.resolve(params);
+  }
+
+  function validateParams(params) {
+    if (params.includes && !_.every(params.includes, validationUtil.isValidObjectId)) {
+      return customErrors.rejectWithUnprocessableRequestError({
+        paramName: 'includes',
+        errMsg: 'must be an array with valid ids'
+      });
+    }
+    return params;
+  }
+
+  function buildFilter(params) {
+    var filter = {};
+    if (params.query) {
+      filter.name = {
+        $regex: new RegExp('^' + params.query, 'i')
+      };
+    }
+    if (params.includes) {
+      filter._id = {
+        $in: params.includes
+      };
+    }
+    return filter;
+  }
+
+  parseParams(req.query)
+    .then(validateParams)
+    .then(buildFilter)
+    .then(filter => docTemplsSrvc.getDocumentTemplates(filter, 'name'))
     .then(docTempls => res.send(docTempls))
     .catch(next);
 };
