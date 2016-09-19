@@ -111,6 +111,19 @@ angular.module('app', [
       controller: 'ProjectTemplateEditCtrl'
     })
 
+    .when('/projects', {
+      templateUrl: 'views/projects/projects-list.html',
+      controller: 'ProjectsListCtrl'
+    })
+    .when('/projects/new', {
+      templateUrl: 'views/projects/project-new.html',
+      controller: 'ProjectNewCtrl'
+    })
+    .when('/projects/:_id/edit', {
+      templateUrl: 'views/projects/project-edit.html',
+      controller: 'ProjectEditCtrl'
+    })
+
     .otherwise({
       redirectTo: '/not-found'
     });

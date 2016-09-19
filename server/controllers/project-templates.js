@@ -7,8 +7,26 @@ var projTemplsSrvc = require('../data-services/project-templates');
 var validationUtil = require('../util/validation-util');
 
 exports.getProjectTemplates = (req, res, next) => {
-  projTemplsSrvc
-    .getProjectTemplates({}, 'name')
+  function parseParams(query) {
+    var params = {
+      query: query.query
+    };
+    return Promise.resolve(params);
+  }
+
+  function buildFilter(params) {
+    var filter = {};
+    if (params.query) {
+      filter.name = {
+        $regex: new RegExp('^' + params.query, 'i')
+      };
+    }
+    return filter;
+  }
+
+  parseParams(req.query)
+    .then(buildFilter)
+    .then(filter => projTemplsSrvc.getProjectTemplates({}, 'name'))
     .then(projTempls => res.send(projTempls))
     .catch(next);
 };

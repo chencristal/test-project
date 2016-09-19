@@ -10,6 +10,7 @@ module.exports = app => {
   require('./document-template-types')(app);
   require('./document-templates')(app);
   require('./project-templates')(app);
+  require('./projects')(app);
 
   app.use('/api', (req, res, next) => {
     var err = new Error('Invalid API end point');

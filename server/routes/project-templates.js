@@ -9,12 +9,12 @@ var apiVer = config.get('api:version');
 module.exports = app => {
   app.get(
     `/api/${apiVer}/project-templates/:_id`,
-    auth.requireRolesWrapper('admin'),
+    auth.requireRolesWrapper(['admin', 'user']),
     projTempls.getProjectTemplateById
   );
   app.get(
     `/api/${apiVer}/project-templates`,
-    auth.requireRolesWrapper('admin'),
+    auth.requireRolesWrapper(['admin', 'user']),
     projTempls.getProjectTemplates
   );
   app.post(

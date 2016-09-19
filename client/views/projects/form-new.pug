@@ -1,0 +1,17 @@
+form.form-horizontal(name="projectForm")
+  .form-group(ng-class="{ 'has-error': projectForm.name.$error.required }")
+    label.col-md-3.control-label(for="name") Name
+    .col-md-9
+      input.form-control(name="name" type="text" placeholder="Name"
+                         ng-model="project.name" ng-required="true" ng-disabled="isSaving")
+
+  .form-group(ng-class="{ 'has-error': projectForm.projectTemplate.$error.required }")
+    label.col-md-3.control-label(for="projectTemplate") Template
+    .col-md-9
+      ui-select(name="projectTemplate"
+                ng-model="project.projectTemplate" ng-required="true" ng-disabled="isSaving")
+        ui-select-match(placeholder="Select Template") {{ $select.selected.name }}
+        ui-select-choices(refresh="refreshProjectTemplates($select.search)"
+                          refresh-delay="300"
+                          repeat="projTempl._id as projTempl in projectTemplates")
+          span(ng-bind-html="projTempl.name | highlight: $select.search")

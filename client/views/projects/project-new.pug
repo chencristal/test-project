@@ -1,0 +1,18 @@
+extends ../layout/layout.pug
+
+block content
+  .row
+    .col-md-12
+      h1.page-header Create New Project
+  .row(ng-show="isSaving")
+    .col-md-12
+      include ../common/spinner.pug
+  div
+    .row
+      .col-md-12
+        include ./form-new.pug
+    .row
+      .col-md-12
+        .buttons.text-right
+          a.btn.btn-default(href="/projects") Cancel
+          button.btn.btn-primary(ng-click="createProject()" ng-disabled="projectForm.$invalid || isSaving") Create
