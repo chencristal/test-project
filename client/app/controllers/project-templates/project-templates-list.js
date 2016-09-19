@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('app').controller('ProjectTemplatesListCtrl',
-  function($scope, $uibModal, $location, Notifier, ProjectTemplate) {
+  function($scope, $location, Notifier, ProjectTemplate) {
 
   $scope.isLoading = true;
 
