@@ -10,13 +10,13 @@ angular.module('app').factory('Auth', function($location, $rootScope, $http, Ide
         })
         .then(function(res) {
           Identity.setTokenAndUser(res.data);
-          Identity.currentUser = res.data.user;
-          return Identity.currentUser;
+          Identity.setCurrentUser(res.data.user);
+          return Identity.getCurrentUser();
         });
     },
 
     logout: function() {
-      Identity.currentUser = {};
+      Identity.setCurrentUser();
       Identity.removeTokenAndUser();
     },
 

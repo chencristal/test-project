@@ -11,6 +11,10 @@ angular.module('app').factory('Identity', function($cookieStore) {
       return _currentUser;
     },
 
+    setCurrentUser: function(user) {
+      _currentUser = user || {};
+    },
+
     setTokenAndUser: function(data) {
       $cookieStore.put('token', data.token);
       $cookieStore.put('currentUser', data.user);
@@ -28,7 +32,7 @@ angular.module('app').factory('Identity', function($cookieStore) {
       $cookieStore.remove('token');
       $cookieStore.remove('currentUser');
     },
-    
+
     isLoggedIn: function() {
       return !_.isEmpty(_currentUser);
     },
