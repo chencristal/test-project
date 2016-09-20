@@ -9,9 +9,20 @@ var validationUtil = require('../util/validation-util');
 exports.getProjectTemplates = (req, res, next) => {
   function parseParams(query) {
     var params = {
-      query: query.query
+      query: query.query,
+      includes: query.includes
     };
     return Promise.resolve(params);
+  }
+
+  function validateParams(params) {
+    if (params.includes && !_.every(params.includes, validationUtil.isValidObjectId)) {
+      return customErrors.rejectWithUnprocessableRequestError({
+        paramName: 'includes',
+        errMsg: 'must be an array with valid ids'
+      });
+    }
+    return params;
   }
 
   function buildFilter(params) {
@@ -21,12 +32,18 @@ exports.getProjectTemplates = (req, res, next) => {
         $regex: new RegExp('^' + params.query, 'i')
       };
     }
+    if (params.includes) {
+      filter._id = {
+        $in: params.includes
+      };
+    }
     return filter;
   }
 
   parseParams(req.query)
+    .then(validateParams)
     .then(buildFilter)
-    .then(filter => projTemplsSrvc.getProjectTemplates({}, 'name'))
+    .then(filter => projTemplsSrvc.getProjectTemplates(filter, 'name'))
     .then(projTempls => res.send(projTempls))
     .catch(next);
 };

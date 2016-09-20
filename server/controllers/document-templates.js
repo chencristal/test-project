@@ -8,42 +8,50 @@ var validationUtil = require('../util/validation-util');
 
 exports.getDocumentTemplates = (req, res, next) => {
   function parseParams(query) {
-    var params = {
-      query: query.query,
-      includes: query.includes
+    var data = {
+      params: _.pick(query, ['query', 'includes'])
     };
-    return Promise.resolve(params);
+    data.fields = req.query.fields || ['name'];
+    return Promise.resolve(data);
   }
 
-  function validateParams(params) {
-    if (params.includes && !_.every(params.includes, validationUtil.isValidObjectId)) {
+  function validateParams(data) {
+    var allowedFields = ['name', 'provisionTemplates'];
+
+    if (data.params.includes && !_.every(data.params.includes, validationUtil.isValidObjectId)) {
       return customErrors.rejectWithUnprocessableRequestError({
         paramName: 'includes',
         errMsg: 'must be an array with valid ids'
       });
     }
-    return params;
+    if (!_.every(data.fields, field => _.includes(allowedFields, field))) {
+      return customErrors.rejectWithUnprocessableRequestError({
+        paramName: 'fields',
+        errMsg: 'must be an array with valid fields'
+      });
+    }
+    return data;
   }
 
-  function buildFilter(params) {
-    var filter = {};
-    if (params.query) {
-      filter.name = {
-        $regex: new RegExp('^' + params.query, 'i')
+  function buildFilter(data) {
+    data.filter = {};
+    if (data.params.query) {
+      data.filter.name = {
+        $regex: new RegExp('^' + data.params.query, 'i')
       };
     }
-    if (params.includes) {
-      filter._id = {
-        $in: params.includes
+    if (data.params.includes) {
+      data.filter._id = {
+        $in: data.params.includes
       };
     }
-    return filter;
+    return data;
   }
 
   parseParams(req.query)
     .then(validateParams)
     .then(buildFilter)
-    .then(filter => docTemplsSrvc.getDocumentTemplates(filter, 'name'))
+    .then(data => docTemplsSrvc.getDocumentTemplates(data.filter, data.fields.join(' ')))
     .then(docTempls => res.send(docTempls))
     .catch(next);
 };

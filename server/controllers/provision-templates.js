@@ -9,42 +9,50 @@ var validationUtil  = require('../util/validation-util');
 
 exports.getProvisionTemplates = (req, res, next) => {
   function parseParams(query) {
-    var params = {
-      query: query.query,
-      includes: query.includes
+    var data = {
+      params: _.pick(query, ['query', 'includes'])
     };
-    return Promise.resolve(params);
+    data.fields = req.query.fields || ['displayName'];
+    return Promise.resolve(data);
   }
 
-  function validateParams(params) {
-    if (params.includes && !_.every(params.includes, validationUtil.isValidObjectId)) {
+  function validateParams(data) {
+    var allowedFields = ['displayName', 'style', 'template'];
+
+    if (data.params.includes && !_.every(data.params.includes, validationUtil.isValidObjectId)) {
       return customErrors.rejectWithUnprocessableRequestError({
         paramName: 'includes',
         errMsg: 'must be an array with valid ids'
       });
     }
-    return params;
+    if (!_.every(data.fields, field => _.includes(allowedFields, field))) {
+      return customErrors.rejectWithUnprocessableRequestError({
+        paramName: 'fields',
+        errMsg: 'must be an array with valid fields'
+      });
+    }
+    return data;
   }
 
-  function buildFilter(params) {
-    var filter = {};
-    if (params.query) {
-      filter.displayName = {
-        $regex: new RegExp('^' + params.query, 'i')
+  function buildFilter(data) {
+    data.filter = {};
+    if (data.params.query) {
+      data.filter.displayName = {
+        $regex: new RegExp('^' + data.params.query, 'i')
       };
     }
-    if (params.includes) {
-      filter._id = {
-        $in: params.includes
+    if (data.params.includes) {
+      data.filter._id = {
+        $in: data.params.includes
       };
     }
-    return filter;
+    return data;
   }
 
   parseParams(req.query)
     .then(validateParams)
     .then(buildFilter)
-    .then(filter => provisionTsSrvc.getProvisionTemplates(filter, 'displayName'))
+    .then(data => provisionTsSrvc.getProvisionTemplates(data.filter, data.fields.join(' ')))
     .then(provisionTempls => res.send(provisionTempls))
     .catch(next);
 };
