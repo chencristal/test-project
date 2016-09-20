@@ -9,12 +9,12 @@ var apiVer = config.get('api:version');
 module.exports = app => {
   app.get(
     `/api/${apiVer}/document-templates/:_id`,
-    auth.requireRolesWrapper('admin'),
+    auth.requireRolesWrapper(['admin', 'user']),
     docTempls.getDocumentTemplateById
   );
   app.get(
     `/api/${apiVer}/document-templates`,
-    auth.requireRolesWrapper('admin'),
+    auth.requireRolesWrapper(['admin', 'user']),
     docTempls.getDocumentTemplates
   );
   app.post(

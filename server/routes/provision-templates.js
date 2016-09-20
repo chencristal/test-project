@@ -9,12 +9,12 @@ var apiVer = config.get('api:version');
 module.exports = app => {
   app.get(
     `/api/${apiVer}/provision-templates/:_id`,
-    auth.requireRolesWrapper('admin'),
+    auth.requireRolesWrapper(['admin', 'user']),
     provisionTs.getProvisionTemplateById
   );
   app.get(
     `/api/${apiVer}/provision-templates`,
-    auth.requireRolesWrapper('admin'),
+    auth.requireRolesWrapper(['admin', 'user']),
     provisionTs.getProvisionTemplates
   );
   app.post(

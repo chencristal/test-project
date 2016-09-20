@@ -7,9 +7,29 @@ var termTs = require('../controllers/term-templates');
 var apiVer = config.get('api:version');
 
 module.exports = app => {
-  app.get(`/api/${apiVer}/term-templates/:_id`, auth.requireRolesWrapper('admin'), termTs.getTermTemplateById);
-  app.get(`/api/${apiVer}/term-templates`, auth.requireRolesWrapper('admin'), termTs.getTermTemplates);
-  app.post(`/api/${apiVer}/term-templates`, auth.requireRolesWrapper('admin'), termTs.createTermTemplate);
-  app.put(`/api/${apiVer}/term-templates/:_id`, auth.requireRolesWrapper('admin'), termTs.updateTermTemplate);
-  app.delete(`/api/${apiVer}/term-templates/:_id`, auth.requireRolesWrapper('admin'), termTs.deleteTermTemplate);
+  app.get(
+    `/api/${apiVer}/term-templates/:_id`,
+    auth.requireRolesWrapper(['admin', 'user']),
+    termTs.getTermTemplateById
+  );
+  app.get(
+    `/api/${apiVer}/term-templates`,
+     auth.requireRolesWrapper(['admin', 'user']),
+     termTs.getTermTemplates
+  );
+  app.post(
+    `/api/${apiVer}/term-templates`,
+    auth.requireRolesWrapper('admin'),
+    termTs.createTermTemplate
+  );
+  app.put(
+    `/api/${apiVer}/term-templates/:_id`,
+    auth.requireRolesWrapper('admin'),
+    termTs.updateTermTemplate
+  );
+  app.delete(
+    `/api/${apiVer}/term-templates/:_id`,
+    auth.requireRolesWrapper('admin'),
+    termTs.deleteTermTemplate
+  );
 };
