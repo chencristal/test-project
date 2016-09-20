@@ -1,0 +1,3 @@
+div(ng-repeat="provTempl in relatedData.provisionTemplates")
+  h5 {{ ::provTempl.displayName }}:
+  div(ng-bind-html="trustAsHtml(provTempl.template)")

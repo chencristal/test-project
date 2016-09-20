@@ -11,6 +11,7 @@ exports.getProject = (filter, fields) => {
   return Project
     .findOne(filter)
     .select(fields)
+    .populate('projectTemplate', 'documentTemplates')
     .exec()
     .then(proj => {
       if (!proj) {

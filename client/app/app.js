@@ -122,6 +122,9 @@ angular.module('app', [
     .when('/projects/:_id/edit', {
       templateUrl: 'views/projects/project-edit.html',
       controller: 'ProjectEditCtrl'
+    }).when('/projects/:_id/processor', {
+      templateUrl: 'views/projects/processor/index.html',
+      controller: 'ProjectProcessorCtrl'
     })
 
     .otherwise({

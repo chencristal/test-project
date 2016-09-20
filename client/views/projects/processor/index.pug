@@ -1,0 +1,35 @@
+extends ../../layout/layout.pug
+
+block content
+  .row
+    .col-md-12
+      div(ng-show="isLoading")
+        include ../../common/spinner.pug
+      .processor(ng-hide="isLoading")
+        table.table
+          thead
+            tr
+              th.project-name
+                h3 {{ ::project.name }}
+                  small ({{ mode }} mode)
+              th.document-templates
+                select.form-control(ng-model="relatedData.currrentDocumentTemplate"
+                                    ng-options="docTempl as docTempl.name for docTempl in relatedData.documentTemplates"
+                                    ng-required="true" ng-disabled="isSaving")
+              th.buttons
+                button.btn.btn-info(type="button" title="Edit" ng-click="setMode('edit')" ng-disabled="mode === 'edit' || isSaving")
+                  span.glyphicon.glyphicon-pencil
+                button.btn.btn-danger(title="Red Line" ng-click="setMode('redline')" ng-disabled="mode === 'redline' || isSaving")
+                  span.glyphicon.glyphicon-font
+                button.btn.btn-primary(title="Print" ng-click="print()" ng-disabled="isSaving")
+                  span.glyphicon.glyphicon-print
+              th.help
+                h3.page-header-left Help
+          tbody
+            tr
+              td.properties
+                include ./properties.pug
+              td.editor(colspan="2")
+                include ./editor.pug
+              td.help
+                include ./help.pug

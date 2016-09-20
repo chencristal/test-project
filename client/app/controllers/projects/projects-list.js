@@ -18,4 +18,8 @@ angular.module('app').controller('ProjectsListCtrl',
   $scope.editProject = function(project) {
     $location.path('/projects/' + project._id + '/edit');
   };
+
+  $scope.openProcessor = function(project) {
+    $location.path('/projects/' + project._id + '/processor');
+  };
 });

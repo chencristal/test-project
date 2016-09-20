@@ -1,11 +1,11 @@
 'use strict';
 
 angular.module('app').controller('ProjectEditCtrl',
-  function($scope, $routeParams, $location, Notifier, Project) {
+  function($scope, $routeParams, $location, Notifier, Project, ProjectTemplate) {
 
   $scope.isLoading = true;
   $scope.isSaving = false;
-  $scope.documents = [];
+  $scope.projectTemplates = [];
 
   (function loadData() {
     Project
@@ -13,8 +13,13 @@ angular.module('app').controller('ProjectEditCtrl',
         id: $routeParams._id
       })
       .$promise
-      .then(function(proj) {
-        $scope.project = proj;
+      .then(function(project) {
+        project.projectTemplate = project.projectTemplate._id;
+        $scope.project = project;
+        return ProjectTemplate.query({ 'includes[]': [project.projectTemplate] }).$promise;
+      })
+      .then(function(projTempls) {
+        $scope.projectTemplates = projTempls;
         $scope.isLoading = false;
       })
       .catch(function(err) {
@@ -22,6 +27,18 @@ angular.module('app').controller('ProjectEditCtrl',
         $location.path('/projects');
       });
   })();
+
+  $scope.refreshProjectTemplates = function(query) {
+    if (!query) {
+      return [];
+    }
+    return ProjectTemplate
+      .query({ query: query })
+      .$promise
+      .then(function(projects) {
+        $scope.projectTemplates = projects;
+      });
+  };
 
   $scope.saveProject = function() {
     $scope.isSaving = true;
