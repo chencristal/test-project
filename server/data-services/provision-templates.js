@@ -4,7 +4,10 @@ var customErrors      = require('n-custom-errors');
 var ProvisionTemplate = require('mongoose').model('provisionTemplate');
 
 exports.getProvisionTemplates = (filter, fields) => {
-  return ProvisionTemplate.find(filter, fields);
+  return ProvisionTemplate
+    .find(filter, fields)
+    .sort('displayName')
+    .exec();
 };
 
 exports.getProvisionTemplate = (filter, fields) => {

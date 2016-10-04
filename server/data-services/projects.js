@@ -4,7 +4,10 @@ var customErrors = require('n-custom-errors');
 var Project      = require('mongoose').model('project');
 
 exports.getProjects = (filter, fields) => {
-  return Project.find(filter, fields);
+  return Project
+    .find(filter, fields)
+    .sort('name')
+    .exec();
 };
 
 exports.getProject = (filter, fields) => {

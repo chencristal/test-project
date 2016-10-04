@@ -4,7 +4,10 @@ var customErrors         = require('n-custom-errors');
 var DocumentTemplateType = require('mongoose').model('documentTemplateType');
 
 exports.getDocumentTemplateTypes = (filter, fields) => {
-  return DocumentTemplateType.find(filter, fields);
+  return DocumentTemplateType
+    .find(filter, fields)
+    .sort('name')
+    .exec();
 };
 
 exports.getDocumentTemplateType = (filter, fields) => {

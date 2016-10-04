@@ -4,7 +4,10 @@ var customErrors = require('n-custom-errors');
 var User         = require('mongoose').model('user');
 
 exports.getUsers = (filter, keys) => {
-  return User.find(filter, keys);
+  return User
+    .find(filter, keys)
+    .sort('email')
+    .exec();
 };
 
 exports.getUser = (filter, keys) => {

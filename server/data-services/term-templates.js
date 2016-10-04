@@ -4,7 +4,10 @@ var customErrors = require('n-custom-errors');
 var TermTemplate = require('mongoose').model('termTemplate');
 
 exports.getTermTemplates = (filter, fields) => {
-  return TermTemplate.find(filter, fields);
+  return TermTemplate
+    .find(filter, fields)
+    .sort('displayName')
+    .exec();
 };
 
 exports.getActiveTermTemplates = (filter, fields) => {
