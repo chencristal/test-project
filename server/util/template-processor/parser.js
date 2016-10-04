@@ -8,7 +8,19 @@ var customErrors = require('n-custom-errors');
 exports.parse = templ => {
   return _hbParse(templ)
     .then(_parseToken)
-    .catch(err => customErrors.rejectWithUnprocessableRequestError('Invalid template: ' + err));
+    .catch(err => customErrors.rejectWithUnprocessableRequestError(err.message));
+};
+
+exports.getUsedVariables = (tokensRoot, variables) => {
+  var params = _getTokenParams(tokensRoot);
+  var usedVariables = _(params)
+    .flattenDeep()
+    .map('text')
+    .uniq()
+    .filter(paramName => _.includes(variables, paramName))
+    .value();
+
+  return usedVariables;
 };
 
 function _hbParse(templ) {
@@ -26,13 +38,50 @@ function _parseToken(token) {
   if (!token) {
     return null;
   }
-  return {
-    group: token.group,
-    type: token.type,
-    text: token.original,
-    path: _parseToken(token.path),
-    program: _parseToken(token.program),
-    params: _.map(token.params, _parseToken),
-    body: _.map(token.body, _parseToken),
-  };
+
+  switch (token.type) {
+    case 'Program':
+      return {
+        type: 'program',
+        tokens: _.map(token.body, _parseToken)
+      };
+    case 'ContentStatement':
+      return {
+        type: 'content',
+        text: token.original
+      };
+    case 'MustacheStatement':
+      return _parseToken(token.path);
+    case 'BlockStatement':
+      return {
+        type: 'statement',
+        text: token.path.original,
+        params: _.map(token.params, _parseToken),
+        tokens: _.map(_.get(token, 'program.body'), _parseToken)
+      };
+    case 'StringLiteral':
+      return {
+        type: 'operator',
+        text: token.original
+      };
+    case 'PathExpression':
+      return {
+        type: 'variable',
+        text: token.original
+      };
+    default:
+      throw new Error('Invalid token type: ' + token.type);
+  }
+}
+
+function _getTokenParams(token) {
+  if (!token) {
+    return null;
+  }
+  if (token.type === 'variable') {
+    return token;
+  }
+  return []
+    .concat(_.map(token.tokens, _getTokenParams))
+    .concat(_.map(token.params, _getTokenParams));
 }
