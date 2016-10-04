@@ -3,7 +3,7 @@
 var _            = require('lodash');
 var passport     = require('passport');
 var customErrors = require('n-custom-errors');
-var util         = require('../util');
+var jwtUtil      = require('../util/jwt');
 
 exports.login = (req, res, next) => {
   passport.authenticate('local', (err, user, info) => {
@@ -13,7 +13,7 @@ exports.login = (req, res, next) => {
       return next(err);
     }
     user = _.pick(user, ['firstName', 'lastName', 'email', 'role']);
-    util
+    jwtUtil
       .signToken(user, user.role)
       .then(token => res.send({ user, token }))
       .catch(next);

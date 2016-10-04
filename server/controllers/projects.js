@@ -4,7 +4,7 @@ var _              = require('lodash');
 var Promise        = require('bluebird');
 var customErrors   = require('n-custom-errors');
 var projectsSrvc   = require('../data-services/projects');
-var validationUtil = require('../util/validation-util');
+var validationUtil = require('../util/validations');
 
 exports.getProjects = (req, res, next) => {
   projectsSrvc

@@ -5,7 +5,7 @@ var Promise        = require('bluebird');
 var customErrors   = require('n-custom-errors');
 var consts         = require('../consts');
 var termTsSrvc     = require('../data-services/term-templates');
-var validationUtil = require('../util/validation-util');
+var validationUtil = require('../util/validations');
 
 exports.getTermTemplates = (req, res, next) => {
   termTsSrvc

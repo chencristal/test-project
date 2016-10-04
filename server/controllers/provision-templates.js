@@ -5,7 +5,7 @@ var Promise         = require('bluebird');
 var customErrors    = require('n-custom-errors');
 var consts          = require('../consts');
 var provisionTsSrvc = require('../data-services/provision-templates');
-var validationUtil  = require('../util/validation-util');
+var validationUtil  = require('../util/validations');
 
 exports.getProvisionTemplates = (req, res, next) => {
   function parseParams(query) {
@@ -147,5 +147,6 @@ function _validateProvisionTemplateData(provisionTemplData) {
       { paramName: 'template', errMsg: 'is required' }
     );
   }
+  
   return Promise.resolve(provisionTemplData);
 }

@@ -4,7 +4,7 @@ var _              = require('lodash');
 var Promise        = require('bluebird');
 var customErrors   = require('n-custom-errors');
 var docTemplsSrvc  = require('../data-services/document-templates');
-var validationUtil = require('../util/validation-util');
+var validationUtil = require('../util/validations');
 
 exports.getDocumentTemplates = (req, res, next) => {
   function parseParams(query) {

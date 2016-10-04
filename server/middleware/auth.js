@@ -2,12 +2,12 @@
 
 var _            = require('lodash');
 var customErrors = require('n-custom-errors');
-var util         = require('../util');
+var jwtUtil      = require('../util/jwt');
 
 exports.ensureAuthenticated = (req, res, next) => {
   var token = _.get(req, 'cookies.token');
   token = _.trim(token, '"');
-  util
+  jwtUtil
     .decodeToken(token)
     .then(data => {
       req.user = data.user;

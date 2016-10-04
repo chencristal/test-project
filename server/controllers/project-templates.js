@@ -4,7 +4,7 @@ var _              = require('lodash');
 var Promise        = require('bluebird');
 var customErrors   = require('n-custom-errors');
 var projTemplsSrvc = require('../data-services/project-templates');
-var validationUtil = require('../util/validation-util');
+var validationUtil = require('../util/validations');
 
 exports.getProjectTemplates = (req, res, next) => {
   function parseParams(query) {

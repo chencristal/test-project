@@ -5,7 +5,7 @@ var Promise        = require('bluebird');
 var customErrors   = require('n-custom-errors');
 var consts         = require('../consts');
 var usersSrvc      = require('../data-services/users');
-var validationUtil = require('../util/validation-util');
+var validationUtil = require('../util/validations');
 
 exports.getUsers = function(req, res, next) {
   usersSrvc
