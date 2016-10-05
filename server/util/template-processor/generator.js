@@ -1,56 +1,38 @@
 'use strict';
 
-var _       = require('lodash');
-var Promise = require('bluebird');
+var _ = require('lodash');
 
-// TODO: used?
 exports.generateHtml = tokensRoot => {
-  var html = _generateHtml(tokensRoot);
-  return Promise.resolve(html);
+  return _generateHtml(tokensRoot);
 };
 
 function _generateHtml(token) {
-  if (!token || !token.type) {
+  if (!token) {
       return '';
   }
 
   switch (token.type) {
-    case 'ContentStatement':
+    case 'content':
       return token.text || '';
-    case 'Program':
-      return _.map(token.body, _generateHtml).join('');
-    case 'MustacheStatement':
-      return _generateHtml(token.path);
-    case 'BlockStatement':
-      return '<span ' + _generateExpHtml(token) + '>' +
-        _generateHtml(token.program) +
-        '</span>';
-    case 'PathExpression':
-      return `{{ ${token.text} }}`;
-    default:
-      throw new Error('Uknown type: ' + token.type);
+    case 'program':
+      return _.map(token.tokens, _generateHtml).join('');
+    case 'variable':
+      return `<input ng-model="token.value" placeholder="{{ token.text }}" name="test" />`;
+    case 'statement':
+      var html = '<span>';
+      switch (token.text) {
+        case 'if':
+          html += _generateHtml(token.params[0]); // TODO: && token.params[0].value"
+          break;
+        case 'unless':
+          html += _generateHtml(token.params[0]); // TODO: && !token.params[0].value")
+          break;
+        case 'ifCond':
+          html += _.map(token.params, _generateHtml).join('');  // TODO: && ifCond(token.params)")
+          break;
+      }
+      html += _.map(token.tokens, _generateHtml).join('');
+      html += '</span>';
+      return html;
   }
-}
-
-function _generateExpHtml(token) {
-  var val = '';
-  switch (token.path.text) {
-    case 'if':
-      val += token.params[0].text; // TODO: danger?
-      break;
-    case 'unless':
-      val += '!' + token.params[0].text; // TODO: danger?
-      break;
-    case 'ifCond':
-      val += token.params[0].text + '(';
-      val += _(token.params)
-        .tail()
-        .map(param => param.text)
-        .value()
-        .join(',');
-      val += ')';
-      break;
-  }
-
-  return `ng-show="${val}"`;
 }
