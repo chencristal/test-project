@@ -5,16 +5,6 @@ var consts       = require('../../consts');
 var timestamps   = require('./../plugins/timestamps');
 var contributors = require('./../plugins/contributors');
 
-var termTemplateSubDoc = new mongoose.Schema();
-termTemplateSubDoc.add({
-  termTemplate: {
-    type: mongoose.Schema.Types.ObjectId,
-    index: true,
-    ref: 'termTemplate'
-  },
-  termTemplates: [termTemplateSubDoc]
-});
-
 var provisionTemplateSchema = new mongoose.Schema({
     displayName: {
       type: String,
@@ -28,8 +18,15 @@ var provisionTemplateSchema = new mongoose.Schema({
       type: String,
       required: true
     },
-    // TODO: unues? condition: BOOLEAN_TERM_TEMPLATE,
-    termTemplates: [termTemplateSubDoc]
+    tokensRoot: {
+      type: String,
+      required: true
+    },
+    termTemplates: [{
+      type: mongoose.Schema.Types.ObjectId,
+      index: true,
+      ref: 'termTemplate'
+    }]
 });
 
 provisionTemplateSchema.plugin(timestamps, { index: true });

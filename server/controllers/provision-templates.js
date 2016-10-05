@@ -5,7 +5,9 @@ var Promise         = require('bluebird');
 var customErrors    = require('n-custom-errors');
 var consts          = require('../consts');
 var provisionTsSrvc = require('../data-services/provision-templates');
+var termTsSrvc      = require('../data-services/term-templates');
 var validationUtil  = require('../util/validations');
+var templProc       = require('../util/template-processor');
 
 exports.getProvisionTemplates = (req, res, next) => {
   function parseParams(query) {
@@ -17,7 +19,7 @@ exports.getProvisionTemplates = (req, res, next) => {
   }
 
   function validateParams(data) {
-    var allowedFields = ['displayName', 'style', 'template'];
+    var allowedFields = ['displayName', 'style', 'template', 'termTemplates', 'tokensRoot'];
 
     if (data.params.includes && !_.every(data.params.includes, validationUtil.isValidObjectId)) {
       return customErrors.rejectWithUnprocessableRequestError({
@@ -91,6 +93,7 @@ exports.createProvisionTemplate = (req, res, next) => {
 
   parseParams(req.body)
     .then(validateParams)
+    .then(_parseTemplate)
     .then(doEdits)
     .then(provisionTempl => provisionTsSrvc.createProvisionTemplate(provisionTempl))
     .then(provisionTempl => res.send(provisionTempl))
@@ -119,6 +122,7 @@ exports.updateProvisionTemplate = (req, res, next) => {
 
   parseParams(req.body)
     .then(validateParams)
+    .then(_parseTemplate)
     .then(provisionTemplData => provisionTsSrvc
       .getProvisionTemplate({ _id: provisionTemplData._id })
       .then(provisionTempl => {
@@ -149,4 +153,24 @@ function _validateProvisionTemplateData(provisionTemplData) {
   }
   
   return Promise.resolve(provisionTemplData);
+}
+
+function _parseTemplate(provisionTemplData) {
+  return Promise
+    .all([
+      templProc.parse(provisionTemplData.template),
+      termTsSrvc.getActiveTermTemplates({}, 'variable')
+    ])
+    .spread((tokensRoot, termTempls) => {
+      var variables = _.map(termTempls, 'variable');
+      return templProc
+        .validate(tokensRoot, variables)
+        .then(() => {
+          var usedVariables = templProc.getUsedVariables(tokensRoot, variables);
+          var usedTermTempls = _.filter(termTempls, tt => _.includes(usedVariables, tt.variable));
+          provisionTemplData.tokensRoot = JSON.stringify(tokensRoot);
+          provisionTemplData.termTemplates = usedTermTempls;
+          return provisionTemplData;
+        });
+    });
 }
