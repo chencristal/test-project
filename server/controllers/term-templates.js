@@ -8,8 +8,49 @@ var termTsSrvc     = require('../data-services/term-templates');
 var validationUtil = require('../util/validations');
 
 exports.getTermTemplates = (req, res, next) => {
-  termTsSrvc
-    .getActiveTermTemplates({}, 'displayName termType variable')
+  function parseParams(query) {
+    var data = {
+      includes: query.includes
+    };
+    data.fields = req.query.fields || ['displayName'];
+    return Promise.resolve(data);
+  }
+
+  function validateParams(data) {
+    var allowedFields = ['*', 'termType', 'variable', 'text', 'boolean', 'variant', 'date', 'displayName', 'help'];
+
+    if (data.includes && !_.every(data.includes, validationUtil.isValidObjectId)) {
+      return customErrors.rejectWithUnprocessableRequestError({
+        paramName: 'includes',
+        errMsg: 'must be an array with valid ids'
+      });
+    }
+    if (!_.every(data.fields, field => _.includes(allowedFields, field))) {
+      return customErrors.rejectWithUnprocessableRequestError({
+        paramName: 'fields',
+        errMsg: 'must be an array with valid fields'
+      });
+    }
+    return data;
+  }
+
+  function buildFilter(data) {
+    data.filter = {};
+    if (data.includes) {
+      data.filter._id = {
+        $in: data.includes
+      };
+    }
+    if (_.get(data, 'fields[0]') === '*') {
+      data.fields = ['-__v'];
+    }
+    return data;
+  }
+
+  parseParams(req.query)
+    .then(validateParams)
+    .then(buildFilter)
+    .then(data => termTsSrvc.getActiveTermTemplates(data.filter, data.fields.join(' ')))
     .then(termTempls => res.send(termTempls))
     .catch(next);
 };

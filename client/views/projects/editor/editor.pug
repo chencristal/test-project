@@ -1,0 +1,13 @@
+div
+  h3 {{ token }}
+  div(ng-repeat="provTempl in relatedData.provisionTemplates")
+    h5 {{ ::provTempl.displayName }}
+    div(ng-bind-html="$root.trustAsHtml(provTempl.template)")
+  
+  hr
+  div(ng-repeat="provTempl in relatedData.provisionTemplates")
+    dynamic-html(template="provTempl.templateHtml" token="token")
+
+  hr
+  div(ng-repeat="provTempl in relatedData.provisionTemplates")
+    token-editor(token="provTempl.tokensRoot")

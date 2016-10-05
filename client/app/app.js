@@ -122,12 +122,34 @@ angular.module('app', [
     .when('/projects/:_id/edit', {
       templateUrl: 'views/projects/project-edit.html',
       controller: 'ProjectEditCtrl'
-    }).when('/projects/:_id/processor', {
-      templateUrl: 'views/projects/processor/index.html',
-      controller: 'ProjectProcessorCtrl'
+    }).when('/projects/:_id/editor', {
+      templateUrl: 'views/projects/project-editor.html'
     })
 
     .otherwise({
       redirectTo: '/not-found'
     });
+});
+
+angular.module('app').run(function($rootScope) {
+  $rootScope.ifCond = function(op, v1, v2) {
+    switch (op) {
+      case 'and':
+        return (v1 && v2);
+      case 'not-and':
+        return (!v1 && v2);
+      case 'and-not':
+        return (v1 && !v2);
+      case 'not-and-not':
+        return (!v1 && !v2);
+      case 'or':
+        return (v1 || v2);
+      case 'not-or':
+        return (!v1 || v2);
+      case 'or-not':
+        return (v1 || !v2);
+      case 'not-or-not':
+        return (!v1 || !v2);
+    }
+  };
 });

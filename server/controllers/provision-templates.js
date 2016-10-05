@@ -19,7 +19,7 @@ exports.getProvisionTemplates = (req, res, next) => {
   }
 
   function validateParams(data) {
-    var allowedFields = ['displayName', 'style', 'template', 'termTemplates', 'tokensRoot'];
+    var allowedFields = ['displayName', 'style', 'template', 'templateHtml', 'termTemplates', 'tokensRoot'];
 
     if (data.params.includes && !_.every(data.params.includes, validationUtil.isValidObjectId)) {
       return customErrors.rejectWithUnprocessableRequestError({
@@ -51,10 +51,28 @@ exports.getProvisionTemplates = (req, res, next) => {
     return data;
   }
 
+  function loadData(data) {
+    return provisionTsSrvc
+      .getProvisionTemplates(data.filter, data.fields.join(' '))
+      .then(provisionTempls => {
+        if (_.includes(data.fields, 'templateHtml')) {
+          provisionTempls = _(provisionTempls)
+            .filter(provTempl => !!provTempl.tokensRoot)
+            .map(provTempl => {
+              provTempl = provTempl.toObject();
+              provTempl.templateHtml = templProc.generateHtml(JSON.parse(provTempl.tokensRoot));
+              return provTempl;
+            })
+            .value();
+        }
+        return provisionTempls;
+      });
+  }
+
   parseParams(req.query)
     .then(validateParams)
     .then(buildFilter)
-    .then(data => provisionTsSrvc.getProvisionTemplates(data.filter, data.fields.join(' ')))
+    .then(loadData)
     .then(provisionTempls => res.send(provisionTempls))
     .catch(next);
 };

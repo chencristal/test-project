@@ -1,0 +1,14 @@
+form.form-horizontal
+  .form-group(ng-repeat="termTempl in relatedData.termTemplates")
+    label.col-md-3.control-label {{ ::termTempl.displayName }}
+    .col-md-9
+      div(ng-if="termTempl.termType === 'text'")
+        input.form-control(ng-model="termTempl.value" type="text" placeholder="{{ termTempl.text.placeholder }}")
+      div(ng-if="termTempl.termType === 'boolean'")
+        .radio
+          label
+            input(ng-model="termTempl.value" type="radio" value="true")
+            span {{ ::termTempl.boolean.inclusionText }}
+          label
+            input(ng-model="termTempl.value" type="radio" value="false")
+            span {{ ::termTempl.boolean.exclusionText }}
