@@ -7,7 +7,9 @@ angular.module('app').controller('TermTemplatesListCtrl',
 
   (function loadData() {
     TermTemplate
-      .query()
+      .query({
+        'fields[]': ['termType', 'variable', 'displayName']
+      })
       .$promise
       .then(function(termTemplates) {
         $scope.termTemplates = termTemplates;
@@ -19,6 +21,7 @@ angular.module('app').controller('TermTemplatesListCtrl',
     $location.path('/term-templates/' + termTemplate._id + '/edit');
   };
 
+  // TODO: unused?
   $scope.deleteTermTemplate = function(termTemplate) {
     $scope.isSaving = true;
     $uibModal.open({

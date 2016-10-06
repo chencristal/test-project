@@ -44,6 +44,7 @@ exports.saveTermTemplate = termTempl => {
   return termTempl.save();
 };
 
+// TODO: check that termTempl is not used
 exports.deleteTermTemplateById = termTemplId => {
   return exports
     .getTermTemplate({ _id: termTemplId })
