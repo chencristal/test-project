@@ -18,6 +18,11 @@ var provisionTemplateSchema = new mongoose.Schema({
       type: String,
       required: true
     },
+    templateHtml: {
+      type: String,
+      required: true
+    },
+    // TODO: it's used?
     tokensRoot: {
       type: String,
       required: true
