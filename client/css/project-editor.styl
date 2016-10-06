@@ -1,4 +1,5 @@
 .editor
+  font-family: "Times New Roman", Georgia, Serif
   h1,h2,h3,h4,h5,h6
     margin-top: 0
 
@@ -30,3 +31,23 @@
     .editor
       input
         margin: 2px
+        border: 2px solid #e7ebf0
+        padding-left: 3px
+        padding-right: 3px
+        color: #333
+      .invisible
+        visibility: visible
+        color: #ccc
+        text-decoration: line-through
+        input
+          color: #ccc
+          text-decoration: line-through
+        input::-moz-input-placeholder
+          text-decoration: line-through
+          color: #ccc
+        input::-webkit-input-placeholder
+          text-decoration: line-through
+          color: #ccc
+      .edit-mode
+        .invisible
+          visibility: hidden

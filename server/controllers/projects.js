@@ -55,7 +55,7 @@ exports.createProject = (req, res, next) => {
 
 exports.updateProject = (req, res, next) => {
   function parseParams(body) {
-    var allowedFields = ['name', 'projectTemplate'];
+    var allowedFields = ['name', 'projectTemplate', 'values'];
     var projData = _.pick(body, allowedFields);
     projData._id = req.params._id;
     return Promise.resolve(projData);
@@ -68,6 +68,27 @@ exports.updateProject = (req, res, next) => {
     return _validateProjectData(projData);
   }
 
+  function validateProjectValues(projData) {
+    if (!projData.values) {
+      return projData;
+    }
+    if (!_.isArray(projData.values)) {
+      return customErrors.rejectWithUnprocessableRequestError({ paramName: 'values', errMsg: 'must be a valid array' });
+    }
+    for (var i = 0; i < projData.values.length; i++) {
+      var val = projData.values[i];
+      if (!val.variable) {
+        return customErrors.rejectWithUnprocessableRequestError(
+          { paramName: 'values.variable', errMsg: 'must be defined' });
+      }
+      if (_.isUndefined(val.value)) {
+        return customErrors.rejectWithUnprocessableRequestError(
+          { paramName: 'values.value', errMsg: 'must be defined' });
+      }
+    }
+    return projData;
+  }
+
   function doEdits(data) {
     _.extend(data.proj, data.projData);
     return data.proj;
@@ -75,6 +96,7 @@ exports.updateProject = (req, res, next) => {
 
   parseParams(req.body)
     .then(validateParams)
+    .then(validateProjectValues)
     .then(projData => projectsSrvc
       .getProject({ _id: projData._id })
       .then(proj => {

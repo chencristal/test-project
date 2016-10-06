@@ -5,7 +5,7 @@ angular.module('app').directive('dynamicHtml', function($compile, $timeout) {
     restrict: 'E',
     scope: {
       template: '=',
-      token: '='
+      variables: '='
     },
     link: function($scope, $element) {
       $timeout(function() {

@@ -10,14 +10,9 @@ angular.module('app').directive('projectEditor', function() {
 
       $scope.isLoading = true;
       $scope.isSaving = false;
-      $scope.mode = 'edit';
+      $scope.mode = 'redline';
       $scope.relatedData = {};
-
-      // TODO: remove later
-      $scope.token = {
-        text: 'SuperText',
-        value: 123
-      };
+      $scope.variables = {};
 
       angular.element($window).bind('resize', _setEditorHeight);
 
@@ -25,15 +20,40 @@ angular.module('app').directive('projectEditor', function() {
         angular.element($window).unbind('resize');
       });
 
-      $scope.setMode = function(mode) {
-        $scope.mode = mode;
-      };
-
       $scope.$watch('relatedData.currrentDocumentTemplate', function(newDocTempl) {
         if (newDocTempl) {
           _loadRelatedData(newDocTempl);
         }
       });
+
+      $scope.setMode = function(mode) {
+        $scope.mode = mode;
+      };
+
+      $scope.showHelp = function(termTempl) {
+        $scope.selectedTermTempl = termTempl;
+      };
+
+      $scope.save = function() {
+        $scope.isSaving = true;
+        var projectForSave = new Project($scope.project);
+        projectForSave.projectTemplate = projectForSave.projectTemplate._id;
+        projectForSave.values = _.map($scope.relatedData.termTemplates, function(tt) {
+          return _.pick(tt, ['variable', 'value']);
+        });
+
+        projectForSave
+          .$update()
+          .then(function() {
+            Notifier.info('The record is updated successfully');
+          })
+          .catch(function(err) {
+            Notifier.error(err, 'Unable to save record');
+          })
+          .finally(function() {
+            $scope.isSaving = false;
+          });
+      };
 
       function _loadData() {
         Project
@@ -43,21 +63,14 @@ angular.module('app').directive('projectEditor', function() {
           .$promise
           .then(function(proj) {
             $scope.project = proj;
-            return DocumentTemplate
-              .query({
-                'includes[]': proj.projectTemplate.documentTemplates,
-                'fields[]': ['name', 'provisionTemplates'] 
-              })
-              .$promise;
-          })
-          .then(function(docTempls) {
-            $scope.relatedData.currrentDocumentTemplate = docTempls[0];
-            $scope.relatedData.documentTemplates = docTempls;
-            $scope.isLoading = false;
+            return _loadDocumentTemplates(proj);
           })
           .catch(function(err) {
             Notifier.error(err, 'Unable to load record');
             $location.path('/projects');
+          })
+          .finally(function() {
+            $scope.isLoading = false;
           });
       }
 
@@ -77,20 +90,27 @@ angular.module('app').directive('projectEditor', function() {
           });
       }
 
-      function _loadProvisionTemplates(newDocTempl) {
+      function _loadDocumentTemplates(proj) {
+        return DocumentTemplate
+          .query({
+            'includes[]': proj.projectTemplate.documentTemplates,
+            'fields[]': ['name', 'provisionTemplates'] 
+          })
+          .$promise
+          .then(function(docTempls) {
+            $scope.relatedData.currrentDocumentTemplate = docTempls[0];
+            $scope.relatedData.documentTemplates = docTempls;
+          });
+      }
+
+      function _loadProvisionTemplates(docTempl) {
         return ProvisionTemplate
           .query({
-            'includes[]': newDocTempl.provisionTemplates,
-            'fields[]': ['displayName', 'style', 'template', 'termTemplates', 'templateHtml', 'tokensRoot']
-            // TODO: template, tokensRoot
+            'includes[]': docTempl.provisionTemplates,
+            'fields[]': ['displayName', 'style', 'termTemplates', 'templateHtml']
           })
           .$promise
           .then(function(provTempls) {
-            _.each(provTempls, function(pt) {
-              if (pt.tokensRoot) {
-                pt.tokensRoot = JSON.parse(pt.tokensRoot);
-              }
-            });
             $scope.relatedData.provisionTemplates = provTempls;
           });
       }
@@ -112,6 +132,19 @@ angular.module('app').directive('projectEditor', function() {
           })
           .$promise
           .then(function(termTempls) {
+            _.each(termTempls, function(termTempl) {
+              var val = _.find($scope.project.values, { variable: termTempl.variable });
+              if (val) {
+                if (termTempl.termType !== 'boolean') {
+                  termTempl.value = val.value;
+                } else {
+                  termTempl.value = val.value === 'true';
+                }
+              } else if (termTempl.termType === 'boolean') {
+                termTempl.value = termTempl.boolean.default;
+              }
+              $scope.variables[termTempl.variable] = termTempl;
+            });
             $scope.relatedData.termTemplates = termTempls;
           });
       }

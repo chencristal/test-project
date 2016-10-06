@@ -14,7 +14,17 @@ var projectSchema = new mongoose.Schema({
   projectTemplate: {
     type: mongoose.Schema.ObjectId,
     ref: 'projectTemplate'
-  }
+  },
+  values: [{
+    variable: {
+      _id: false,
+      type: String
+    },
+    value: {
+      _id: false,
+      type: String
+    }
+  }]
 });
 
 projectSchema.plugin(timestamps, { index: true });

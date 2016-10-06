@@ -1,5 +1,5 @@
 form.form-horizontal
-  .form-group(ng-repeat="termTempl in relatedData.termTemplates")
+  .form-group(ng-repeat="termTempl in relatedData.termTemplates" ng-click="showHelp(termTempl)")
     label.col-md-3.control-label {{ ::termTempl.displayName }}
     .col-md-9
       div(ng-if="termTempl.termType === 'text'")
@@ -7,8 +7,8 @@ form.form-horizontal
       div(ng-if="termTempl.termType === 'boolean'")
         .radio
           label
-            input(ng-model="termTempl.value" type="radio" value="true")
+            input(ng-model="termTempl.value" type="radio" ng-value="true")
             span {{ ::termTempl.boolean.inclusionText }}
           label
-            input(ng-model="termTempl.value" type="radio" value="false")
+            input(ng-model="termTempl.value" type="radio" ng-value="false")
             span {{ ::termTempl.boolean.exclusionText }}

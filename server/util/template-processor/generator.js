@@ -17,18 +17,26 @@ function _generateHtml(token) {
     case 'program':
       return _.map(token.tokens, _generateHtml).join('');
     case 'variable':
-      return `<input ng-model="token.value" placeholder="{{ token.text }}" name="test" />`;
+      return `<input ng-model="variables.${token.text}.value" 
+placeholder="{{ variables.${token.text}.text.placeholder }}" />`;
     case 'statement':
-      var html = '<span>';
+      var html = '';
+      var param1 = token.params[0];
+      var param2 = token.params[1];
+      var param3 = token.params[2];
       switch (token.text) {
         case 'if':
-          html += _generateHtml(token.params[0]); // TODO: && token.params[0].value"
+          html += `<span ng-class="{ invisible: !variables.${param1.text}.value }">`;
           break;
         case 'unless':
-          html += _generateHtml(token.params[0]); // TODO: && !token.params[0].value")
+          html += `<span ng-class="{ invisible: variables.${param1.text}.value }">`;
           break;
         case 'ifCond':
-          html += _.map(token.params, _generateHtml).join('');  // TODO: && ifCond(token.params)")
+          html += `<span ng-class="{ invisible: !$root.ifCond(`;
+          html += `'${param1.text}'`;
+          html += `, variables.${param2.text}.value`;
+          html += `, variables.${param3.text}.value`;
+          html += ') }">';
           break;
       }
       html += _.map(token.tokens, _generateHtml).join('');
