@@ -151,37 +151,11 @@ function _validateProvisionTemplateData(provisionTemplData) {
       { paramName: 'template', errMsg: 'is required' }
     );
   }
-  
+
   return Promise.resolve(provisionTemplData);
 }
 
 function _parseTemplate(provisionTemplData) {
-/* TODO: delete?
-  function generateTemplateHtml(tokensRoot) {
-
-  }
-
-  function generateProperitesHtml() {
-    var html = `<form class="form-horizontal">`;
-    var elementHtml = `
-<div clas"form-group" ng-repeat="termTempl in relatedData.termTemplates" ng-click="showHelp(termTempl)">
-  <label class="col-md-3 control-label"> {{ ::%variable }}
-    <div class="col-md-9">TODO</div>
-`;
-    var baseHtml = _.map()
-    return templProc
-      .generate(tokensRoot, termTempls)
-      .then(html => {
-        var variables = _.map(termTempls, 'variable');
-        var usedVariables = templProc.getUsedVariables(tokensRoot, variables);
-        var usedTermTempls = _.filter(termTempls, tt => _.includes(usedVariables, tt.variable));
-        provisionTemplData.termTemplates = usedTermTempls;
-        provisionTemplData.templateHtml = html;
-        return provisionTemplData;
-      });
-  }
-*/
-
   return Promise
     .all([
       templProc.parse(provisionTemplData.template),

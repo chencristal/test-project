@@ -5,7 +5,6 @@ var handlebars = require('handlebars');
 
 _.extend(module.exports, require('./compiler'));
 _.extend(module.exports, require('./generator'));
-_.extend(module.exports, require('./compiler'));
 _.extend(module.exports, require('./parser'));
 _.extend(module.exports, require('./validator'));
 

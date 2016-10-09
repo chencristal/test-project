@@ -84,7 +84,7 @@ Generator.prototype.generateVariableEditor = function(variable, index) {
        datepicker-append-to-body="true" />`;
 
     case 'default':
-      // TODO
+      // TODO: what to do here?
       return '';
   }
 };

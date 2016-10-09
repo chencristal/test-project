@@ -40,7 +40,7 @@ angular.module('app').directive('projectEditor', function() {
       };
 
       $scope.exportToPdf = function() {
-        // TODO
+        // TODO: implement
       };
 
       $scope.save = function() {
