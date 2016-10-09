@@ -40,7 +40,7 @@ exports.getProvisionTemplates = (req, res, next) => {
     data.filter = {};
     if (data.params.query) {
       data.filter.displayName = {
-        $regex: new RegExp('^' + data.params.query, 'i')
+        $regex: new RegExp(data.params.query, 'i')
       };
     }
     if (data.params.includes) {
@@ -156,21 +156,48 @@ function _validateProvisionTemplateData(provisionTemplData) {
 }
 
 function _parseTemplate(provisionTemplData) {
+/* TODO: delete?
+  function generateTemplateHtml(tokensRoot) {
+
+  }
+
+  function generateProperitesHtml() {
+    var html = `<form class="form-horizontal">`;
+    var elementHtml = `
+<div clas"form-group" ng-repeat="termTempl in relatedData.termTemplates" ng-click="showHelp(termTempl)">
+  <label class="col-md-3 control-label"> {{ ::%variable }}
+    <div class="col-md-9">TODO</div>
+`;
+    var baseHtml = _.map()
+    return templProc
+      .generate(tokensRoot, termTempls)
+      .then(html => {
+        var variables = _.map(termTempls, 'variable');
+        var usedVariables = templProc.getUsedVariables(tokensRoot, variables);
+        var usedTermTempls = _.filter(termTempls, tt => _.includes(usedVariables, tt.variable));
+        provisionTemplData.termTemplates = usedTermTempls;
+        provisionTemplData.templateHtml = html;
+        return provisionTemplData;
+      });
+  }
+*/
+
   return Promise
     .all([
       templProc.parse(provisionTemplData.template),
-      termTsSrvc.getActiveTermTemplates({}, 'variable')
+      termTsSrvc.getActiveTermTemplates({})
     ])
     .spread((tokensRoot, termTempls) => {
-      var variables = _.map(termTempls, 'variable');
-      return templProc
-        .validate(tokensRoot, variables)
-        .then(() => {
+      return Promise
+        .resolve()
+        .then(() => templProc.validate(tokensRoot, termTempls))
+        .then(() => templProc.generate(tokensRoot, termTempls))
+        .then(html => {
+          var variables = _.map(termTempls, 'variable');
           var usedVariables = templProc.getUsedVariables(tokensRoot, variables);
           var usedTermTempls = _.filter(termTempls, tt => _.includes(usedVariables, tt.variable));
-          provisionTemplData.tokensRoot = JSON.stringify(tokensRoot);
           provisionTemplData.termTemplates = usedTermTempls;
-          provisionTemplData.templateHtml = templProc.generateHtml(tokensRoot);
+          provisionTemplData.templateHtml = html;
           return provisionTemplData;
         });
     });

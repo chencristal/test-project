@@ -29,7 +29,7 @@ exports.getDocumentTemplateTypes = (req, res, next) => {
     var filter = {};
     if (params.query) {
       filter.name = {
-        $regex: new RegExp('^' + params.query, 'i')
+        $regex: new RegExp(params.query, 'i')
       };
     }
     if (params.includes) {

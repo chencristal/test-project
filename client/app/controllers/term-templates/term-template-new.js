@@ -11,10 +11,8 @@ angular.module('app').controller('TermTemplateNewCtrl',
       exclusionText: 'Exclude'
     },
     variant: {
-      options: []
-    },
-    date: {
-      showCurrent: false
+      options: [],
+      displayAs: 'dropdown'
     }
   };
   $scope.isNew = true;

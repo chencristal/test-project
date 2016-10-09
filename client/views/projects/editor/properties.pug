@@ -1,14 +1,33 @@
 form.form-horizontal
-  .form-group(ng-repeat="termTempl in relatedData.termTemplates" ng-click="showHelp(termTempl)")
-    label.col-md-3.control-label {{ ::termTempl.displayName }}
+  .form-group(ng-repeat="variable in variables" ng-click="showHelp(variable)")
+    label.col-md-3.control-label {{ ::variable.displayName }}
     .col-md-9
-      div(ng-if="termTempl.termType === 'text'")
-        input.form-control(ng-model="termTempl.value" type="text" placeholder="{{ termTempl.text.placeholder }}")
-      div(ng-if="termTempl.termType === 'boolean'")
+
+      div(ng-if="variable.termType === 'text'")
+        input.form-control(type="text" ng-model="variable.value" ng-blur="save()" placeholder="{{ variable.text.placeholder }}")
+
+      div(ng-if="variable.termType === 'boolean'")
         .radio
           label
-            input(ng-model="termTempl.value" type="radio" ng-value="true")
-            span {{ ::termTempl.boolean.inclusionText }}
+            input(type="radio" ng-model="variable.value" ng-value="true" ng-change="save()")
+            span {{ ::variable.boolean.inclusionText }}
           label
-            input(ng-model="termTempl.value" type="radio" ng-value="false")
-            span {{ ::termTempl.boolean.exclusionText }}
+            input(type="radio" ng-model="variable.value" ng-value="false" ng-change="save()" )
+            span {{ ::variable.boolean.exclusionText }}
+
+      div(ng-if="variable.termType === 'variant'")
+        select.form-control(ng-model="variable.value"
+                            ng-options="opt.value as opt.value for opt in variable.variant.options"
+                            ng-change="save()")
+
+      div(ng-if="variable.termType === 'date'")
+        input.form-control(type="text"
+                           ng-model="variable.value"
+                           ng-required="true"
+                           ng-click="variable.isOpened = true"
+                           ng-change="save()"
+                           uib-datepicker-popup="dd/MM/yyyy"
+                           is-open="variable.isOpened"
+                           datepicker-options="dateOptions"
+                           close-text="Close"
+                           datepicker-append-to-body="true")

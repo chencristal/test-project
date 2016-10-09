@@ -1,7 +1,7 @@
 div.editor(ng-style="{ height: editorHeight }")
   .row
     .col-sm-12
-      div(ng-show="isLoading || isSaving")
+      div(ng-show="isLoading")
         include ../../common/spinner.pug
 
   .row.toolbar(ng-hide="isLoading")
@@ -11,16 +11,14 @@ div.editor(ng-style="{ height: editorHeight }")
     .col-sm-3.col.document-templates
       select.form-control(ng-model="relatedData.currrentDocumentTemplate"
                           ng-options="docTempl as docTempl.name for docTempl in relatedData.documentTemplates"
-                          ng-required="true" ng-disabled="isSaving")
+                          ng-required="true")
     .col-sm-3.col.buttons
-      button.btn.btn-info(type="button" title="Edit" ng-click="setMode('edit')" ng-disabled="mode === 'edit' || isSaving")
+      button.btn.btn-info(type="button" title="Edit" ng-click="setMode('edit')" ng-disabled="mode === 'edit'")
         span.glyphicon.glyphicon-pencil
-      button.btn.btn-danger(title="Red Line" ng-click="setMode('redline')" ng-disabled="mode === 'redline' || isSaving")
+      button.btn.btn-danger(title="Red Line" ng-click="setMode('redline')" ng-disabled="mode === 'redline'")
         span.glyphicon.glyphicon-font
-      button.btn.btn-default(title="Print" ng-click="print()" ng-disabled="isSaving")
+      button.btn.btn-default(title="Print" ng-click="exportToPdf()")
         span.glyphicon.glyphicon-print
-      button.btn.btn-default(title="Save" ng-click="save()" ng-disabled="isSaving")
-        span.glyphicon.glyphicon-floppy-disk
     .col-sm-3.col.help
       h3.page-header-left Help
 
@@ -31,3 +29,5 @@ div.editor(ng-style="{ height: editorHeight }")
       include ./editor.pug
     .col-sm-3.col.help
       include ./help.pug
+    .saving(ng-show="isSaving")
+      include ../../common/spinner.pug

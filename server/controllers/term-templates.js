@@ -171,9 +171,9 @@ function _validateTermTemplData(termTemplData) {
       return validateBooleanTermType(termTemplData);
     case 'variant':
       return validateVariantTermType(termTemplData);
-    case 'date':
-      return validateDateTermType(termTemplData);
   }
+
+  return Promise.resolve(termTemplData);
 }
 
 function validateTextTermType(termTemplData) {
@@ -208,6 +208,7 @@ function validateBooleanTermType(termTemplData) {
 function validateVariantTermType(termTemplData) {
   var opts = _.get(termTemplData, 'variant.options');
   var defValue = _.get(termTemplData, 'variant.default');
+
   if (!_.isArray(opts) || opts.length === 0) {
     return customErrors.rejectWithUnprocessableRequestError(
       { paramName: 'variant.options', errMsg: 'must be not empty array' }
@@ -219,19 +220,14 @@ function validateVariantTermType(termTemplData) {
       { paramName: 'variant.options', errMsg: 'shouldn\'t have duplicates' }
     );
   }
-  if (!_.isNumber(defValue) || defValue < 0 || defValue >= opts.length) {
+  if (!_.includes(optValues, defValue)) {
     return customErrors.rejectWithUnprocessableRequestError(
-      { paramName: 'variant.default', errMsg: 'must be a positive number and no more than options count' }
+      { paramName: 'variant.default', errMsg: 'must be defined and matched with one of the options' }
     );
   }
-  return Promise.resolve(termTemplData);
-}
-
-function validateDateTermType(termTemplData) {
-  var showCurrent = _.get(termTemplData, 'date.showCurrent');
-  if (!_.isBoolean(showCurrent)) {
+  if (!_.get(termTemplData, 'variant.displayAs')) {
     return customErrors.rejectWithUnprocessableRequestError(
-      { paramName: 'date.showCurrent', errMsg: 'is required' }
+      { paramName: 'variant.displayAs', errMsg: 'is required' }
     );
   }
   return Promise.resolve(termTemplData);

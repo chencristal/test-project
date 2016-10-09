@@ -152,4 +152,8 @@ angular.module('app').run(function($rootScope) {
         return (!v1 || !v2);
     }
   };
+
+  $rootScope.ifVariant = function(v, opt) {
+    return v === opt;
+  };
 });

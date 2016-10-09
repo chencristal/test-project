@@ -81,10 +81,6 @@ exports.updateProject = (req, res, next) => {
         return customErrors.rejectWithUnprocessableRequestError(
           { paramName: 'values.variable', errMsg: 'must be defined' });
       }
-      if (_.isUndefined(val.value)) {
-        return customErrors.rejectWithUnprocessableRequestError(
-          { paramName: 'values.value', errMsg: 'must be defined' });
-      }
     }
     return projData;
   }

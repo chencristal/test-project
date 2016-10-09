@@ -20,6 +20,7 @@
     "express-session": "^1.14.1",
     "express-winston": "^2.0.0",
     "jsonwebtoken": "^7.1.9",
+    "jsreport": "^1.0.9",
     "lodash": "^4.14.2",
     "mongoose": "^4.5.8",
     "n-custom-errors": "^1.0.0",

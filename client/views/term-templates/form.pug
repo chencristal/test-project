@@ -71,17 +71,16 @@ form.form-horizontal(name="termTemplateForm")
     .form-group(ng-class="{ 'has-error': termTemplateForm.defaultVariant.$error.required }")
       label.col-md-3.control-label(for="defaultVariant") Default value
       .col-md-9
-        input.form-control(name="defaultVariant" type="number" default="Default value"
-                           ng-model="termTemplate.variant.default" ng-required="true" ng-disabled="isSaving")
-
-  // Date
-  div(ng-if="termTemplate.termType === 'date'")
-    .form-group(ng-class="{ 'has-error': termTemplateForm.showCurrent.$error.required }")
-      label.col-md-3.control-label(for="showCurrent") Show current date
-      .col-md-9
-        select.form-control(name="showCurrent" ng-model="termTemplate.date.showCurrent"
-                            ng-options="opt.v as opt.n for opt in [{ n: 'True', v: true }, { n: 'False', v: false }]"
+        select.form-control(name="defaultVariant" ng-model="termTemplate.variant.default"
+                            ng-options="opt.value as opt.value for opt in termTemplate.variant.options"
                             ng-required="true" ng-disabled="isSaving")
+
+    .form-group
+      label.col-md-3.control-label(for="displayAs") Display as
+      .col-md-9
+        select.form-control(name="displayAs" ng-model="termTemplate.variant.displayAs"
+                           ng-options="opt as opt for opt in ['dropdown', 'radio buttons']"
+                           ng-required="true" ng-disabled="isSaving")
 
   .form-group
      label.col-md-3.control-label(for="help") Help

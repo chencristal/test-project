@@ -6,7 +6,6 @@ var DocumentTemplateType = require('mongoose').model('documentTemplateType');
 exports.getDocumentTemplateTypes = (filter, fields) => {
   return DocumentTemplateType
     .find(filter, fields)
-    .sort('name')
     .exec();
 };
 

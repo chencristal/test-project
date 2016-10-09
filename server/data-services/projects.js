@@ -6,7 +6,6 @@ var Project      = require('mongoose').model('project');
 exports.getProjects = (filter, fields) => {
   return Project
     .find(filter, fields)
-    .sort('name')
     .exec();
 };
 

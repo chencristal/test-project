@@ -22,11 +22,6 @@ var provisionTemplateSchema = new mongoose.Schema({
       type: String,
       required: true
     },
-    // TODO: it's used?
-    tokensRoot: {
-      type: String,
-      required: true
-    },
     termTemplates: [{
       type: mongoose.Schema.Types.ObjectId,
       index: true,

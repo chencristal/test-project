@@ -5,10 +5,10 @@ var Promise      = require('bluebird');
 var customErrors = require('n-custom-errors');
 var consts       = require('../../consts').HANDLEBAR;
 
-exports.validate = (tokensRoot, params) => {
+exports.validate = (tokensRoot, variables) => {
   return new Promise((resolve, reject) => {
     try {
-      var validator = new Validator(params);
+      var validator = new Validator(variables);
       validator.validateToken(tokensRoot);
       resolve();
     } catch (err) {
@@ -17,8 +17,8 @@ exports.validate = (tokensRoot, params) => {
   });
 };
 
-function Validator(allowableParams) {
-  this.allowableParams = allowableParams;
+function Validator(allowedVariables) {
+  this.allowedVariables = allowedVariables;
 }
 
 Validator.prototype.validateToken = function(token) {
@@ -39,7 +39,7 @@ Validator.prototype.validateToken = function(token) {
 };
 
 Validator.prototype.validateParam = function(param) {
-  if (!_.includes(this.allowableParams, param)) {
+  if (!_.some(this.allowedVariables, { variable: param })) {
     throw customErrors.getUnprocessableRequestError(`Unknown token: ${param}`);
   }
 };
@@ -56,22 +56,30 @@ Validator.prototype.validateParams = function(params) {
     });
 };
 
-Validator.prototype.validateIfCondOperator = function(type, operator) {
-  if (type !== 'operator') {
-    throw customErrors.getUnprocessableRequestError(
-      `Expected an operator (and, and-not, etc), got ${type}`);
-  }
-  if (!_.includes(consts.IFCOND_OPERATORS, operator)) {
-    throw customErrors.getUnprocessableRequestError(`Unexpected ifCond operator: ${operator}`);
-  }
-};
-
 Validator.prototype.validateStatement = function(statement, params) {
   if (!_.includes(consts.STATEMENTS, statement)) {
     throw customErrors.getUnprocessableRequestError(`Uknown statement: ${statement}`);
   }
 
-  var requiredParamsCount = (statement === 'if' || statement === 'unless') ? 1 : 3;
+  var requiredParamsCount;
+  switch (statement) {
+    case 'if':
+    case 'unless':
+      requiredParamsCount = 1;
+      break;
+    case 'ifCond':
+      requiredParamsCount = 3;
+      break;
+    case 'ifVariant':
+      requiredParamsCount = 2;
+      break;
+    case 'date':
+      requiredParamsCount = 1;
+      break;
+    default:
+      requiredParamsCount = 0;
+      break;
+  }
   if (params.length !== requiredParamsCount) {
     throw customErrors.getUnprocessableRequestError(
       `Expected ${requiredParamsCount} parameters in statement, got ${params.length}`);
@@ -80,7 +88,19 @@ Validator.prototype.validateStatement = function(statement, params) {
   if (statement === 'ifCond') {
     this.validateIfCondOperator.call(this, params[0].type, params[0].text);
     params = _.tail(params);
+  } else if (statement === 'ifVariant') {
+    params = _.take(params, 1);
   }
 
   this.validateParams.call(this, params);
+};
+
+Validator.prototype.validateIfCondOperator = function(type, operator) {
+  if (type !== 'operator') {
+    throw customErrors.getUnprocessableRequestError(
+      `Expected an operator (and, and-not, etc), got ${type}`);
+  }
+  if (!_.includes(consts.IFCOND_OPERATORS, operator)) {
+    throw customErrors.getUnprocessableRequestError(`Unexpected ifCond operator: ${operator}`);
+  }
 };

@@ -6,7 +6,6 @@ var TermTemplate = require('mongoose').model('termTemplate');
 exports.getTermTemplates = (filter, fields) => {
   return TermTemplate
     .find(filter, fields)
-    .sort('displayName')
     .exec();
 };
 

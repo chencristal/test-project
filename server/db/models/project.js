@@ -16,12 +16,11 @@ var projectSchema = new mongoose.Schema({
     ref: 'projectTemplate'
   },
   values: [{
+    _id: false,
     variable: {
-      _id: false,
       type: String
     },
     value: {
-      _id: false,
       type: String
     }
   }]

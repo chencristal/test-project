@@ -50,16 +50,13 @@ var termTemplateSchema = new mongoose.Schema({
       }
     }],
     default: {
-      type: Number,
+      type: String,
+      required: true
+    },
+    displayAs: {
+      type: String,
       required: true,
-      default: 0
-    }
-  },
-  date: {
-    showCurrent: {
-      type: Boolean,
-      required: true,
-      default: false
+      default: 'dropdown'
     }
   },
   displayName: {

@@ -7,12 +7,17 @@ angular.module('app').directive('projectEditor', function() {
     templateUrl: 'views/projects/editor/index.html',
     controller: function($scope, $window, $element, $timeout, $routeParams, $location, $q, Notifier,
                          Project, DocumentTemplate, ProvisionTemplate, TermTemplate) {
+      /* jshint maxstatements: false */
 
       $scope.isLoading = true;
       $scope.isSaving = false;
       $scope.mode = 'redline';
       $scope.relatedData = {};
       $scope.variables = {};
+      $scope.dateOptions = {
+        formatYear: 'yy',
+        startingDay: 1
+      };
 
       angular.element($window).bind('resize', _setEditorHeight);
 
@@ -30,26 +35,32 @@ angular.module('app').directive('projectEditor', function() {
         $scope.mode = mode;
       };
 
-      $scope.showHelp = function(termTempl) {
-        $scope.selectedTermTempl = termTempl;
+      $scope.showHelp = function(variable) {
+        $scope.selectedVariable = variable;
+      };
+
+      $scope.exportToPdf = function() {
+        // TODO
       };
 
       $scope.save = function() {
         $scope.isSaving = true;
+
+        _.each($scope.variables, function(v) {
+          var variable = _.pick(v, ['variable', 'value']);
+          var projVal = _.find($scope.project.values, { variable: variable.variable });
+          if (projVal) {
+            projVal.value = variable.value;
+          } else {
+            $scope.project.values.push(variable);
+          }
+        });
+
         var projectForSave = new Project($scope.project);
         projectForSave.projectTemplate = projectForSave.projectTemplate._id;
-        projectForSave.values = _.map($scope.relatedData.termTemplates, function(tt) {
-          return _.pick(tt, ['variable', 'value']);
-        });
 
         projectForSave
           .$update()
-          .then(function() {
-            Notifier.info('The record is updated successfully');
-          })
-          .catch(function(err) {
-            Notifier.error(err, 'Unable to save record');
-          })
           .finally(function() {
             $scope.isSaving = false;
           });
@@ -122,7 +133,7 @@ angular.module('app').directive('projectEditor', function() {
           .uniq()
           .value();
         if (termTemplateIds.length === 0) {
-          $scope.relatedData.termTemplates = [];
+          $scope.variables = {};
           return;
         }
         return TermTemplate
@@ -132,20 +143,24 @@ angular.module('app').directive('projectEditor', function() {
           })
           .$promise
           .then(function(termTempls) {
+            $scope.variables = {};
             _.each(termTempls, function(termTempl) {
               var val = _.find($scope.project.values, { variable: termTempl.variable });
               if (val) {
-                if (termTempl.termType !== 'boolean') {
-                  termTempl.value = val.value;
+                if (termTempl.termType === 'boolean') {
+                  termTempl.value = val.value === 'true' || val.value === true;
+                } else if (termTempl.termType === 'date') {
+                  termTempl.value = new Date(val.value);
                 } else {
-                  termTempl.value = val.value === 'true';
+                  termTempl.value = val.value;
                 }
               } else if (termTempl.termType === 'boolean') {
                 termTempl.value = termTempl.boolean.default;
+              } else if (termTempl.termType === 'variant') {
+                termTempl.value = termTempl.variant.default;
               }
               $scope.variables[termTempl.variable] = termTempl;
             });
-            $scope.relatedData.termTemplates = termTempls;
           });
       }
 

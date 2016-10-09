@@ -37,7 +37,7 @@ exports.getDocumentTemplates = (req, res, next) => {
     data.filter = {};
     if (data.params.query) {
       data.filter.name = {
-        $regex: new RegExp('^' + data.params.query, 'i')
+        $regex: new RegExp(data.params.query, 'i')
       };
     }
     if (data.params.includes) {
