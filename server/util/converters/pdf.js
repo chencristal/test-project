@@ -3,17 +3,17 @@
 var pdf     = require('html-pdf');
 var Promise = require('bluebird');
 
-exports.createPdf = (html, output) => {
+exports.writePdf = (html, output) => {
   return new Promise((resolve, reject) => {
     pdf
       .create(html)
-      .toStream((err, stream) => {
+      .toStream((err, pdfStream) => {
         if (err) {
           return reject(err);
         }
-        stream.pipe(output);
-        stream.on('close', resolve);
-        stream.on('error', reject);
+        pdfStream.pipe(output);
+        pdfStream.on('end', resolve);
+        pdfStream.on('error', reject);
       });
   });
 };

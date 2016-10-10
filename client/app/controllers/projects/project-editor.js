@@ -6,7 +6,7 @@ angular.module('app').directive('projectEditor', function() {
     scope: {},
     templateUrl: 'views/projects/editor/index.html',
     controller: function($scope, $window, $element, $timeout, $routeParams, $location, $q, Notifier,
-                         Project, DocumentTemplate, ProvisionTemplate, TermTemplate, Exporter) {
+                         Project, DocumentTemplate, ProvisionTemplate, TermTemplate) {
       /* jshint maxstatements: false */
 
       $scope.isLoading = true;
@@ -40,24 +40,10 @@ angular.module('app').directive('projectEditor', function() {
       };
 
       $scope.exportToPdf = function() {
-        $scope.isSaving = true;
-        var values = _.reduce($scope.variables, function(result, variable) {
-          if (variable.termType === 'date' && variable.value) {
-            result[variable.variable] = new Date(variable.value).toDateString();
-          } else {
-            result[variable.variable] = variable.value;
-          }
-          return result;
-        }, {});
-
-        Exporter
-          .exportToPdf($scope.relatedData.currrentDocumentTemplate._id, values)
-          .catch(function(err) {
-            Notifier.error(err, 'Unable to print template');
-          })
-          .finally(function() {
-            $scope.isSaving = false;
-          });
+        var projId = $scope.project._id;
+        var docId = $scope.relatedData.currrentDocumentTemplate._id;
+        var url = '/api/v1/projects/' + projId + '/' + docId + '/pdf';
+        $window.open(url, '_blank');
       };
 
       $scope.save = function() {

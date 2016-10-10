@@ -1,10 +1,13 @@
 'use strict';
 
-var _              = require('lodash');
-var Promise        = require('bluebird');
-var customErrors   = require('n-custom-errors');
-var projectsSrvc   = require('../data-services/projects');
-var validationUtil = require('../util/validations');
+var _               = require('lodash');
+var Promise         = require('bluebird');
+var customErrors    = require('n-custom-errors');
+var projectsSrvc    = require('../data-services/projects');
+var provisionTsSrvc = require('../data-services/provision-templates');
+var validationUtil  = require('../util/validations');
+var templProc       = require('../util/template-processor');
+var pdfConverter    = require('../util/converters/pdf');
 
 exports.getProjects = (req, res, next) => {
   projectsSrvc
@@ -102,6 +105,69 @@ exports.updateProject = (req, res, next) => {
     .then(doEdits)
     .then(proj => projectsSrvc.saveProject(proj))
     .then(proj => res.send(proj))
+    .catch(next);
+};
+
+exports.getPdf = (req, res, next) => {
+  function parseParams(params) {
+    return Promise.resolve({
+      projId: params.projectId,
+      docId: params.docId
+    });
+  }
+
+  function validateParams(data) {
+    if (!validationUtil.isValidObjectId(data.projId)) {
+      return customErrors.rejectWithUnprocessableRequestError({ paramName: 'projectId', errMsg: 'must be a valid id' });
+    }
+    if (!validationUtil.isValidObjectId(data.docId)) {
+      return customErrors.rejectWithUnprocessableRequestError({ paramName: 'docId', errMsg: 'must be a valid id' });
+    }
+    return data;
+  }
+
+  function loadProjectValues(data) {
+    return projectsSrvc
+      .getProject({ _id: data.projId }, 'values')
+      .then(proj => {
+        data.values = _.reduce(proj.values, (result, variable) => {
+          /* // TODO: load termTypes
+          if (variable.termType === 'date' && variable.value) {
+            result[variable.variable] = moment(variable.value).format('dd/MM/YYYY');
+          } else */
+          if (variable.value === 'true' || variable.value === 'false') {
+            result[variable.variable] = variable.value === 'true';
+          } else {
+            result[variable.variable] = variable.value;
+          }
+          return result;
+        }, {});
+        return data;
+      });
+  }
+
+  function loadTemplate(data) {
+    return provisionTsSrvc
+      .getDocumentProvisionTemplates(data.docId, 'template')
+      .then(provTempls => {
+        var template = _.map(provTempls, provTempl => provTempl.template).join('\n');
+        data.template = template;
+        return data;
+    });
+  }
+
+  function compile(data) {
+    return templProc
+      .compile(data.template)
+      .then(compiled => compiled(data.values));
+  }
+
+  parseParams(req.params)
+    .then(validateParams)
+    .then(loadProjectValues)
+    .then(loadTemplate)
+    .then(compile)
+    .then(text => pdfConverter.writePdf(text, res))
     .catch(next);
 };
 
