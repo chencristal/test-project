@@ -1,10 +1,13 @@
 'use strict';
 
-var _              = require('lodash');
-var Promise        = require('bluebird');
-var customErrors   = require('n-custom-errors');
-var docTemplsSrvc  = require('../data-services/document-templates');
-var validationUtil = require('../util/validations');
+var _               = require('lodash');
+var Promise         = require('bluebird');
+var customErrors    = require('n-custom-errors');
+var docTemplsSrvc   = require('../data-services/document-templates');
+var provisionTsSrvc = require('../data-services/provision-templates');
+var validationUtil  = require('../util/validations');
+var templProc       = require('../util/template-processor');
+var pdfConverter    = require('../util/converters/pdf');
 
 exports.getDocumentTemplates = (req, res, next) => {
   function parseParams(query) {
@@ -127,6 +130,50 @@ exports.updateDocumentTemplate = (req, res, next) => {
     .then(doEdits)
     .then(docTempl => docTemplsSrvc.saveDocumentTemplate(docTempl))
     .then(docTempl => res.send(docTempl))
+    .catch(next);
+};
+
+exports.exportToPdf = (req, res, next) => {
+  function parseParams(body) {
+    var data = _.pick(body, ['values']);
+    data._id = req.params._id;
+    return Promise.resolve(data);
+  }
+
+  function validateParams(data) {
+    if (!validationUtil.isValidObjectId(data._id)) {
+      return customErrors.rejectWithUnprocessableRequestError({ paramName: 'id', errMsg: 'must be a valid id' });
+    }
+    return Promise.resolve(data);
+  }
+
+  function loadTemplate(data) {
+    return provisionTsSrvc
+      .getDocumentProvisionTemplates(data._id, 'template')
+      .then(provTempls => {
+        var template = _.map(provTempls, provTempl => provTempl.template).join('\n');
+        data.template = template;
+        return data;
+    });
+  }
+
+  function compile(data) {
+    return templProc
+      .compile(data.template)
+      .then(compiled => compiled(data.values));
+  }
+
+  parseParams(req.body)
+    .then(validateParams)
+    .then(loadTemplate)
+    .then(compile)
+    .then(text => {
+      pdfConverter.createPdf(text, res);
+      // TODO:
+      //res.setHeader('content-type', 'application/pdf');
+      //res.attachment('example.pdf');
+      res.send('ok');
+    })
     .catch(next);
 };
 

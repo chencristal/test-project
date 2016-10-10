@@ -23,6 +23,11 @@ module.exports = app => {
     docTempls.createDocumentTemplate
   );
   app.put(
+    `/api/${apiVer}/document-templates/:_id/export-to-pdf`,
+    auth.requireRolesWrapper('user'),
+    docTempls.exportToPdf
+  );
+  app.put(
     `/api/${apiVer}/document-templates/:_id`,
     auth.requireRolesWrapper('admin'),
     docTempls.updateDocumentTemplate

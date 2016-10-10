@@ -12,8 +12,8 @@ exports.compile = templ => {
 function _hbCompile(templ) {
   return new Promise((resolve, reject) => {
     try {
-      var coimpiled = handlebars.compile(templ);
-      resolve(coimpiled);
+      var compiled = handlebars.compile(templ);
+      resolve(compiled);
     } catch (err) {
       reject(err);
     }

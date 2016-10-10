@@ -1,12 +1,26 @@
 'use strict';
 
 var customErrors      = require('n-custom-errors');
+var docTemplsSrvc     = require('./document-templates');
 var ProvisionTemplate = require('mongoose').model('provisionTemplate');
 
 exports.getProvisionTemplates = (filter, fields) => {
   return ProvisionTemplate
     .find(filter, fields)
     .exec();
+};
+
+exports.getDocumentProvisionTemplates = (docTemplId, fields) => {
+  return docTemplsSrvc
+    .getDocumentTemplate({ _id: docTemplId }, 'provisionTemplates')
+    .then(doc => {
+      var filter = {
+        _id: {
+          $in: doc.provisionTemplates
+        }
+      };
+      return exports.getProvisionTemplates(filter, fields);
+    });
 };
 
 exports.getProvisionTemplate = (filter, fields) => {
