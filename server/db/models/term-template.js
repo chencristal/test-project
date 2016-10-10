@@ -51,7 +51,8 @@ var termTemplateSchema = new mongoose.Schema({
     }],
     default: {
       type: String,
-      required: true
+      required: true,
+      default: ''
     },
     displayAs: {
       type: String,
