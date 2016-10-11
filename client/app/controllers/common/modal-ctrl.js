@@ -1,8 +1,6 @@
 'use strict';
 
-angular.module('app').controller('ModalCtrl',
-  function($scope, $uibModalInstance, items) {
-
+angular.module('app').controller('ModalCtrl', function($scope, $uibModalInstance, items) {
   $scope.items = items;
 
   $scope.ok = function(val) {

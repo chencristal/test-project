@@ -129,6 +129,158 @@ angular.module('app', [
     .otherwise({
       redirectTo: '/not-found'
     });
+})
+.config(function($provide) {
+  $provide.decorator('taOptions', ['taRegisterTool', '$delegate','$uibModal',
+    function(taRegisterTool, taOptions, $uibModal) {
+
+    taRegisterTool('table', {
+      iconclass: 'fa fa-table',
+      tooltiptext: 'insert table',
+      action: function(deferred, restoreSelection) {
+        var self = this;
+        $uibModal
+          .open({
+            templateUrl: 'views/common/insert-table-dialog.html',
+            controller: 'InsertTableDialogCtrl',
+            resolve: {
+              result: function () {
+                return {};
+              }
+            },
+            size: 'sm'
+          })
+          .result
+          .then(function(result) {
+            if (!result || !result.rows || !result.cols) {
+              return;
+            }
+            deferred.promise
+              .then(function() {
+                restoreSelection();
+                var html = _createTable(result.cols, result.rows);
+                self.$editor().wrapSelection('insertHtml', html);
+              });
+            deferred.resolve();
+          });
+
+        return false;
+      }
+    });
+
+    taOptions.toolbar[1].push('table');
+    return taOptions;
+  }]);
+
+  function _createTable(colCount, rowCount) {
+    var tds = '';
+    var colWidth = Math.round(100 / colCount); 
+    for (var idxCol = 0; idxCol < colCount; idxCol++) {
+      tds= tds + '<td style="width: ' + colWidth + '%"></td>';
+    }
+    var trs = '';
+    for (var idxRow = 0; idxRow < rowCount; idxRow++) {
+      trs = trs + '<tr>' + tds + '</tr>';
+    }
+
+    return '<table class="table table-bordered">' + trs + '</table>';
+  }
+/*
+  $provide.decorator('taOptions', ['taCustomRenderers', 'taRegisterTool', 'taSelection', '$delegate',
+    function(taCustomRenderers, taRegisterTool, taSelection, taOptions) {
+
+    // To make textangular open links in new window. As suggested here: https://github.com/fraywing/textAngular/issues/224
+    taCustomRenderers.push({
+      selector: 'a',
+      renderLogic: function(element){
+        element.attr('target', '_blank');
+      }
+    });
+
+    taCustomRenderers.push({
+      selector: 'iframe',
+      customAttribute:'ta-insert-video',
+
+      renderLogic: function(iframeOld) {
+        var iframeNew = angular.element('<iframe></iframe>');
+        var attributes = iframeOld.prop('attributes');
+        _.each(attributes, function(attr) {
+          iframeNew.attr(attr.name, attr.value);
+        });
+        iframeNew.attr('style', '');
+        iframeNew.attr('src', iframeNew.css('ta-insert-video'));
+
+        var clazz = iframeOld.attr('class');
+        var widthWithDimension = iframeOld.css('width');
+        if (!widthWithDimension || widthWithDimension === '0px' || widthWithDimension === '0%') {
+          widthWithDimension = '100%';
+        }
+        var widthDimension = widthWithDimension.indexOf('%') !== -1 ? '%' : 'px';
+        var width = (widthWithDimension).replace(widthDimension, '');
+        var padBottom = width * 0.5625;
+        var wrapperHtml = '<div class="video-wrapper :class" style="width: :width; padding-bottom: :padBottom"></div>'
+          .replace(':class', clazz)
+          .replace(':width', width + widthDimension)
+          .replace(':padBottom', padBottom + widthDimension);
+
+        iframeOld.wrap(wrapperHtml);
+        iframeOld.replaceWith(iframeNew);
+      }
+    });
+
+    taRegisterTool('colorPicker', {
+      display: '<button><i class="fa fa-pencil"></i><div></div></button>',
+
+      action: function(deferred, restoreSelection) {
+        var self = this;
+
+        var isMozilla = /firefox/.test(navigator.userAgent.toLowerCase());
+        var $elem = self.$element.find('i');
+
+        self.spectrum = $elem.spectrum({
+          color: '#555',
+          showPalette: true,
+          palette: [
+            ['#555', '#000','#444','#666','#999','#ccc','#eee','#f3f3f3'],
+            ['#f00','#f90','#ff0','#0f0','#0ff','#00f','#90f','#f0f'],
+            ['#f4cccc','#fce5cd','#fff2cc','#d9ead3','#d0e0e3','#cfe2f3','#d9d2e9','#ead1dc'],
+            ['#ea9999','#f9cb9c','#ffe599','#b6d7a8','#a2c4c9','#9fc5e8','#b4a7d6','#d5a6bd'],
+            ['#e06666','#f6b26b','#ffd966','#93c47d','#76a5af','#6fa8dc','#8e7cc3','#c27ba0'],
+            ['#c00','#e69138','#f1c232','#6aa84f','#45818e','#3d85c6','#674ea7','#a64d79'],
+            ['#900','#b45f06','#bf9000','#38761d','#134f5c','#0b5394','#351c75','#741b47'],
+            ['#600','#783f04','#7f6000','#274e13','#0c343d','#073763','#20124d','#4c1130']
+          ],
+          appendTo: isMozilla ? null : self.$element,
+          hide: function(color) {
+            $elem.spectrum('destroy');
+
+            deferred.promise
+              .then(function() {
+                restoreSelection();
+                self.$editor().wrapSelection('foreColor', color.toHexString());
+              });
+            deferred.resolve();
+          }
+        });
+
+        setTimeout(function() {
+          self.spectrum.spectrum('show');
+        }, 0);
+
+        return false;
+      }
+    });
+
+    taOptions.toolbar = [
+      [
+        'bold', 'italics', 'underline', 'strikeThrough', 'colorPicker', 'ul', 'ol', 'indent',
+        'outdent', 'insertImage', 'insertVideo', 'insertLink',
+        'justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull', 'undo', 'redo'
+      ]
+    ];
+
+    return taOptions;
+  }]);*/
 });
 
 angular.module('app').run(function($rootScope) {
