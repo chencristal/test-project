@@ -9,7 +9,8 @@
     "build:production": "gulp clean && gulp build --production",
     "test": "gulp lint && gulp coverage",
     "lock-modules": "npm shrinkwrap --dev",
-    "db:seed": "node server/db/seed"
+    "db:seed": "node server/db/seed",
+    "db:scripts": "node server/db/scripts"
   },
   "dependencies": {
     "bluebird": "^3.4.1",

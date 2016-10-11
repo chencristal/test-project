@@ -158,6 +158,11 @@ function _validateTermTemplData(termTemplData) {
       { paramName: 'variable', errMsg: 'is required' }
     );
   }
+  if (!termTemplData.variable.match(/^[A-Za-z0-9_]+$/)) {
+    return customErrors.rejectWithUnprocessableRequestError(
+      { paramName: 'variable', errMsg: 'must contains only valid chars:<br/>A-Z, a-z, 0-9 or underscore' }
+    );
+  }
   if (!termTemplData.displayName) {
     return customErrors.rejectWithUnprocessableRequestError(
       { paramName: 'displayName', errMsg: 'is required' }
