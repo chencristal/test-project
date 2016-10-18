@@ -11,7 +11,10 @@ exports.getTermTemplates = (filter, fields) => {
 
 exports.getActiveTermTemplates = (filter, fields) => {
   filter = filter || {};
-  filter.deleted = { $exists: false };
+  filter.$or = [
+    { disabled: false },
+    { disabled: { $exists: false }}
+  ];
   return exports.getTermTemplates(filter, fields);
 };
 

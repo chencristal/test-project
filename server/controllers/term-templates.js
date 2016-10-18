@@ -53,7 +53,7 @@ exports.getTermTemplates = (req, res, next) => {
   parseParams(req.query)
     .then(validateParams)
     .then(buildFilter)
-    .then(data => termTsSrvc.getActiveTermTemplates(data.filter, data.fields.join(' ')))
+    .then(data => termTsSrvc.getTermTemplates(data.filter, data.fields.join(' ')))
     .then(termTempls => res.send(termTempls))
     .catch(next);
 };
