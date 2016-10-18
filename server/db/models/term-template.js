@@ -63,7 +63,10 @@ var termTemplateSchema = new mongoose.Schema({
     required: true
   },
   help: String,
-  deleted: Date
+  disabled: {
+    type: Boolean,
+    default: false
+  }
 });
 
 termTemplateSchema.plugin(timestamps, { index: true });

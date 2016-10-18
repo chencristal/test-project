@@ -8,7 +8,7 @@ angular.module('app').controller('TermTemplatesListCtrl',
   (function loadData() {
     TermTemplate
       .query({
-        'fields[]': ['termType', 'variable', 'displayName']
+        'fields[]': ['termType', 'variable', 'displayName', 'disabled']
       })
       .$promise
       .then(function(termTemplates) {
@@ -21,36 +21,22 @@ angular.module('app').controller('TermTemplatesListCtrl',
     $location.path('/term-templates/' + termTemplate._id + '/edit');
   };
 
-  // TODO: unused?
-  $scope.deleteTermTemplate = function(termTemplate) {
+  $scope.updateTermTemplateState = function(termTemplate, isDisabled) {
     $scope.isSaving = true;
-    $uibModal.open({
-      templateUrl: 'views/common/confirmation-dialog.html',
-      controller: 'ModalCtrl',
-      resolve: {
-        items: function() {
-          return {
-            title: 'Delete ' + termTemplate.name + '?',
-            message: termTemplate.name + ' will be permanently deleted.'
-          };
+    var fn = isDisabled ? TermTemplate.disable : TermTemplate.enable;
+    fn({ _id: termTemplate._id })
+      .$promise
+      .then(function() {
+        termTemplate.disabled = isDisabled;
+        Notifier.info('TermTemplate state updated successfully');
+      })
+      .catch(function(err) {
+        if (err !== 'cancel') {
+          Notifier.error(err, 'Unable to update termTemplate state');
         }
-      }
-    })
-    .result
-    .then(function() {
-      return termTemplate.$remove({ id: termTemplate._id });
-    })
-    .then(function() {
-      _.remove($scope.termTemplates, termTemplate);
-      Notifier.info('TermTemplate deleted successfully');
-    })
-    .catch(function(err) {
-      if (err !== 'cancel') {
-        Notifier.error(err, 'Unable to delete termTemplate');
-      }
-    })
-    .finally(function() {
-      $scope.isSaving = false;
-    });
+      })
+      .finally(function() {
+        $scope.isSaving = false;
+      });
   };
 });

@@ -42,13 +42,3 @@ exports.createTermTemplate = termTemplData => {
 exports.saveTermTemplate = termTempl => {
   return termTempl.save();
 };
-
-// TODO: check that termTempl is not used
-exports.deleteTermTemplateById = termTemplId => {
-  return exports
-    .getTermTemplate({ _id: termTemplId })
-    .then(termTempl => {
-      termTempl.deleted = new Date();
-      return termTempl.save();
-    });
-};

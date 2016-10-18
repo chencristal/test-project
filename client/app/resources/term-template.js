@@ -6,6 +6,14 @@ angular.module('app').factory('TermTemplate', function($resource) {
     {
       update: {
         method: 'PUT'
+      },
+      disable: {
+        method: 'PUT',
+        url: '/api/v1/term-templates/:id/disable'
+      },
+      enable: {
+        method: 'PUT',
+        url: '/api/v1/term-templates/:id/enable'
       }
     });
 });

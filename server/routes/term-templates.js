@@ -23,13 +23,18 @@ module.exports = app => {
     termTs.createTermTemplate
   );
   app.put(
+    `/api/${apiVer}/term-templates/:_id/disable`,
+    auth.requireRolesWrapper('admin'),
+    termTs.disableTermTemplate
+  );
+  app.put(
+    `/api/${apiVer}/term-templates/:_id/enable`,
+    auth.requireRolesWrapper('admin'),
+    termTs.enableTermTemplate
+  );
+  app.put(
     `/api/${apiVer}/term-templates/:_id`,
     auth.requireRolesWrapper('admin'),
     termTs.updateTermTemplate
-  );
-  app.delete(
-    `/api/${apiVer}/term-templates/:_id`,
-    auth.requireRolesWrapper('admin'),
-    termTs.deleteTermTemplate
   );
 };

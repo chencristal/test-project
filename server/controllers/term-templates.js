@@ -17,7 +17,10 @@ exports.getTermTemplates = (req, res, next) => {
   }
 
   function validateParams(data) {
-    var allowedFields = ['*', 'termType', 'variable', 'text', 'boolean', 'variant', 'date', 'displayName', 'help'];
+    var allowedFields = [
+      '*', 'termType', 'variable', 'text', 'boolean',
+      'variant', 'date', 'displayName', 'help', 'disabled'
+    ];
 
     if (data.includes && !_.every(data.includes, validationUtil.isValidObjectId)) {
       return customErrors.rejectWithUnprocessableRequestError({
@@ -104,10 +107,7 @@ exports.updateTermTemplate = (req, res, next) => {
   }
 
   function validateParams(termTemplData) {
-    if (!validationUtil.isValidObjectId(termTemplData._id)) {
-      return customErrors.rejectWithUnprocessableRequestError({ paramName: 'id', errMsg: 'must be a valid id' });
-    }
-    return _validateTermTemplData(termTemplData);
+    return _validateId(termTemplData._id).then(() => _validateTermTemplData(termTemplData));
   }
 
   function doEdits(data) {
@@ -131,21 +131,38 @@ exports.updateTermTemplate = (req, res, next) => {
     .catch(next);
 };
 
-exports.deleteTermTemplate = (req, res, next) => {
+exports.disableTermTemplate = (req, res, next) => {
   var termTemplId = req.params._id;
 
-  function validateParams() {
-    if (!validationUtil.isValidObjectId(termTemplId)) {
-      return customErrors.rejectWithUnprocessableRequestError({ paramName: 'id', errMsg: 'must be a valid id' });
-    }
-    return Promise.resolve();
-  }
-
-  validateParams()
-    .then(() => termTsSrvc.deleteTermTemplateById(termTemplId))
+  _validateId(termTemplId)
+    .then(() => termTsSrvc.getTermTemplate({ _id: termTemplId }))
+    .then(termTempl => {
+      termTempl.disabled = true;
+      return termTsSrvc.saveTermTemplate(termTempl);
+    })
     .then(() => res.status(203).end())
     .catch(next);
 };
+
+exports.enableTermTemplate = (req, res, next) => {
+  var termTemplId = req.params._id;
+
+  _validateId(termTemplId)
+    .then(() => termTsSrvc.getTermTemplate({ _id: termTemplId }))
+    .then(termTempl => {
+      termTempl.disabled = false;
+      return termTsSrvc.saveTermTemplate(termTempl);
+    })
+    .then(() => res.status(203).end())
+    .catch(next);
+};
+
+function _validateId(termTemplId) {
+  if (!validationUtil.isValidObjectId(termTemplId)) {
+    return customErrors.rejectWithUnprocessableRequestError({ paramName: 'id', errMsg: 'must be a valid id' });
+  }
+  return Promise.resolve(termTemplId);
+}
 
 function _validateTermTemplData(termTemplData) {
   if (!_.includes(consts.TERM_TYPES, termTemplData.termType)) {
