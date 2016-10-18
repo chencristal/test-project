@@ -11,7 +11,5 @@ form.form-horizontal(name="projectForm")
       ui-select(name="projectTemplate"
                 ng-model="project.projectTemplate" ng-required="true" ng-disabled="isSaving")
         ui-select-match(placeholder="Select Template") {{ $select.selected.name }}
-        ui-select-choices(refresh="refreshProjectTemplates($select.search)"
-                          refresh-delay="300"
-                          repeat="projTempl._id as projTempl in projectTemplates")
+        ui-select-choices(repeat="projTempl._id as projTempl in projectTemplates")
           span(ng-bind-html="projTempl.name | highlight: $select.search")

@@ -4,10 +4,10 @@ block content
   .row
     .col-md-12
       h1.page-header Create New Project
-  .row(ng-show="isSaving")
+  .row(ng-show="isLoading")
     .col-md-12
       include ../common/spinner.pug
-  div
+  div(ng-hide="isLoading")
     .row
       .col-md-12
         include ./form.pug

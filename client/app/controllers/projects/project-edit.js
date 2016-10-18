@@ -16,29 +16,19 @@ angular.module('app').controller('ProjectEditCtrl',
       .then(function(project) {
         project.projectTemplate = project.projectTemplate._id;
         $scope.project = project;
-        return ProjectTemplate.query({ 'includes[]': [project.projectTemplate] }).$promise;
+        return ProjectTemplate.query({}).$promise;
       })
-      .then(function(projTempls) {
-        $scope.projectTemplates = projTempls;
-        $scope.isLoading = false;
+      .then(function(projectTemplates) {
+        $scope.projectTemplates = projectTemplates;
       })
       .catch(function(err) {
         Notifier.error(err, 'Unable to load record');
         $location.path('/projects');
+      })
+      .finally(function() {
+        $scope.isLoading = false;
       });
   })();
-
-  $scope.refreshProjectTemplates = function(query) {
-    if (!query) {
-      return [];
-    }
-    return ProjectTemplate
-      .query({ query: query })
-      .$promise
-      .then(function(projects) {
-        $scope.projectTemplates = projects;
-      });
-  };
 
   $scope.saveProject = function() {
     $scope.isSaving = true;

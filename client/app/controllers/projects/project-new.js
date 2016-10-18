@@ -5,20 +5,21 @@ angular.module('app').controller('ProjectNewCtrl',
 
   $scope.project = new Project({});
   $scope.isNew = true;
+  $scope.isLoading = true;
   $scope.isSaving = false;
   $scope.projectTemplates = [];
 
-  $scope.refreshProjectTemplates = function(query) {
-    if (!query) {
-      return [];
-    }
-    return ProjectTemplate
-      .query({ query: query })
+  (function loadData() {
+    ProjectTemplate
+      .query({})
       .$promise
-      .then(function(projTempls) {
-        $scope.projectTemplates = projTempls;
+      .then(function(projectTemplates) {
+        $scope.projectTemplates = projectTemplates;
+      })
+      .finally(function() {
+        $scope.isLoading = false;
       });
-  };
+  })();
 
   $scope.createProject = function() {
     $scope.isSaving = true;
