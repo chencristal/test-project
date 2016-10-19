@@ -33,6 +33,7 @@
         padding-bottom: 10px
         input[type="radio"]
           margin-left: -15px
+
     .editor
       input
         margin: 2px
@@ -42,8 +43,8 @@
         color: #333
       label
         font-weight: normal
-      .invisible
-        visibility: visible
+      .unselected
+        display: inline
         color: #ccc
         text-decoration: line-through
         input
@@ -55,6 +56,42 @@
         input::-webkit-input-placeholder
           text-decoration: line-through
           color: #ccc
+      .unless-unselected
+        display: none
+      .unless-selected
+        display: inline
+        color: #000
+        font-weight: bold
+        text-decoration: underline
+        input
+          color: #000
+          font-weight: bold
+          text-decoration: underline
+        input::-moz-input-placeholder
+          font-weight: bold
+          color: #000
+          text-decoration: underline
+        input::-webkit-input-placeholder
+          font-weight: bold
+          color: #000
+          text-decoration: underline
+
       .edit-mode
-        .invisible
-          visibility: hidden
+        .unselected,
+        .unless-unselected
+          display: none
+        .unless-selected
+          font-weight: normal
+          text-decoration: none
+          input
+            color: #000
+            font-weight: normal
+            text-decoration: none
+          input::-moz-input-placeholder
+            font-weight: normal
+            color: #000
+            text-decoration: none
+          input::-webkit-input-placeholder
+            font-weight: normal
+            color: #000
+            text-decoration: none

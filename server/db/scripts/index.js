@@ -1,11 +1,12 @@
 'use strict';
 
 var _    = require('lodash');
-var log  = require('../../util/logger').logger;
 var argv = require('yargs').argv;
+var log  = require('../../util/logger').logger;
 
 var scripts = [
-  'fix-variable-names'
+  'fix-variable-names',
+  'regenerate-provision-templates'
 ];
 
 if (!argv.script) {

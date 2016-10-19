@@ -77,7 +77,7 @@ Generator.prototype.generateVariableEditor = function(variable, index) {
        ng-click="${varName}.isOpened${index} = true"
        ng-required="true"
        ng-change="onChange()"
-       uib-datepicker-popup="dd/MM/yyyy"
+       uib-datepicker-popup="MMMM dd, yyyy"
        is-open="${varName}.isOpened${index}"
        datepicker-options="dateOptions"
        close-text="Close"
@@ -98,20 +98,21 @@ Generator.prototype.generateExpressionHtml = function(token) {
 
   switch (token.text) {
     case 'if':
-      html += `<span ng-class="{ invisible: !variables.${param1.text}.value }">`;
+      html += `<span ng-class="{ unselected: !variables.${param1.text}.value }">`;
       break;
     case 'unless':
-      html += `<span ng-class="{ invisible: variables.${param1.text}.value }">`;
+      html += `<span ng-class="{ 'unless-unselected': variables.${param1.text}.value, 
+'unless-selected': !variables.${param1.text}.value }">`;
       break;
     case 'ifCond':
-      html += `<span ng-class="{ invisible: !$root.ifCond(`;
+      html += `<span ng-class="{ unselected: !$root.ifCond(`;
       html += `'${param1.text}'`;
       html += `, variables.${param2.text}.value`;
       html += `, variables.${param3.text}.value`;
       html += ') }">';
       break;
     case 'ifVariant':
-      html += `<span ng-class="{ invisible: !$root.ifVariant(`;
+      html += `<span ng-class="{ unselected: !$root.ifVariant(`;
       html += `variables.${param1.text}.value`;
       html += `, '${param2.text}'`;
       html += ') }">';
