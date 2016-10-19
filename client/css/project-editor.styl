@@ -45,35 +45,35 @@
         font-weight: normal
       .unselected
         display: inline
-        color: #ccc
+        color: red
         text-decoration: line-through
         input
-          color: #ccc
+          color: red
           text-decoration: line-through
         input::-moz-input-placeholder
           text-decoration: line-through
-          color: #ccc
+          color: red
         input::-webkit-input-placeholder
           text-decoration: line-through
-          color: #ccc
+          color: red
       .unless-unselected
         display: none
       .unless-selected
         display: inline
-        color: #000
+        color: blue
         font-weight: bold
         text-decoration: underline
         input
-          color: #000
+          color: blue
           font-weight: bold
           text-decoration: underline
         input::-moz-input-placeholder
           font-weight: bold
-          color: #000
+          color: blue
           text-decoration: underline
         input::-webkit-input-placeholder
           font-weight: bold
-          color: #000
+          color: blue
           text-decoration: underline
 
       .edit-mode
@@ -81,17 +81,18 @@
         .unless-unselected
           display: none
         .unless-selected
+          color: black
           font-weight: normal
           text-decoration: none
           input
-            color: #000
+            color: black
             font-weight: normal
             text-decoration: none
           input::-moz-input-placeholder
             font-weight: normal
-            color: #000
+            color: black
             text-decoration: none
           input::-webkit-input-placeholder
             font-weight: normal
-            color: #000
+            color: black
             text-decoration: none
