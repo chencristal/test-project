@@ -6,6 +6,7 @@ angular.module('app').directive('dynamicHtml', function($compile, $timeout) {
     scope: {
       template: '=',
       variables: '=',
+      selectedVariable: '=',
       onChange: '&'
     },
     link: function($scope, $element) {

@@ -43,44 +43,11 @@
         color: #333
       label
         font-weight: normal
-      .unselected
-        display: inline
-        color: red
-        text-decoration: line-through
-        input
-          color: red
-          text-decoration: line-through
-        input::-moz-input-placeholder
-          text-decoration: line-through
-          color: red
-        input::-webkit-input-placeholder
-          text-decoration: line-through
-          color: red
-      .unless-unselected
-        display: none
-      .unless-selected
-        display: inline
-        color: blue
-        font-weight: bold
-        text-decoration: underline
-        input
-          color: blue
-          font-weight: bold
-          text-decoration: underline
-        input::-moz-input-placeholder
-          font-weight: bold
-          color: blue
-          text-decoration: underline
-        input::-webkit-input-placeholder
-          font-weight: bold
-          color: blue
-          text-decoration: underline
 
       .edit-mode
-        .unselected,
-        .unless-unselected
+        .unselected
           display: none
-        .unless-selected
+        .selected
           color: black
           font-weight: normal
           text-decoration: none
@@ -96,3 +63,55 @@
             font-weight: normal
             color: black
             text-decoration: none
+
+      .redline-mode
+        .exp-if
+          &.unselected
+            display: inline
+            color: black
+            text-decoration: line-through
+            input
+              color: black
+              text-decoration: line-through
+            input::-moz-input-placeholder
+              text-decoration: line-through
+              color: black
+            input::-webkit-input-placeholder
+              text-decoration: line-through
+              color: black
+            &.highlighted
+              color: red
+              input
+                color: red
+              input::-moz-input-placeholder
+                color: red
+              input::-webkit-input-placeholder
+                color: red
+        .exp-unless
+          &.unselected
+            display: none
+          &.selected
+            display: inline
+            color: black
+            font-weight: bold
+            text-decoration: underline
+            input
+              color: black
+              font-weight: bold
+              text-decoration: underline
+            input::-moz-input-placeholder
+              font-weight: bold
+              color: black
+              text-decoration: underline
+            input::-webkit-input-placeholder
+              font-weight: bold
+              color: black
+              text-decoration: underline
+            &.highlighted
+              color: blue
+              input
+                color: blue
+              input::-moz-input-placeholder
+                color: blue
+              input::-webkit-input-placeholder
+                color: blue

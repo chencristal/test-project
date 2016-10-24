@@ -35,7 +35,7 @@ angular.module('app').directive('projectEditor', function() {
         $scope.mode = mode;
       };
 
-      $scope.showHelp = function(variable) {
+      $scope.highlight = function(variable) {
         $scope.selectedVariable = variable;
       };
 

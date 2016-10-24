@@ -98,12 +98,19 @@ Generator.prototype.generateExpressionHtml = function(token) {
 
   switch (token.text) {
     case 'if':
-      html += `<span ng-class="{ unselected: !variables.${param1.text}.value }">`;
+      html += `<span class="exp-if" ng-class="{
+selected: variables.${param1.text}.value, 
+unselected: !variables.${param1.text}.value, 
+highlighted: selectedVariable === variables.${param1.text} }">`;
       break;
+
     case 'unless':
-      html += `<span ng-class="{ 'unless-unselected': variables.${param1.text}.value, 
-'unless-selected': !variables.${param1.text}.value }">`;
+      html += `<span class="exp-unless" ng-class="{
+selected: !variables.${param1.text}.value,
+unselected: variables.${param1.text}.value,
+highlighted: selectedVariable === variables.${param1.text} }">`;
       break;
+
     case 'ifCond':
       html += `<span ng-class="{ unselected: !$root.ifCond(`;
       html += `'${param1.text}'`;
@@ -111,6 +118,7 @@ Generator.prototype.generateExpressionHtml = function(token) {
       html += `, variables.${param3.text}.value`;
       html += ') }">';
       break;
+
     case 'ifVariant':
       html += `<span ng-class="{ unselected: !$root.ifVariant(`;
       html += `variables.${param1.text}.value`;
@@ -118,6 +126,7 @@ Generator.prototype.generateExpressionHtml = function(token) {
       html += ') }">';
       break;
   }
+  console.log('AAA', token.text, html)
   html += _.map(token.tokens, self.generateHtml.bind(self)).join('');
   html += '</span>';
 
