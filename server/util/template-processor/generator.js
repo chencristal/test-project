@@ -126,7 +126,6 @@ highlighted: selectedVariable === variables.${param1.text} }">`;
       html += ') }">';
       break;
   }
-  console.log('AAA', token.text, html)
   html += _.map(token.tokens, self.generateHtml.bind(self)).join('');
   html += '</span>';
 
