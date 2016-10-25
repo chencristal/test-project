@@ -46,6 +46,13 @@ angular.module('app').directive('projectEditor', function() {
         $window.open(url, '_blank');
       };
 
+      $scope.exportToJson = function() {
+        var projId = $scope.project._id;
+        var docId = $scope.relatedData.currrentDocumentTemplate._id;
+        var url = '/api/v1/projects/' + projId + '/' + docId + '/json';
+        $window.open(url, '_blank');
+      };
+
       $scope.save = function() {
         $scope.isSaving = true;
 

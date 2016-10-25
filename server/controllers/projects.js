@@ -8,6 +8,7 @@ var provisionTsSrvc = require('../data-services/provision-templates');
 var validationUtil  = require('../util/validations');
 var templProc       = require('../util/template-processor');
 var pdfConverter    = require('../util/converters/pdf');
+var jsonConverter   = require('../util/converters/json');
 
 exports.getProjects = (req, res, next) => {
   projectsSrvc
@@ -116,14 +117,52 @@ exports.getPdf = (req, res, next) => {
     });
   }
 
-  function validateParams(data) {
+  parseParams(req.params)
+    .then(_getCompiledTemplate)
+    .then(text => pdfConverter.writePdf(text, res))
+    .catch(next);
+};
+
+exports.getJson = (req, res, next) => {
+  function parseParams(params) {
+    return Promise.resolve({
+      projId: params.projectId,
+      docId: params.docId
+    });
+  }
+
+  parseParams(req.params)
+    .then(_getCompiledTemplate)
+    .then(text => jsonConverter.writeJson(text))
+    .then(json => res.send(json))
+    .catch(next);
+};
+
+function _validateProjectData(projData) {
+  if (!projData.name) {
+    return customErrors.rejectWithUnprocessableRequestError({
+      paramName: 'name',
+      errMsg: 'is required'
+    });
+  }
+  if (!validationUtil.isValidObjectId(projData.projectTemplate)) {
+    return customErrors.rejectWithUnprocessableRequestError({
+      paramName: 'projectTemplate',
+      errMsg: 'must be a valid id'
+    });
+  }
+  return Promise.resolve(projData);
+}
+
+function _getCompiledTemplate(data) {
+  function validateParams() {
     if (!validationUtil.isValidObjectId(data.projId)) {
       return customErrors.rejectWithUnprocessableRequestError({ paramName: 'projectId', errMsg: 'must be a valid id' });
     }
     if (!validationUtil.isValidObjectId(data.docId)) {
       return customErrors.rejectWithUnprocessableRequestError({ paramName: 'docId', errMsg: 'must be a valid id' });
     }
-    return data;
+    return Promise.resolve(data);
   }
 
   function loadProjectValues(data) {
@@ -162,27 +201,8 @@ exports.getPdf = (req, res, next) => {
       .then(compiled => compiled(data.values));
   }
 
-  parseParams(req.params)
-    .then(validateParams)
+  return validateParams(data)
     .then(loadProjectValues)
     .then(loadTemplate)
-    .then(compile)
-    .then(text => pdfConverter.writePdf(text, res))
-    .catch(next);
-};
-
-function _validateProjectData(projData) {
-  if (!projData.name) {
-    return customErrors.rejectWithUnprocessableRequestError({
-      paramName: 'name',
-      errMsg: 'is required'
-    });
-  }
-  if (!validationUtil.isValidObjectId(projData.projectTemplate)) {
-    return customErrors.rejectWithUnprocessableRequestError({
-      paramName: 'projectTemplate',
-      errMsg: 'must be a valid id'
-    });
-  }
-  return Promise.resolve(projData);
+    .then(compile);
 }

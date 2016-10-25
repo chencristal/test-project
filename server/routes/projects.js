@@ -13,6 +13,11 @@ module.exports = app => {
     projects.getPdf
   );
   app.get(
+    `/api/${apiVer}/projects/:projectId/:docId/json`,
+    auth.requireRolesWrapper('user'),
+    projects.getJson
+  );
+  app.get(
     `/api/${apiVer}/projects/:_id`,
     auth.requireRolesWrapper('user'),
     projects.getProjectById

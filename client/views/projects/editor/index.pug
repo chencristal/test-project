@@ -17,8 +17,12 @@ div.editor(ng-style="{ height: editorHeight }")
         span.glyphicon.glyphicon-pencil
       button.btn.btn-danger(title="Red Line" ng-click="setMode('redline')" ng-disabled="mode === 'redline'")
         span.glyphicon.glyphicon-font
-      button.btn.btn-default(title="Print" ng-click="exportToPdf()")
+      button.btn.btn-default(title="Export to PDF" ng-click="exportToPdf()")
         span.glyphicon.glyphicon-print
+        span.btn-icon-text pdf
+      button.btn.btn-default(title="Export to JSON" ng-click="exportToJson()")
+        span.glyphicon.glyphicon-print
+        span.btn-icon-text json
     .col-sm-3.col.help
       h3.page-header-left Help
 

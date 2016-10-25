@@ -10,5 +10,6 @@ module.exports = {
   HANDLEBAR: {
     STATEMENTS: ['if', 'unless', 'ifCond', 'ifVariant'],
     IFCOND_OPERATORS: ['and', 'not-and', 'and-not', 'not-and-not', 'or', 'not-or', 'or-not', 'not-or-not']
-  }
+  },
+  CHARS: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 };
