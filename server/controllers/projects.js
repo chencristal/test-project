@@ -133,8 +133,11 @@ exports.getJson = (req, res, next) => {
 
   parseParams(req.params)
     .then(_getCompiledTemplate)
-    .then(text => jsonConverter.writeJson(text))
-    .then(json => res.send(json))
+    .then(text => {
+      res.setHeader('Content-disposition', 'attachment; filename=converted.json');
+      res.setHeader('Content-type', 'application/json');
+      jsonConverter.writeJson(text, res);
+    })
     .catch(next);
 };
 

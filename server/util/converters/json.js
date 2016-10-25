@@ -6,10 +6,9 @@ var moment  = require('moment');
 var Promise = require('bluebird');
 var fs      = require('fs');
 var consts  = require('../../consts');
+var jquery  = fs.readFileSync('./node_modules/jquery/dist/jquery.js', 'utf-8');
 
-var jquery = fs.readFileSync('./node_modules/jquery/dist/jquery.js', 'utf-8');
-
-exports.writeJson = html => {
+exports.writeJson = (html, output) => {
   return new Promise((resolve, reject) => {
     jsdom.env({
       html: html,
@@ -20,7 +19,11 @@ exports.writeJson = html => {
         }
         var gen = new Generator(window.$);
         var json = gen.generate();
-        resolve(json);
+
+        output.write(JSON.stringify(json));
+        output.on('end', resolve);
+        output.on('error', reject);
+        output.end();
       }
     }); 
   });
