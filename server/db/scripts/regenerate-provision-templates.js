@@ -32,6 +32,7 @@ function _updateTemplate(provTempl, termTempls) {
           var usedTermTempls = _.filter(termTempls, tt => _.includes(usedVariables, tt.variable));
           provTempl.termTemplates = usedTermTempls;
           provTempl.templateHtml = html;
+          provTempl.orderedVariables = usedVariables;
           return provTempl.save();
         });
     });

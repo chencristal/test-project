@@ -82,6 +82,6 @@ function _getTokenParams(token) {
     return token;
   }
   return []
-    .concat(_.map(token.tokens, _getTokenParams))
-    .concat(_.map(token.params, _getTokenParams));
+    .concat(_.map(token.params, _getTokenParams))
+    .concat(_.map(token.tokens, _getTokenParams));
 }

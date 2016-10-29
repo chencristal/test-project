@@ -131,11 +131,16 @@ angular.module('app').directive('projectEditor', function() {
         return ProvisionTemplate
           .query({
             'includes[]': docTempl.provisionTemplates,
-            'fields[]': ['displayName', 'style', 'termTemplates', 'templateHtml']
+            'fields[]': ['displayName', 'style', 'termTemplates', 'templateHtml', 'orderedVariables']
           })
           .$promise
           .then(function(provTempls) {
             $scope.relatedData.provisionTemplates = provTempls;
+            $scope.relatedData.orderedVariables = _(provTempls)
+              .map('orderedVariables')
+              .flatten()
+              .uniq()
+              .value();
           });
       }
 
@@ -172,6 +177,7 @@ angular.module('app').directive('projectEditor', function() {
               } else if (termTempl.termType === 'variant') {
                 termTempl.value = termTempl.variant.default;
               }
+              termTempl.sortIndex = _.indexOf($scope.relatedData.orderedVariables, termTempl.variable);
               $scope.variables[termTempl.variable] = termTempl;
             });
           });

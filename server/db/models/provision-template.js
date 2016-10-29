@@ -26,7 +26,8 @@ var provisionTemplateSchema = new mongoose.Schema({
       type: mongoose.Schema.Types.ObjectId,
       index: true,
       ref: 'termTemplate'
-    }]
+    }],
+    orderedVariables: [String]
 });
 
 provisionTemplateSchema.plugin(timestamps, { index: true });

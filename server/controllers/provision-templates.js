@@ -19,7 +19,7 @@ exports.getProvisionTemplates = (req, res, next) => {
   }
 
   function validateParams(data) {
-    var allowedFields = ['displayName', 'style', 'template', 'templateHtml', 'termTemplates'];
+    var allowedFields = ['displayName', 'style', 'template', 'templateHtml', 'termTemplates', 'orderedVariables'];
 
     if (data.params.includes && !_.every(data.params.includes, validationUtil.isValidObjectId)) {
       return customErrors.rejectWithUnprocessableRequestError({
@@ -172,6 +172,7 @@ function _parseTemplate(provisionTemplData) {
           var usedTermTempls = _.filter(termTempls, tt => _.includes(usedVariables, tt.variable));
           provisionTemplData.termTemplates = usedTermTempls;
           provisionTemplData.templateHtml = html;
+          provisionTemplData.orderedVariables = usedVariables;
           return provisionTemplData;
         });
     });
