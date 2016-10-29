@@ -24,7 +24,6 @@ Generator.prototype.generateHtml = function(token) {
   }
 
   var self = this;
-  var index = 0;
 
   switch (token.type) {
     case 'content':
@@ -33,13 +32,13 @@ Generator.prototype.generateHtml = function(token) {
       return _.map(token.tokens, self.generateHtml.bind(self)).join('');
     case 'variable':
       var variable = _.find(self.allowedVariables, { 'variable': token.text });
-      return self.generateVariableEditor.call(self, variable, ++index);
+      return self.generateVariableEditor.call(self, variable);
     case 'statement':
       return self.generateExpressionHtml(token);
   }
 };
 
-Generator.prototype.generateVariableEditor = function(variable, index) {
+Generator.prototype.generateVariableEditor = function(variable) {
   var varName = `variables.${variable.variable}`;
 
   switch (variable.termType) {
@@ -71,14 +70,15 @@ Generator.prototype.generateVariableEditor = function(variable, index) {
 </select>`;
 
     case 'date':
+      var uniqId = _getRandomString();
       return `
 <input type="text"
        ng-model="${varName}.value"
-       ng-click="${varName}.isOpened${index} = true"
+       ng-click="datePickers.isOpened_${uniqId} = true"
        ng-required="true"
        ng-change="onChange()"
        uib-datepicker-popup="MMMM dd, yyyy"
-       is-open="${varName}.isOpened${index}"
+       is-open="datePickers.isOpened_${uniqId}"
        datepicker-options="dateOptions"
        close-text="Close"
        datepicker-append-to-body="true" />`;
@@ -131,3 +131,7 @@ highlighted: selectedVariable === variables.${param1.text} }">`;
 
   return html;
 };
+
+function _getRandomString() {
+  return Math.random().toString(36).slice(2);
+}
