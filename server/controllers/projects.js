@@ -3,8 +3,10 @@
 var _               = require('lodash');
 var Promise         = require('bluebird');
 var customErrors    = require('n-custom-errors');
+var moment          = require('moment');
 var projectsSrvc    = require('../data-services/projects');
 var provisionTsSrvc = require('../data-services/provision-templates');
+var termTsSrvc      = require('../data-services/term-templates');
 var validationUtil  = require('../util/validations');
 var templProc       = require('../util/template-processor');
 var pdfConverter    = require('../util/converters/pdf');
@@ -119,7 +121,11 @@ exports.getPdf = (req, res, next) => {
 
   parseParams(req.params)
     .then(_getCompiledTemplate)
-    .then(text => pdfConverter.writePdf(text, res))
+    .then(text => {
+      res.setHeader('Content-disposition', 'attachment; filename=converted.pdf');
+      res.setHeader('Content-type', 'application/pdf');
+      return pdfConverter.writePdf(text, res);
+    })
     .catch(next);
 };
 
@@ -134,9 +140,9 @@ exports.getJson = (req, res, next) => {
   parseParams(req.params)
     .then(_getCompiledTemplate)
     .then(text => {
-      res.setHeader('Content-disposition', 'attachment; filename=converted.json');
-      res.setHeader('Content-type', 'application/json');
-      jsonConverter.writeJson(text, res);
+      res.setHeader('Content-disposition', 'attachment; filename=converted.docx');
+      res.setHeader('Content-type', 'application/docx');
+      return jsonConverter.writeJson(text, res);
     })
     .catch(next);
 };
@@ -168,19 +174,31 @@ function _getCompiledTemplate(data) {
     return Promise.resolve(data);
   }
 
+  function loadTermTemplates(data) {
+    return termTsSrvc
+      .getActiveTermTemplates({}, 'variable termType')
+      .then(termTempls => {
+        data.termTempls = termTempls;
+        return data;
+      });
+  }
+
   function loadProjectValues(data) {
     return projectsSrvc
       .getProject({ _id: data.projId }, 'values')
       .then(proj => {
         data.values = _.reduce(proj.values, (result, variable) => {
-          /* // TODO: load termTypes
-          if (variable.termType === 'date' && variable.value) {
-            result[variable.variable] = moment(variable.value).format('dd/MM/YYYY');
-          } else */
-          if (variable.value === 'true' || variable.value === 'false') {
-            result[variable.variable] = variable.value === 'true';
-          } else {
-            result[variable.variable] = variable.value;
+          var termTempl = _.find(data.termTempls, { variable: variable.variable });
+          switch (termTempl.termType) {
+            case 'boolean':
+              result[variable.variable] = variable.value === 'true';
+              break;
+            case 'date':
+              result[variable.variable] = variable.value ? moment(variable.value).format('MMMM DD, YYYY') : '';
+              break;
+            default:
+              result[variable.variable] = variable.value;
+              break;
           }
           return result;
         }, {});
@@ -205,6 +223,7 @@ function _getCompiledTemplate(data) {
   }
 
   return validateParams(data)
+    .then(loadTermTemplates)
     .then(loadProjectValues)
     .then(loadTemplate)
     .then(compile);
