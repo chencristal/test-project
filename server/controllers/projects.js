@@ -189,6 +189,10 @@ function _getCompiledTemplate(data) {
       .then(proj => {
         data.values = _.reduce(proj.values, (result, variable) => {
           var termTempl = _.find(data.termTempls, { variable: variable.variable });
+          if (!termTempl) {
+            result[variable.variable] = variable.value;
+            return result;
+          }
           switch (termTempl.termType) {
             case 'boolean':
               result[variable.variable] = variable.value === 'true';
