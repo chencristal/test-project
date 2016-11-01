@@ -10,7 +10,7 @@ var termTsSrvc      = require('../data-services/term-templates');
 var validationUtil  = require('../util/validations');
 var templProc       = require('../util/template-processor');
 var pdfConverter    = require('../util/converters/pdf');
-var jsonConverter   = require('../util/converters/json');
+var wordConverter   = require('../util/converters/word');
 
 exports.getProjects = (req, res, next) => {
   projectsSrvc
@@ -111,7 +111,7 @@ exports.updateProject = (req, res, next) => {
     .catch(next);
 };
 
-exports.getPdf = (req, res, next) => {
+exports.generatePdf = (req, res, next) => {
   function parseParams(params) {
     return Promise.resolve({
       projId: params.projectId,
@@ -124,12 +124,12 @@ exports.getPdf = (req, res, next) => {
     .then(text => {
       res.setHeader('Content-disposition', 'attachment; filename=converted.pdf');
       res.setHeader('Content-type', 'application/pdf');
-      return pdfConverter.writePdf(text, res);
+      return pdfConverter.write(text, res);
     })
     .catch(next);
 };
 
-exports.getJson = (req, res, next) => {
+exports.generateWord = (req, res, next) => {
   function parseParams(params) {
     return Promise.resolve({
       projId: params.projectId,
@@ -142,7 +142,7 @@ exports.getJson = (req, res, next) => {
     .then(text => {
       res.setHeader('Content-disposition', 'attachment; filename=converted.docx');
       res.setHeader('Content-type', 'application/docx');
-      return jsonConverter.writeJson(text, res);
+      return wordConverter.write(text, res);
     })
     .catch(next);
 };

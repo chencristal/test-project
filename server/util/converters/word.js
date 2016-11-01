@@ -1,14 +1,19 @@
 'use strict';
 
-var _       = require('lodash');
-var jsdom   = require('jsdom');
-var moment  = require('moment');
-var Promise = require('bluebird');
-var fs      = require('fs');
-var consts  = require('../../consts');
-var jquery  = fs.readFileSync('./node_modules/jquery/dist/jquery.js', 'utf-8');
+var _            = require('lodash');
+var jsdom        = require('jsdom');
+var moment       = require('moment');
+var Promise      = require('bluebird');
+var fs           = require('fs');
+var request      = require('request');
+var customErrors = require('n-custom-errors');
+var consts       = require('../../consts');
+var jquery       = fs.readFileSync('./node_modules/jquery/dist/jquery.js', 'utf-8');
+var styles       = require('./styles.json');
 
-exports.writeJson = (html, output) => {
+var WEBSRVC_URL = 'http://vps95616.vps.ovh.ca:8080/convert';
+
+exports.write = (html, output) => {
   return new Promise((resolve, reject) => {
     jsdom.env({
       html: html,
@@ -18,12 +23,35 @@ exports.writeJson = (html, output) => {
           return reject(err);
         }
         var gen = new Generator(window.$);
-        var json = gen.generate();
+        var content = gen.generate();
 
-        output.write(JSON.stringify(json));
-        output.on('end', resolve);
-        output.on('error', reject);
-        output.end();
+        request({
+          method: 'POST',
+          url: WEBSRVC_URL,
+          timeout: 1800000,
+          formData: {
+            jsonbody: JSON.stringify(content),
+            jsonformat: JSON.stringify(styles)
+          }
+        }, (err, res, body) => {
+          if (err) {
+            err = customErrors.getThirdPartyServiceError({ srvcErr: 'JsonToDoc', errMsg: err.message });
+            return reject(err);
+          }
+          if (res.statusCode >= 400) {
+            err = customErrors.getThirdPartyServiceError({
+              srvcErr: 'JsonToDoc',
+              errMsg: body || `Unexpected response status - ${res.statusCode}`
+            });
+            return reject(err);
+          }
+          var bodyJs = JSON.parse(body);
+          var bodyBuff = new Buffer(bodyJs.base64, 'base64');
+          output.write(bodyBuff);
+          output.on('end', resolve);
+          output.on('error', reject);
+          output.end();
+        });
       }
     }); 
   });

@@ -46,10 +46,10 @@ angular.module('app').directive('projectEditor', function() {
         $window.open(url, '_blank');
       };
 
-      $scope.exportToJson = function() {
+      $scope.exportToWord = function() {
         var projId = $scope.project._id;
         var docId = $scope.relatedData.currrentDocumentTemplate._id;
-        var url = '/api/v1/projects/' + projId + '/' + docId + '/json';
+        var url = '/api/v1/projects/' + projId + '/' + docId + '/word';
         $window.open(url, '_blank');
       };
 

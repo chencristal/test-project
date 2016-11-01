@@ -10,12 +10,12 @@ module.exports = app => {
   app.get(
     `/api/${apiVer}/projects/:projectId/:docId/pdf`,
     auth.requireRolesWrapper('user'),
-    projects.getPdf
+    projects.generatePdf
   );
   app.get(
-    `/api/${apiVer}/projects/:projectId/:docId/json`,
+    `/api/${apiVer}/projects/:projectId/:docId/word`,
     auth.requireRolesWrapper('user'),
-    projects.getJson
+    projects.generateWord
   );
   app.get(
     `/api/${apiVer}/projects/:_id`,

@@ -3,7 +3,7 @@
 var pdf     = require('html-pdf');
 var Promise = require('bluebird');
 
-exports.writePdf = (html, output) => {
+exports.write = (html, output) => {
   return new Promise((resolve, reject) => {
     pdf
       .create(html)
