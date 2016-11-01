@@ -176,7 +176,7 @@ function _getCompiledTemplate(data) {
 
   function loadTermTemplates(data) {
     return termTsSrvc
-      .getActiveTermTemplates({}, 'variable termType')
+      .getTermTemplates({}, 'variable termType')
       .then(termTempls => {
         data.termTempls = termTempls;
         return data;
