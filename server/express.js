@@ -23,8 +23,8 @@ module.exports = function(app) {
   }
   // TODO: uncomment for favicon:
   // app.use(favicon(path.join(config.get('rootPath'), 'client', 'images', 'favicon.ico')));
-  app.use(bodyParser.json());
-  app.use(bodyParser.urlencoded({ extended: false }));
+  app.use(bodyParser.json({ limit: '5mb' }));
+  app.use(bodyParser.urlencoded({ limit: '5mb', extended: false }));
   app.use(cookieParser());
   app.use(session({
     store: new MongoStore({ url: config.get('db') }),
