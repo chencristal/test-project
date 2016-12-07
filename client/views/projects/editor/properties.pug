@@ -1,7 +1,7 @@
 form.form-horizontal
   .form-group(ng-repeat="variable in variables | objectToArray | orderBy: 'sortIndex'" ng-click="highlight(variable)")
-    label.col-md-3.control-label {{ ::variable.displayName }}
-    .col-md-9
+    label.col-md-12.control-label.text-left {{ ::variable.displayName }}
+    .col-md-12
 
       div(ng-if="variable.termType === 'text'")
         input.form-control(type="text" ng-model="variable.value" ng-blur="save()" placeholder="{{ variable.text.placeholder }}")
