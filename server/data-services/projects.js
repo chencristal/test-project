@@ -50,3 +50,7 @@ exports.saveProject = proj => {
     .isNameUnique(proj.name, proj._id)
     .then(()=> proj.save());
 };
+
+exports.deleteProject = proj => {
+  return proj.remove();
+};

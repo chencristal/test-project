@@ -6,6 +6,9 @@ angular.module('app').factory('Project', function($resource) {
     {
       update: {
         method: 'PUT'
+      },
+      delete: {
+        method: 'DELETE'
       }
     });
 });

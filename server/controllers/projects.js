@@ -111,6 +111,23 @@ exports.updateProject = (req, res, next) => {
     .catch(next);
 };
 
+exports.deleteProject = (req, res, next) => {
+  var projId = req.params._id;
+
+  function validateParams() {
+    if (!validationUtil.isValidObjectId(projId)) {
+      return customErrors.rejectWithUnprocessableRequestError({ paramName: 'id', errMsg: 'must be a valid id' });
+    }
+    return Promise.resolve();
+  }
+
+  validateParams()
+    .then(() => projectsSrvc.getProject({ _id: projId }, '-__v'))
+    .then(proj => projectsSrvc.deleteProject(proj))
+    .then(projects => res.send(true))
+    .catch(next);
+};
+
 exports.generatePdf = (req, res, next) => {
   function parseParams(params) {
     return Promise.resolve({

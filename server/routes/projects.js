@@ -37,4 +37,9 @@ module.exports = app => {
     auth.requireRolesWrapper('user'),
     projects.updateProject
   );
+  app.delete(
+    `/api/${apiVer}/projects/:_id`,
+    auth.requireRolesWrapper('user'),
+    projects.deleteProject
+  );
 };
