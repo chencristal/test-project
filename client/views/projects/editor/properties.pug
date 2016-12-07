@@ -1,6 +1,6 @@
 form.form-horizontal
   .form-group(ng-repeat="variable in variables | objectToArray | orderBy: 'sortIndex'" ng-click="highlight(variable)")
-    label.col-md-12.control-label.text-left {{ ::variable.displayName }}
+    label.control-label {{ ::variable.displayName }}
     .col-md-12
 
       div(ng-if="variable.termType === 'text'")
