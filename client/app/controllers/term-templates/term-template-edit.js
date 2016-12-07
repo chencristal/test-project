@@ -19,7 +19,9 @@ angular.module('app').controller('TermTemplateEditCtrl',
       .$promise
       .then(function(termTemplate) {
         $scope.termTemplate = termTemplate;
-        $scope.termTemplate.date.default = new Date($scope.termTemplate.date.default);
+        if ($scope.termTemplate.date) {
+          $scope.termTemplate.date.default = new Date($scope.termTemplate.date.default);
+        }
         $scope.isLoading = false;
       })
       .catch(function(err) {
