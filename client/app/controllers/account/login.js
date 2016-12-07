@@ -12,8 +12,12 @@ angular.module('app').controller('AccountLoginCtrl',
         email: $scope.user.email,
         password: $scope.user.password
       })
-      .then(function() {
-        $location.path('/');
+      .then(function (user) {
+        if (user.role == "user") {
+          $location.path('/projects');
+        } else {
+          $location.path('/');
+        }
       })
       .catch(function(err) {
         Notifier.warning(err);
