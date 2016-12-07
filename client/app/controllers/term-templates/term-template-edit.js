@@ -5,6 +5,11 @@ angular.module('app').controller('TermTemplateEditCtrl',
 
   $scope.isLoading = true;
   $scope.isSaving = false;
+  $scope.isOpened = false;
+  $scope.dateOptions = {
+    formatYear: 'yy',
+    startingDay: 1
+  };
 
   (function loadData() {
     TermTemplate
@@ -14,6 +19,7 @@ angular.module('app').controller('TermTemplateEditCtrl',
       .$promise
       .then(function(termTemplate) {
         $scope.termTemplate = termTemplate;
+        $scope.termTemplate.date.default = new Date($scope.termTemplate.date.default);
         $scope.isLoading = false;
       })
       .catch(function(err) {

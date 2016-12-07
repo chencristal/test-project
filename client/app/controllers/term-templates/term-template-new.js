@@ -13,10 +13,18 @@ angular.module('app').controller('TermTemplateNewCtrl',
     variant: {
       options: [],
       displayAs: 'dropdown'
+    },
+    date: {
+      default: new Date()
     }
   };
+  $scope.isOpened = false;
   $scope.isNew = true;
   $scope.isSaving = false;
+  $scope.dateOptions = {
+    formatYear: 'yy',
+    startingDay: 1
+  };
 
   $scope.addOption = function() {
     $scope.termTemplate.variant.options.push({

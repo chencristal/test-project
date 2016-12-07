@@ -193,6 +193,8 @@ function _validateTermTemplData(termTemplData) {
       return validateBooleanTermType(termTemplData);
     case 'variant':
       return validateVariantTermType(termTemplData);
+    case 'date':
+      return validateDateTermType(termTemplData);
   }
 
   return Promise.resolve(termTemplData);
@@ -202,6 +204,15 @@ function validateTextTermType(termTemplData) {
   if (!_.get(termTemplData, 'text.placeholder')) {
     return customErrors.rejectWithUnprocessableRequestError(
       { paramName: 'text.placeholder', errMsg: 'is required' }
+    );
+  }
+  return Promise.resolve(termTemplData);
+}
+
+function validateDateTermType(termTemplData) {
+  if (!_.get(termTemplData, 'date.default')) {
+    return customErrors.rejectWithUnprocessableRequestError(
+      { paramName: 'date.default', errMsg: 'is required' }
     );
   }
   return Promise.resolve(termTemplData);

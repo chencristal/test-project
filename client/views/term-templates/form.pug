@@ -29,6 +29,24 @@ form.form-horizontal(name="termTemplateForm")
         input.form-control(name="placeholder" type="text" placeholder="Placeholder"
                            ng-model="termTemplate.text.placeholder" ng-required="true" ng-disabled="isSaving")
 
+  // Date
+  div(ng-if="termTemplate.termType === 'date'")
+    .form-group(ng-class="{ 'has-error': termTemplateForm.defaultDate.$error.required }")
+      label.col-md-3.control-label(for="defaultDate") Default value
+      .col-md-9
+        input.form-control(
+            name="defaultDate"
+            type="text"
+            ng-model="termTemplate.date.default"
+            ng-required="true"
+            ng-disabled="isSaving"
+            ng-click="isOpened = true"
+            uib-datepicker-popup="MMMM dd, yyyy"
+            is-open="isOpened"
+            datepicker-options="dateOptions"
+            close-text="Close"
+            datepicker-append-to-body="true"
+        )
   // Boolean
   div(ng-if="termTemplate.termType === 'boolean'")
     .form-group(ng-class="{ 'has-error': termTemplateForm.inclusionText.$error.required }")

@@ -20,6 +20,9 @@ var termTemplateSchema = new mongoose.Schema({
   text: {
     placeholder: String
   },
+  date: {
+    default: Date
+  },
   boolean: {
     inclusionText: {
       type: String,
