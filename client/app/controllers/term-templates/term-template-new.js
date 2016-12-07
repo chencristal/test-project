@@ -6,7 +6,7 @@ angular.module('app').controller('TermTemplateNewCtrl',
   $scope.termTemplate = {
     text: {},
     boolean: {
-      default: false,
+      default: true,
       inclusionText: 'Include',
       exclusionText: 'Exclude'
     },
