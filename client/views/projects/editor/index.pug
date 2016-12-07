@@ -15,7 +15,7 @@ div.editor(ng-style="{ height: editorHeight }")
       button.btn(
         type="button"
         ng-class="{true: 'btn-info', false: 'btn-danger'}[mode === 'edit']"
-        ng-attr-title="{{{true: 'Edit', false: 'Red Line'}[mode === 'edit']}}"
+        ng-attr-title="{{{true: 'Click for Redline Mode', false: 'Click for Clean Mode'}[mode === 'edit']}}"
         ng-click="setMode(mode === 'edit' ? 'redline' : 'edit')"
       )
         span.glyphicon(ng-class="{true: 'glyphicon-pencil', false: 'glyphicon-font'}[mode === 'edit']")
