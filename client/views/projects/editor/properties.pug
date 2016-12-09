@@ -1,5 +1,7 @@
 form.form-horizontal
-  .form-group(ng-repeat="variable in variables | objectToArray | orderBy: 'sortIndex'" ng-click="highlight(variable)")
+  .form-group(ng-repeat="variable in variables | objectToArray | orderBy: 'sortIndex'"
+    ng-click="highlight(variable)"
+    ng-class="selectedVariable == variable ? 'highlighted' : null")
     label.col-md-5.control-label {{ ::variable.displayName }}
     .col-md-7
 
