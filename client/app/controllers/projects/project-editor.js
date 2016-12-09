@@ -177,7 +177,7 @@ angular.module('app').directive('projectEditor', function() {
               } else if (termTempl.termType === 'variant') {
                 termTempl.value = termTempl.variant.default;
               } else if (termTempl.termType === 'date') {
-                termTempl.value = termTempl.date ? termTempl.date.default : new Date();
+                termTempl.value = termTempl.date ? new Date(termTempl.date.default) : new Date();
               }
               termTempl.sortIndex = _.indexOf($scope.relatedData.orderedVariables, termTempl.variable);
               $scope.variables[termTempl.variable] = termTempl;
