@@ -2,7 +2,6 @@
 
 angular.module('app').controller('ProjectsListCtrl',
   function($scope, $location, Notifier, Project) {
-
   $scope.isLoading = true;
   $scope.loadData = function() {
     Project

@@ -20,6 +20,10 @@ angular.module('app', [
     .when('/', {
       templateUrl: 'views/home.html',
     })
+    .when('/terms', {
+      templateUrl: 'views/terms.html',
+      controller: 'TermOfServiceCtrl'
+    })
 
     .when('/login', {
       templateUrl: 'views/account/login.html',
