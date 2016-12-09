@@ -12,13 +12,13 @@ div.editor(ng-style="{ height: editorHeight }")
                           ng-options="docTempl as docTempl.name for docTempl in relatedData.documentTemplates"
                           ng-required="true")
     .col-sm-3.col.buttons
-      button.btn(
+      button.btn.btn-default(
         type="button"
-        ng-class="{true: 'btn-info', false: 'btn-danger'}[mode === 'edit']"
+        ng-class="{true: 'btn-edit', false: 'btn-redline'}[mode === 'edit']"
         ng-attr-title="{{{true: 'Click for Redline Mode', false: 'Click for Clean Mode'}[mode === 'edit']}}"
         ng-click="setMode(mode === 'edit' ? 'redline' : 'edit')"
       )
-        span.glyphicon(ng-class="{true: 'glyphicon-pencil', false: 'glyphicon-font'}[mode === 'edit']")
+        span.glyphicon.glyphicon-font
       button.btn.btn-default(title="Export to PDF" ng-click="exportToPdf()")
         img(src="/images/pdf-icon.png")
       button.btn.btn-default(title="Export to Word" ng-click="exportToWord()")
