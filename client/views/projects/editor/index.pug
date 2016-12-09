@@ -5,9 +5,9 @@ div.editor(ng-style="{ height: editorHeight }")
         include ../../common/spinner.pug
 
   .row.toolbar(ng-hide="isLoading")
-    .col-sm-3.col.project-name
+    .col-sm-4.col.project-name
       h3 {{ ::project.name }}
-    .col-sm-3.col.document-templates
+    .col-sm-2.col.document-templates
       select.form-control(ng-model="relatedData.currrentDocumentTemplate"
                           ng-options="docTempl as docTempl.name for docTempl in relatedData.documentTemplates"
                           ng-required="true")
@@ -27,9 +27,9 @@ div.editor(ng-style="{ height: editorHeight }")
       h3.page-header-left Help
 
   .row.content(ng-hide="isLoading" ng-style="{ height: editorHeight - 45 }")
-    .col-sm-3.col.properties
+    .col-sm-4.col.properties
       include ./properties.pug
-    .col-sm-6.col.editor
+    .col-sm-5.col.editor
       include ./editor.pug
     .col-sm-3.col.help
       include ./help.pug

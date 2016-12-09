@@ -1,7 +1,7 @@
 form.form-horizontal
   .form-group(ng-repeat="variable in variables | objectToArray | orderBy: 'sortIndex'" ng-click="highlight(variable)")
-    label.control-label {{ ::variable.displayName }}
-    .col-md-12
+    label.col-md-5.control-label {{ ::variable.displayName }}
+    .col-md-7
 
       div(ng-if="variable.termType === 'text'")
         input.form-control(type="text" ng-model="variable.value" ng-blur="save()" placeholder="{{ variable.text.placeholder }}")
@@ -19,7 +19,6 @@ form.form-horizontal
         select.form-control(ng-model="variable.value"
                             ng-options="opt.value as opt.value for opt in variable.variant.options"
                             ng-change="save()")
-
       div(ng-if="variable.termType === 'date'")
         input.form-control(type="text"
                            ng-model="variable.value"
