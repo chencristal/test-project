@@ -215,7 +215,7 @@ function _getCompiledTemplate(data) {
               result[variable.variable] = variable.value === 'true';
               break;
             case 'date':
-              result[variable.variable] = variable.value ? moment(variable.value).format('MMMM DD, YYYY') : '';
+              result[variable.variable] = variable.value ? moment(variable.value).format('MMMM D, YYYY') : '';
               break;
             default:
               result[variable.variable] = variable.value;

@@ -77,7 +77,7 @@ Generator.prototype.generateVariableEditor = function(variable) {
        ng-click="datePickers.isOpened_${uniqId} = true"
        ng-required="true"
        ng-change="onChange()"
-       uib-datepicker-popup="MMMM dd, yyyy"
+       uib-datepicker-popup="MMMM d, yyyy"
        is-open="datePickers.isOpened_${uniqId}"
        datepicker-options="dateOptions"
        close-text="Close"
