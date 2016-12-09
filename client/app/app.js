@@ -6,7 +6,8 @@ angular.module('app', [
   'ngCookies',
   'ui.bootstrap',
   'ui.select',
-  'textAngular'
+  'textAngular',
+  'mwl.confirm'
 ])
 .config(function($routeProvider, $locationProvider, $httpProvider) {
   $locationProvider.html5Mode(true);
