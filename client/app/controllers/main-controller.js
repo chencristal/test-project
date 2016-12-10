@@ -7,7 +7,7 @@ angular.module('app').controller('MainCtrl', function ($scope, $location, Identi
     $location.path('/login');
   }
 
-  if (!$cookieStore.get('terms')) {
+  if (Identity.isLoggedIn() && !$cookieStore.get('terms')) {
     $location.path('/terms');
   }
   if (Identity.isUser() && $location.path() === '/') {
