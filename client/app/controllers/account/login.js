@@ -13,11 +13,7 @@ angular.module('app').controller('AccountLoginCtrl',
         password: $scope.user.password
       })
       .then(function (user) {
-        // if (user.role == "user") {
-          // $location.path('/terms');
-        // } else {
           $location.path('/');
-        // }
       })
       .catch(function(err) {
         Notifier.warning(err);
