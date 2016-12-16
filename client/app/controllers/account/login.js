@@ -12,7 +12,7 @@ angular.module('app').controller('AccountLoginCtrl',
         email: $scope.user.email,
         password: $scope.user.password
       })
-      .then(function (user) {
+      .then(function () {
           $location.path('/');
       })
       .catch(function(err) {

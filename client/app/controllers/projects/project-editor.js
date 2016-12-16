@@ -18,6 +18,9 @@ angular.module('app').directive('projectEditor', function() {
         formatYear: 'yy',
         startingDay: 1
       };
+      
+      $scope.history = []; // history for undo-redo
+      $scope.currentPos = 0; // index of current position in history array
 
       angular.element($window).bind('resize', _setEditorHeight);
 
@@ -53,10 +56,11 @@ angular.module('app').directive('projectEditor', function() {
         $window.open(url, '_blank');
       };
 
-      $scope.save = function() {
-        $scope.isSaving = true;
-
-        _.each($scope.variables, function(v) {
+      $scope.save = function(historyTransition) {
+	    historyTransition = typeof historyTransition !== 'undefined' ?  historyTransition : false;
+	    $scope.isSaving = true;
+	    
+	    _.each($scope.variables, function(v) {
           var variable = _.pick(v, ['variable', 'value']);
           var projVal = _.find($scope.project.values, { variable: variable.variable });
           if (projVal) {
@@ -77,7 +81,44 @@ angular.module('app').directive('projectEditor', function() {
           .finally(function() {
             $scope.isSaving = false;
           });
+        
+	    // copy to another variable cause of angular scope specification.
+	    $scope.vars = angular.copy($scope.variables);
+  
+        /*
+           if save() method called after history transition (undo()/redo() methods)
+           and has entering parameter  as bool value "true" - skip
+           pushing new value to array, just change current position index.
+        */
+	    if (!historyTransition) {
+	      // if current history element not last element in history array
+	      if ($scope.currentPos+1 !== $scope.history.length) {
+		      // after current index delete array's all next elements (elements of redo after save new value).
+		      $scope.history.splice($scope.currentPos+1, $scope.history.length);
+	      }
+		  $scope.history.push($scope.vars);
+		  $scope.currentPos = $scope.history.length - 1;
+        }
+        
       };
+      
+      $scope.undo = function () {
+	    $scope.currentPos -= 1;
+	    
+	    $scope.vars = angular.copy($scope.history[$scope.currentPos]);
+        $scope.variables = $scope.vars;
+          
+        $scope.save(true);
+      }
+	
+	  $scope.redo = function () {
+		$scope.currentPos += 1;
+		
+		$scope.vars = angular.copy($scope.history[$scope.currentPos]);
+		$scope.variables = $scope.vars;
+		
+		$scope.save(true);
+	  }
 
       function _loadData() {
         Project
@@ -109,6 +150,11 @@ angular.module('app').directive('projectEditor', function() {
           .catch(function(err) {
             Notifier.error(err, 'Unable to load records');
           })
+          .then(function () {
+	          // append loaded data to history array
+	          $scope.vars = angular.copy($scope.variables);
+	          $scope.history.push($scope.vars);
+          })
           .finally(function() {
             $scope.isLoading = false;
           });
@@ -118,7 +164,7 @@ angular.module('app').directive('projectEditor', function() {
         return DocumentTemplate
           .query({
             'includes[]': proj.projectTemplate.documentTemplates,
-            'fields[]': ['name', 'provisionTemplates'] 
+            'fields[]': ['name', 'provisionTemplates']
           })
           .$promise
           .then(function(docTempls) {

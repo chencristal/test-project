@@ -179,7 +179,7 @@ angular.module('app', [
 
   function _createTable(colCount, rowCount) {
     var tds = '';
-    var colWidth = Math.round(100 / colCount); 
+    var colWidth = Math.round(100 / colCount);
     for (var idxCol = 0; idxCol < colCount; idxCol++) {
       tds= tds + '<td style="width: ' + colWidth + '%"></td>';
     }
