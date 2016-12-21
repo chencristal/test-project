@@ -1,13 +1,10 @@
-.row(ng-show="!isSaving")
-  .col-md-12
-    p.text-center.undo-redo
-      button.btn.btn-primary.btn-undo(title="Previous change"
-                                      ng-class="{'disabled': !history.length || currentPos === 0}"
-                                      ng-disabled="!history.length || currentPos === 0"
-                                      ng-click="undo()")
-        i.glyphicon.glyphicon-share-alt.icon-flip-horizontal
-      button.btn.btn-primary.btn-redo(title="Next change"
-                                      ng-class="{'disabled': !history.length || currentPos === history.length - 1}"
-                                      ng-disabled="!history.length || currentPos === history.length - 1"
-                                      ng-click="redo()")
-        i.glyphicon.glyphicon-share-alt
+button.btn.btn-primary.btn-undo(title="Undo"
+ng-class="{'disabled': !history.length || currentPos === 0}"
+ng-disabled="!history.length || currentPos === 0"
+ng-click="undo()")
+    i.glyphicon.glyphicon-chevron-left.icon-flip-horizontal
+button.btn.btn-primary.btn-redo(title="Redo"
+ng-class="{'disabled': !history.length || currentPos === history.length - 1}"
+ng-disabled="!history.length || currentPos === history.length - 1"
+ng-click="redo()")
+    i.glyphicon.glyphicon-chevron-right

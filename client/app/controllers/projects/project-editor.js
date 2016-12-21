@@ -21,6 +21,9 @@ angular.module('app').directive('projectEditor', function() {
       
       $scope.history = []; // history for undo-redo
       $scope.currentPos = 0; // index of current position in history array
+        
+      $scope.changes = []; // array of prev/next changes
+      $scope.currentChange = -1; // index of current position in changes array
 
       angular.element($window).bind('resize', _setEditorHeight);
 
@@ -32,6 +35,10 @@ angular.module('app').directive('projectEditor', function() {
         if (newDocTempl) {
           _loadRelatedData(newDocTempl);
         }
+	
+	    $scope.changes = document.getElementsByClassName('selected highlighted');
+	      // var topPos = document.getElementById('inner-element').offsetTop;
+	      // document.getElementById('container').scrollTop = topPos-10;
       });
 
       $scope.setMode = function(mode) {
@@ -40,7 +47,12 @@ angular.module('app').directive('projectEditor', function() {
 
       $scope.highlight = function(variable) {
         $scope.selectedVariable = variable;
+	    $scope.changes = document.getElementsByClassName('selected highlighted');
       };
+      
+      $scope.onClick = function() {
+      	console.log('qweqwe');
+      }
 
       $scope.exportToPdf = function() {
         var projId = $scope.project._id;
@@ -101,6 +113,36 @@ angular.module('app').directive('projectEditor', function() {
         }
         
       };
+	
+	  $scope.prevChange = function () {
+		$scope.currentChange -= 1;
+		
+		var next = $scope.changes[$scope.currentChange+1];
+		next.style.backgroundColor = null;
+		
+		var container = document.getElementById('editor');
+		var element = $scope.changes[$scope.currentChange];
+		
+		element.style.backgroundColor = '#FFEB3B';
+		
+		container.scrollTop = element.offsetTop;
+	  }
+	
+	  $scope.nextChange = function () {
+	    $scope.currentChange += 1;
+		  
+		if ($scope.changes[$scope.currentChange-1] !== undefined) {
+		    var prev = $scope.changes[$scope.currentChange-1];
+            prev.style.backgroundColor = null;
+	    }
+	    
+		var container = document.getElementById('editor');
+		var element = $scope.changes[$scope.currentChange];
+		
+		element.style.backgroundColor = '#FFEB3B';
+		
+		container.scrollTop = element.offsetTop;
+	  }
       
       $scope.undo = function () {
 	    $scope.currentPos -= 1;
@@ -137,6 +179,7 @@ angular.module('app').directive('projectEditor', function() {
           .finally(function() {
             $scope.isLoading = false;
           });
+        
       }
 
       function _loadRelatedData(newDocTempl) {
@@ -188,6 +231,7 @@ angular.module('app').directive('projectEditor', function() {
               .uniq()
               .value();
           });
+	      
       }
 
       function _loadTermTemplates() {

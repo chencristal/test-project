@@ -7,7 +7,8 @@ angular.module('app').directive('dynamicHtml', function($compile, $timeout) {
       template: '=',
       variables: '=',
       selectedVariable: '=',
-      onChange: '&'
+      onChange: '&',
+      onClick: '&'
     },
     link: function($scope, $element) {
       $scope.datePickers = {};

@@ -47,6 +47,7 @@ Generator.prototype.generateVariableEditor = function(variable) {
 <input type="text"
        ng-model="${varName}.value"
        ng-blur="onChange()"
+       ng-click="onClick()"
        placeholder="{{ ${varName}.text.placeholder }}" />`;
 
     case 'boolean':

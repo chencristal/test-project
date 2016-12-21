@@ -12,6 +12,7 @@ div.editor(ng-style="{ height: editorHeight }")
                           ng-options="docTempl as docTempl.name for docTempl in relatedData.documentTemplates"
                           ng-required="true")
     .col-sm-3.col.buttons
+      include ./undo-redo.pug
       button.btn.btn-default(
         type="button"
         ng-class="{true: 'btn-edit', false: 'btn-redline'}[mode === 'edit']"
@@ -29,11 +30,11 @@ div.editor(ng-style="{ height: editorHeight }")
   .row.content(ng-hide="isLoading" ng-style="{ height: editorHeight - 45 }")
     .col-sm-3.col.properties
       include ./properties.pug
-    .col-sm-6.col.editor
+    .col-sm-6.col.editor#editor
       include ./editor.pug
     .col-sm-3.col.help
       include ./help.pug
     .saving(ng-show="isSaving")
       include ../../common/spinner.pug
 
-  include ./undo-redo.pug
+  include ./prev-next-change
