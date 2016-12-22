@@ -15,6 +15,14 @@ div.editor(ng-style="{ height: editorHeight }")
       include ./undo-redo.pug
       button.btn.btn-default(
         type="button"
+        style="padding: 8px 12px"
+        ng-style="{'color': linkedScreensColor}"
+        ng-attr-title="{{{true: 'Click for disable linked screens mode', false: 'Click for linked screens mode'}[linkedScreens === true]}}"
+        ng-click="setMode(linkedScreens = !linkedScreens)"
+      )
+        span.glyphicon.glyphicon-th-large
+      button.btn.btn-default(
+        type="button"
         ng-class="{true: 'btn-edit', false: 'btn-redline'}[mode === 'edit']"
         ng-attr-title="{{{true: 'Click for Redline Mode', false: 'Click for Clean Mode'}[mode === 'edit']}}"
         ng-click="setMode(mode === 'edit' ? 'redline' : 'edit')"
