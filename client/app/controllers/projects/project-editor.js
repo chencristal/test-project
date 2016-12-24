@@ -13,7 +13,6 @@ angular.module('app').directive('projectEditor', function() {
       $scope.isSaving = false;
       $scope.mode = 'redline';
       $scope.linkedScreens = true;
-      $scope.linkedScreensColor = '#4CAF50';
       $scope.relatedData = {};
       $scope.variables = {};
       $scope.dateOptions = {
@@ -39,14 +38,6 @@ angular.module('app').directive('projectEditor', function() {
         }
 	
 	    $scope.changes = document.getElementsByClassName('selected highlighted');
-      });
-      
-      $scope.$watch('linkedScreens', function () {
-	      if ($scope.linkedScreens) {
-	      	$scope.linkedScreensColor = '#4CAF50';
-	      } else {
-	      	$scope.linkedScreensColor = '#F44336';
-	      }
       });
 
       $scope.setMode = function(mode) {

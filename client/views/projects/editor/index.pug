@@ -13,12 +13,11 @@ div.editor(ng-style="{ height: editorHeight }")
                           ng-required="true")
     .col-sm-3.col.buttons
       include ./undo-redo.pug
-      button.btn.btn-default(
+      button.btn.btn-default.btn-linked-screen(
         type="button"
-        style="padding: 8px 12px"
-        ng-style="{'color': linkedScreensColor}"
+        ng-class="{true: 'btn-linked-screen-on', false: 'btn-linked-screen-off'}[linkedScreens]"
         ng-attr-title="{{{true: 'Click for disable linked screens mode', false: 'Click for linked screens mode'}[linkedScreens === true]}}"
-        ng-click="setMode(linkedScreens = !linkedScreens)"
+        ng-click="linkedScreens = !linkedScreens"
       )
         span.glyphicon.glyphicon-th-large
       button.btn.btn-default(
