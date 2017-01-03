@@ -13,7 +13,7 @@ angular.module('app').directive('dynamicHtml', function($compile, $timeout) {
       $scope.datePickers = {};
       
       $scope.onClick = function (variable) {
-	    $scope.$parent.$parent.highlight(variable); // accessing to projectEditor method
+	      $scope.$parent.$parent.highlight(variable, true); // accessing to projectEditor method. Second argument tells for highlighting from editor, but not from properties left-side block.
       }
         
       $timeout(function() {

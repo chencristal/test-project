@@ -45,25 +45,24 @@ angular.module('app').directive('projectEditor', function() {
         $scope.mode = mode;
       };
 
-      $scope.highlight = function(variable) {
+      $scope.highlight = function(variable, fromEditor) {
+      	fromEditor = typeof fromEditor !== 'undefined' ? fromEditor : false;
         $scope.selectedVariable = variable;
 	    $scope.changes = document.getElementsByClassName('selected');
 	
 	    if ($scope.linkedScreens) {
 		    setTimeout(function () {
-			    var containerProps = document.getElementById('properties');
 			    var containerEdit = document.getElementById('editor');
 			    var elementProp = document.getElementsByClassName('highlighted')[0];
 			    var elementEditor = document.getElementsByClassName('selected highlighted');
-			    
-			    containerProps.scrollTop = elementProp.offsetTop;
+			
 			    if (!elementEditor.length) {
 				    elementEditor = document.getElementsByClassName('highlighted-for-scroll');
 			    }
 			    
-			    if (elementEditor.length) {
-				    containerEdit.scrollTop = elementEditor[0].offsetTop;
-			    }
+			    if (!fromEditor)
+				    smooth_scroll_to(containerEdit, elementEditor[0].offsetTop-elementProp.offsetTop, 600);
+			    
 		    }, 50);
 	    }
 	    // reset styling
@@ -152,7 +151,8 @@ angular.module('app').directive('projectEditor', function() {
 		
 		element.style.backgroundColor = '#FFEB3B';
 		
-		container.scrollTop = element.offsetTop;
+		smooth_scroll_to(container, element.offsetTop-80, 600); // -80 makes some top padding
+		
 	  }
 	
 	  $scope.nextChange = function () {
@@ -175,7 +175,8 @@ angular.module('app').directive('projectEditor', function() {
 		
 		element.style.backgroundColor = '#FFEB3B';
 		
-		container.scrollTop = element.offsetTop;
+		smooth_scroll_to(container, element.offsetTop-80, 600); // -80 makes some top padding
+		  
 	  }
       
       $scope.undo = function () {
@@ -265,7 +266,6 @@ angular.module('app').directive('projectEditor', function() {
               .uniq()
               .value();
           });
-	      
       }
 
       function _loadTermTemplates() {
@@ -315,6 +315,74 @@ angular.module('app').directive('projectEditor', function() {
           $scope.$apply();
         });
       }
+	
+	  var smooth_scroll_to = function(element, target, duration) {
+	    target = Math.round(target);
+	    duration = Math.round(duration);
+	    if (duration < 0) {
+		    return Promise.reject("bad duration");
+	    }
+	    if (duration === 0) {
+		    element.scrollTop = target;
+		    return Promise.resolve();
+	    }
+	
+	    var start_time = Date.now();
+	    var end_time = start_time + duration;
+	
+	    var start_top = element.scrollTop;
+	    var distance = target - start_top;
+	
+	    // based on http://en.wikipedia.org/wiki/Smoothstep
+	    var smooth_step = function(start, end, point) {
+		    if(point <= start) { return 0; }
+		    if(point >= end) { return 1; }
+		    var x = (point - start) / (end - start); // interpolation
+		    return x*x*(3 - 2*x);
+		}
+		
+		return new Promise(function(resolve, reject) {
+		    // This is to keep track of where the element's scrollTop is
+		    // supposed to be, based on what we're doing
+		    var previous_top = element.scrollTop;
+			
+		    // This is like a think function from a game loop
+		    var scroll_frame = function() {
+			    if(element.scrollTop != previous_top) {
+				    reject("interrupted");
+				    return;
+			    }
+				
+			    // set the scrollTop for this frame
+			    var now = Date.now();
+			    var point = smooth_step(start_time, end_time, now);
+			    var frameTop = Math.round(start_top + (distance * point));
+			    element.scrollTop = frameTop;
+				
+			    // check if we're done!
+			    if(now >= end_time) {
+				    resolve();
+				    return;
+			    }
+				
+			    // If we were supposed to scroll but didn't, then we
+			    // probably hit the limit, so consider it done; not
+			    // interrupted.
+			    if(element.scrollTop === previous_top
+				    && element.scrollTop !== frameTop) {
+				    resolve();
+				    return;
+			    }
+			    previous_top = element.scrollTop;
+			
+			    // schedule next frame for execution
+			    setTimeout(scroll_frame, 0);
+		    }
+			
+		    // boostrap the animation process
+		    setTimeout(scroll_frame, 0);
+		});
+	  }
 
       _loadData();
       _setEditorHeight();
