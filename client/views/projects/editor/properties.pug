@@ -1,34 +1,57 @@
 form.form-horizontal
   .form-group(ng-repeat="variable in variables | objectToArray | orderBy: 'sortIndex'"
     ng-click="highlight(variable)"
-    ng-class="selectedVariable == variable ? 'highlighted' : null")
+    ng-class="selectedVariable == variable ? 'highlighted' : null"
+    class="{{ variableStates[variable.state]['background'] }}")
     label.col-md-5.control-label {{ ::variable.displayName }}
-    .col-md-7
-
+    .col-md-7.variable
       div(ng-if="variable.termType === 'text'")
-        input.form-control(type="text" ng-model="variable.value" ng-blur="save()" placeholder="{{ variable.text.placeholder }}")
+        input.form-control(
+          type="text"
+          ng-model="variable.value"
+          ng-blur="save()"
+          placeholder="{{ variable.text.placeholder }}"
+          ng-disabled="variable.state == 1")
 
       div(ng-if="variable.termType === 'boolean'")
         .radio
           label
-            input(type="radio" ng-model="variable.value" ng-value="true" ng-change="save()")
+            input(
+              type="radio"
+              ng-model="variable.value"
+              ng-value="true"
+              ng-change="save()"
+              ng-disabled="variable.state == 1")
             span {{ ::variable.boolean.inclusionText }}
           label
-            input(type="radio" ng-model="variable.value" ng-value="false" ng-change="save()" )
+            input(
+              type="radio"
+              ng-model="variable.value"
+              ng-value="false"
+              ng-change="save()"
+              ng-disabled="variable.state == 1")
             span {{ ::variable.boolean.exclusionText }}
 
       div(ng-if="variable.termType === 'variant'")
         select.form-control(ng-model="variable.value"
                             ng-options="opt.value as opt.value for opt in variable.variant.options"
-                            ng-change="save()")
+                            ng-change="save()"
+                            ng-disabled="variable.state == 1")
       div(ng-if="variable.termType === 'date'")
         input.form-control(type="text"
                            ng-model="variable.value"
                            ng-required="true"
                            ng-click="variable.isOpened = true"
                            ng-change="save()"
+                           ng-disabled="variable.state == 1"
                            uib-datepicker-popup="MM/dd/yy"
                            is-open="variable.isOpened"
                            datepicker-options="dateOptions"
                            close-text="Close"
                            datepicker-append-to-body="true")
+      button.btn.btn-variable-state(
+        type="button"
+        class="{{ variableStates[variable.state]['btn-class'] }}"
+        title="{{ variableStates[variable.state]['name'] }}"
+        ng-click="changeState()")
+        span(class="{{ variableStates[variable.state]['span-class'] }}")
