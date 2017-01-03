@@ -1,13 +1,13 @@
 .row(ng-show="!isLoading || !isSaving")
     .col-md-12
         p.text-center.undo-redo
-            button.btn.btn-primary.btn-undo(title="Previous change"
-                    ng-class="{'disabled': !changes.length}"
-                    ng-disabled="!changes.length"
-                    ng-click="prevChange()")
-                i.glyphicon.glyphicon-share-alt.icon-flip-horizontal
-            button.btn.btn-primary.btn-redo(title="Next change"
+            button.btn.btn-primary.btn-redo(title="Find next"
                     ng-class="{'disabled': !changes.length}"
                     ng-disabled="!changes.length"
                     ng-click="nextChange()")
-                i.glyphicon.glyphicon-share-alt
+                span Find
+            button.btn.btn-primary.btn-undo(title="Find previous"
+                    ng-class="{'disabled': !changes.length}"
+                    ng-disabled="!changes.length"
+                    ng-click="prevChange()")
+                span Find prev

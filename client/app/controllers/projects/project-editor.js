@@ -24,7 +24,7 @@ angular.module('app').directive('projectEditor', function() {
       $scope.currentPos = 0; // index of current position in history array
         
       $scope.changes = []; // array of prev/next changes
-      $scope.currentChange = -1; // index of current position in changes array
+      $scope.currentChange = null; // index of current position in changes array
 
       angular.element($window).bind('resize', _setEditorHeight);
 
@@ -37,7 +37,8 @@ angular.module('app').directive('projectEditor', function() {
           _loadRelatedData(newDocTempl);
         }
 	
-	    $scope.changes = document.getElementsByClassName('selected highlighted');
+	    $scope.changes = document.getElementsByClassName('selected');
+        $scope.history = []; // reset history
       });
 
       $scope.setMode = function(mode) {
@@ -46,7 +47,7 @@ angular.module('app').directive('projectEditor', function() {
 
       $scope.highlight = function(variable) {
         $scope.selectedVariable = variable;
-	    $scope.changes = document.getElementsByClassName('selected highlighted');
+	    $scope.changes = document.getElementsByClassName('selected');
 	
 	    if ($scope.linkedScreens) {
 		    setTimeout(function () {
@@ -132,7 +133,11 @@ angular.module('app').directive('projectEditor', function() {
       };
 	
 	  $scope.prevChange = function () {
-	  	$scope.currentChange -= 1;
+	  	if ($scope.currentChange === null) {
+	  		$scope.currentChange = 0;
+	    } else {
+		    $scope.currentChange -= 1;
+	    }
 	    
 		if ($scope.currentChange === -1) {
 			$scope.currentChange = $scope.changes.length-1;
@@ -151,7 +156,11 @@ angular.module('app').directive('projectEditor', function() {
 	  }
 	
 	  $scope.nextChange = function () {
-		$scope.currentChange += 1;
+		if ($scope.currentChange === null) {
+		  $scope.currentChange = 0;
+		} else {
+		  $scope.currentChange += 1;
+		}
 		  
 		if ($scope.currentChange === $scope.changes.length) {
 			$scope.currentChange = 0;
