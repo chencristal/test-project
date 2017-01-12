@@ -26,30 +26,36 @@ angular.module('app').directive('projectEditor', function() {
       $scope.changes = []; // array of prev/next changes
       $scope.currentChange = null; // index of current position in changes array
 
-      angular.element($window).bind('resize', _setEditorHeight);
-
-      $element.on('$destroy', function() {
-        angular.element($window).unbind('resize');
-      });
-
       $scope.$watch('relatedData.currrentDocumentTemplate', function(newDocTempl) {
         if (newDocTempl) {
           _loadRelatedData(newDocTempl);
         }
 	
-	    $scope.changes = document.getElementsByClassName('selected');
+	    setTimeout(function () {
+		    $scope.changes = document.getElementsByClassName('selected highlighted');
+	        if ($scope.changes.length) {
+	            $scope.currentChange = -1;
+	        } else {
+		        $scope.changes = document.getElementsByClassName('unselected highlighted');
+		        $scope.currentChange = -1;
+	        }
+	        
+	    }, 50);
+        
         $scope.history = []; // reset history
       });
-
-      $scope.setMode = function(mode) {
-        $scope.mode = mode;
-      };
 
       $scope.highlight = function(variable, fromEditor) {
       	fromEditor = typeof fromEditor !== 'undefined' ? fromEditor : false;
         $scope.selectedVariable = variable;
-	    $scope.changes = document.getElementsByClassName('selected');
-	
+        
+        setTimeout(function () {
+	        $scope.changes = document.getElementsByClassName('selected highlighted');
+	        if (!$scope.changes.length) {
+		        $scope.changes = document.getElementsByClassName('unselected highlighted');
+	        }
+        }, 50)
+
 	    if ($scope.linkedScreens) {
 		    setTimeout(function () {
 			    var containerEdit = document.getElementById('editor');
@@ -57,32 +63,26 @@ angular.module('app').directive('projectEditor', function() {
 			    var elementEditor = document.getElementsByClassName('selected highlighted');
 			
 			    if (!elementEditor.length) {
-				    elementEditor = document.getElementsByClassName('highlighted-for-scroll');
+			    	elementEditor = document.getElementsByClassName('unselected highlighted');
+			    	if (!elementEditor.length) {
+					    elementEditor = document.getElementsByClassName('highlighted-for-scroll');
+				    }
 			    }
+			
+			    var elementPropRect = elementProp.getBoundingClientRect().top;
+			    var containerEditRect = containerEdit.getBoundingClientRect().top;
+			    var diff = elementPropRect - containerEditRect;
 			    
+			    var scrollOffsetTop = elementEditor[0].offsetTop - diff;
 			    if (!fromEditor)
-				    smooth_scroll_to(containerEdit, elementEditor[0].offsetTop-elementProp.offsetTop, 600);
-			    
+			        smooth_scroll_to(containerEdit, scrollOffsetTop, 600);
+			
 		    }, 50);
 	    }
 	    // reset styling
 	    for(var i = 0; i < $scope.changes.length; i++) {
 		    $scope.changes[i].style.backgroundColor = null;
 	    }
-      };
-
-      $scope.exportToPdf = function() {
-        var projId = $scope.project._id;
-        var docId = $scope.relatedData.currrentDocumentTemplate._id;
-        var url = '/api/v1/projects/' + projId + '/' + docId + '/pdf';
-        $window.open(url, '_blank');
-      };
-
-      $scope.exportToWord = function() {
-        var projId = $scope.project._id;
-        var docId = $scope.relatedData.currrentDocumentTemplate._id;
-        var url = '/api/v1/projects/' + projId + '/' + docId + '/word';
-        $window.open(url, '_blank');
       };
 
       $scope.save = function(historyTransition) {
@@ -172,7 +172,6 @@ angular.module('app').directive('projectEditor', function() {
 	    
 		var container = document.getElementById('editor');
 		var element = $scope.changes[$scope.currentChange];
-		
 		element.style.backgroundColor = '#FFEB3B';
 		
 		smooth_scroll_to(container, element.offsetTop-80, 600); // -80 makes some top padding
@@ -196,6 +195,30 @@ angular.module('app').directive('projectEditor', function() {
 		
 		$scope.save(true);
 	  }
+	
+	  angular.element($window).bind('resize', _setEditorHeight);
+	
+	  $element.on('$destroy', function() {
+	    angular.element($window).unbind('resize');
+	  });
+	
+	  $scope.setMode = function(mode) {
+	    $scope.mode = mode;
+	  };
+	
+	  $scope.exportToPdf = function() {
+	    var projId = $scope.project._id;
+	    var docId = $scope.relatedData.currrentDocumentTemplate._id;
+	    var url = '/api/v1/projects/' + projId + '/' + docId + '/pdf';
+	    $window.open(url, '_blank');
+	  };
+	
+	  $scope.exportToWord = function() {
+	    var projId = $scope.project._id;
+	    var docId = $scope.relatedData.currrentDocumentTemplate._id;
+	    var url = '/api/v1/projects/' + projId + '/' + docId + '/word';
+	    $window.open(url, '_blank');
+	  };
 
       function _loadData() {
         Project
@@ -348,10 +371,10 @@ angular.module('app').directive('projectEditor', function() {
 			
 		    // This is like a think function from a game loop
 		    var scroll_frame = function() {
-			    if(element.scrollTop != previous_top) {
-				    reject("interrupted");
-				    return;
-			    }
+			    // if(element.scrollTop != previous_top) {
+				 //    reject("interrupted");
+				 //    return;
+			    // }
 				
 			    // set the scrollTop for this frame
 			    var now = Date.now();
