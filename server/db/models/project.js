@@ -22,6 +22,10 @@ var projectSchema = new mongoose.Schema({
     },
     value: {
       type: String
+    },
+    state: {
+      type: Number,
+      default: 0
     }
   }]
 });

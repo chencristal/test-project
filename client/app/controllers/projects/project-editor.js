@@ -1,12 +1,12 @@
 'use strict';
 
-angular.module('app').directive('projectEditor', function() {
+angular.module('app').directive('projectEditor', function () {
   return {
     restrict: 'E',
     scope: {},
     templateUrl: 'views/projects/editor/index.html',
-    controller: function($scope, $window, $element, $timeout, $routeParams, $location, $q, Notifier,
-                         Project, DocumentTemplate, ProvisionTemplate, TermTemplate) {
+    controller: function ($scope, $window, $element, $timeout, $routeParams, $location, $q, Notifier,
+                          Project, DocumentTemplate, ProvisionTemplate, TermTemplate) {
       /* jshint maxstatements: false */
 
       $scope.isLoading = true;
@@ -19,81 +19,135 @@ angular.module('app').directive('projectEditor', function() {
         formatYear: 'yy',
         startingDay: 1
       };
-      
+      $scope.variableStates = [
+        {
+          'name': 'Neutral',
+          'background': '',
+          'btn-class': 'btn-default',
+          'span-class': ''
+        },
+        {
+          'name': 'Confirmed',
+          'background': 'bg-success',
+          'btn-class': 'btn-success',
+          'span-class': 'fa fa-check'
+        },
+        {
+          'name': 'Uncertain',
+          'background': 'bg-danger',
+          'btn-class': 'btn-pink',
+          'span-class': 'fa fa-question'
+        }
+      ];
+
       $scope.history = []; // history for undo-redo
       $scope.currentPos = 0; // index of current position in history array
-        
+
       $scope.changes = []; // array of prev/next changes
       $scope.currentChange = null; // index of current position in changes array
+
+      angular.element($window).bind('resize', _setEditorHeight);
+
+      $element.on('$destroy', function() {
+        angular.element($window).unbind('resize');
+      });
 
       $scope.$watch('relatedData.currrentDocumentTemplate', function(newDocTempl) {
         if (newDocTempl) {
           _loadRelatedData(newDocTempl);
         }
 	
-	    setTimeout(function () {
-		    $scope.changes = document.getElementsByClassName('selected highlighted');
-	        if ($scope.changes.length) {
-	            $scope.currentChange = -1;
-	        } else {
-		        $scope.changes = document.getElementsByClassName('unselected highlighted');
-		        $scope.currentChange = -1;
-	        }
-	        
-	    }, 50);
-        
+	    $scope.changes = document.getElementsByClassName('selected');
         $scope.history = []; // reset history
       });
+
+      $scope.setMode = function(mode) {
+        $scope.mode = mode;
+      };
 
       $scope.highlight = function(variable, fromEditor) {
       	fromEditor = typeof fromEditor !== 'undefined' ? fromEditor : false;
         $scope.selectedVariable = variable;
-        
-        setTimeout(function () {
-	        $scope.changes = document.getElementsByClassName('selected highlighted');
-	        if (!$scope.changes.length) {
-		        $scope.changes = document.getElementsByClassName('unselected highlighted');
-	        }
-        }, 50)
+        $scope.changes = document.getElementsByClassName('selected');
 
-	    if ($scope.linkedScreens) {
-		    setTimeout(function () {
-			    var containerEdit = document.getElementById('editor');
-			    var elementProp = document.getElementsByClassName('highlighted')[0];
-			    var elementEditor = document.getElementsByClassName('selected highlighted');
-			
-			    if (!elementEditor.length) {
-			    	elementEditor = document.getElementsByClassName('unselected highlighted');
-			    	if (!elementEditor.length) {
-					    elementEditor = document.getElementsByClassName('highlighted-for-scroll');
-				    }
-			    }
-			
-			    var elementPropRect = elementProp.getBoundingClientRect().top;
-			    var containerEditRect = containerEdit.getBoundingClientRect().top;
-			    var diff = elementPropRect - containerEditRect;
-			    
-			    var scrollOffsetTop = elementEditor[0].offsetTop - diff;
-			    if (!fromEditor)
-			        smooth_scroll_to(containerEdit, scrollOffsetTop, 600);
-			
-		    }, 50);
-	    }
-	    // reset styling
-	    for(var i = 0; i < $scope.changes.length; i++) {
-		    $scope.changes[i].style.backgroundColor = null;
-	    }
+        if ($scope.linkedScreens) {
+          setTimeout(function () {
+	          var containerEdit = document.getElementById('editor');
+	          var elementProp = document.getElementsByClassName('highlighted')[0];
+	          var elementEditor = document.getElementsByClassName('selected highlighted');
+	
+	          if (!elementEditor.length) {
+		          elementEditor = document.getElementsByClassName('unselected highlighted');
+		          if (!elementEditor.length) {
+			          elementEditor = document.getElementsByClassName('highlighted-for-scroll');
+		          }
+	          }
+	
+	          var elementPropRect = elementProp.getBoundingClientRect().top;
+	          var containerEditRect = containerEdit.getBoundingClientRect().top;
+	          var diff = elementPropRect - containerEditRect;
+	
+	          var scrollOffsetTop = elementEditor[0].offsetTop - diff;
+	          if (!fromEditor)
+		          smooth_scroll_to(containerEdit, scrollOffsetTop, 600);
+	          
+          }, 50);
+        }
+        // reset styling
+        for (var i = 0; i < $scope.changes.length; i++) {
+          $scope.changes[i].style.backgroundColor = null;
+        }
+        $scope.changes = document.getElementsByClassName('selected');
+
+        if ($scope.linkedScreens) {
+          setTimeout(function () {
+            var containerEdit = document.getElementById('editor');
+            var elementProp = document.getElementsByClassName('highlighted')[0];
+            var elementEditor = document.getElementsByClassName('selected highlighted');
+
+            if (!elementEditor.length) {
+              elementEditor = document.getElementsByClassName('highlighted-for-scroll');
+            }
+
+            if (!fromEditor
+              && elementEditor.length
+              && elementProp !== 'undefined'
+              && elementProp !== null) {
+              smooth_scroll_to(containerEdit, elementEditor[0].offsetTop - elementProp.offsetTop, 600);
+            }
+
+          }, 50);
+        }
+        // reset styling
+        for (var i = 0; i < $scope.changes.length; i++) {
+          $scope.changes[i].style.backgroundColor = null;
+        }
       };
 
-      $scope.save = function(historyTransition) {
-	    historyTransition = typeof historyTransition !== 'undefined' ?  historyTransition : false;
-	    $scope.isSaving = true;
-	    
-	    _.each($scope.variables, function(v) {
-          var variable = _.pick(v, ['variable', 'value']);
-          var projVal = _.find($scope.project.values, { variable: variable.variable });
+      $scope.exportToPdf = function () {
+        var projId = $scope.project._id;
+        var docId = $scope.relatedData.currrentDocumentTemplate._id;
+        var url = '/api/v1/projects/' + projId + '/' + docId + '/pdf';
+        $window.open(url, '_blank');
+      };
+
+      $scope.exportToWord = function () {
+        var projId = $scope.project._id;
+        var docId = $scope.relatedData.currrentDocumentTemplate._id;
+        var url = '/api/v1/projects/' + projId + '/' + docId + '/word';
+        $window.open(url, '_blank');
+      };
+
+      $scope.save = function (historyTransition) {
+        historyTransition = typeof historyTransition !== 'undefined' ? historyTransition : false;
+        $scope.isSaving = true;
+
+        _.each($scope.variables, function (v) {
+          var variable = _.pick(v, ['variable', 'value', 'state']);
+          var projVal = _.find($scope.project.values, {variable: variable.variable});
           if (projVal) {
             projVal.value = variable.value;
+            projVal.state = variable.state;
           } else {
             $scope.project.values.push(variable);
           }
@@ -104,121 +158,156 @@ angular.module('app').directive('projectEditor', function() {
 
         projectForSave
           .$update()
-          .catch(function(err) {
+          .catch(function (err) {
             Notifier.error(err, 'Unable to save project');
           })
-          .finally(function() {
+          .finally(function () {
             $scope.isSaving = false;
           });
-        
-	    // copy to another variable cause of angular scope specification.
-	    $scope.vars = angular.copy($scope.variables);
-  
+
+        // copy to another variable cause of angular scope specification.
+        $scope.vars = angular.copy($scope.variables);
+
         /*
-           if save() method called after history transition (undo()/redo() methods)
-           and has entering parameter  as bool value "true" - skip
-           pushing new value to array, just change current position index.
-        */
-	    if (!historyTransition) {
-	      // if current history element not last element in history array
-	      if ($scope.currentPos+1 !== $scope.history.length) {
-		      // after current index delete array's all next elements (elements of redo after save new value).
-		      $scope.history.splice($scope.currentPos+1, $scope.history.length);
-	      }
-		  $scope.history.push($scope.vars);
-		  $scope.currentPos = $scope.history.length - 1;
+         if save() method called after history transition (undo()/redo() methods)
+         and has entering parameter  as bool value "true" - skip
+         pushing new value to array, just change current position index.
+         */
+        if (!historyTransition) {
+          // if current history element not last element in history array
+          if ($scope.currentPos + 1 !== $scope.history.length) {
+            // after current index delete array's all next elements (elements of redo after save new value).
+            $scope.history.splice($scope.currentPos + 1, $scope.history.length);
+          }
+          $scope.history.push($scope.vars);
+          $scope.currentPos = $scope.history.length - 1;
         }
-        
+
       };
-	
-	  $scope.prevChange = function () {
-	  	if ($scope.currentChange === null) {
-	  		$scope.currentChange = 0;
-	    } else {
-		    $scope.currentChange -= 1;
-	    }
-	    
-		if ($scope.currentChange === -1) {
-			$scope.currentChange = $scope.changes.length-1;
-		}
-		
-		for (var i=0; i<$scope.changes.length; i++) {
-			$scope.changes[i].style.backgroundColor = null;
-		}
-		
-		var container = document.getElementById('editor');
-		var element = $scope.changes[$scope.currentChange];
-		
-		element.style.backgroundColor = '#FFEB3B';
-		
-		smooth_scroll_to(container, element.offsetTop-80, 600); // -80 makes some top padding
-		
-	  }
-	
-	  $scope.nextChange = function () {
-		if ($scope.currentChange === null) {
-		  $scope.currentChange = 0;
-		} else {
-		  $scope.currentChange += 1;
-		}
-		  
-		if ($scope.currentChange === $scope.changes.length) {
-			$scope.currentChange = 0;
-		}
-		
-		for (var i=0; i<$scope.changes.length; i++) {
-		  $scope.changes[i].style.backgroundColor = null;
-		}
-	    
-		var container = document.getElementById('editor');
-		var element = $scope.changes[$scope.currentChange];
-		element.style.backgroundColor = '#FFEB3B';
-		
-		smooth_scroll_to(container, element.offsetTop-80, 600); // -80 makes some top padding
-		  
-	  }
-      
+
+      $scope.prevChange = function () {
+        if ($scope.currentChange === null) {
+          $scope.currentChange = 0;
+        } else {
+          $scope.currentChange -= 1;
+        }
+
+        if ($scope.currentChange === -1) {
+          $scope.currentChange = $scope.changes.length - 1;
+        }
+
+        for (var i = 0; i < $scope.changes.length; i++) {
+          $scope.changes[i].style.backgroundColor = null;
+        }
+
+        var container = document.getElementById('editor');
+        var element = $scope.changes[$scope.currentChange];
+
+        element.style.backgroundColor = '#FFEB3B';
+
+        smooth_scroll_to(container, element.offsetTop - 80, 600); // -80 makes some top padding
+
+      }
+
+      $scope.nextChange = function () {
+        if ($scope.currentChange === null) {
+          $scope.currentChange = 0;
+        } else {
+          $scope.currentChange += 1;
+        }
+
+        if ($scope.currentChange === $scope.changes.length) {
+          $scope.currentChange = 0;
+        }
+
+        for (var i = 0; i < $scope.changes.length; i++) {
+          $scope.changes[i].style.backgroundColor = null;
+        }
+
+        var container = document.getElementById('editor');
+        var element = $scope.changes[$scope.currentChange];
+
+        element.style.backgroundColor = '#FFEB3B';
+
+        smooth_scroll_to(container, element.offsetTop - 80, 600); // -80 makes some top padding
+
+      }
+
+
+      $scope.changeState = function () {
+        var index = this.variable.state;
+        if (index == $scope.variableStates.length - 1) {
+          index = 0;
+        } else {
+          index += 1;
+        }
+        this.variable.state = index;
+        $scope.save();
+      }
+
+      $scope.prevChange = function () {
+        if ($scope.currentChange === null) {
+          $scope.currentChange = 0;
+        } else {
+          $scope.currentChange -= 1;
+        }
+
+        if ($scope.currentChange === -1) {
+          $scope.currentChange = $scope.changes.length - 1;
+        }
+
+        for (var i = 0; i < $scope.changes.length; i++) {
+          $scope.changes[i].style.backgroundColor = null;
+        }
+
+        var container = document.getElementById('editor');
+        var element = $scope.changes[$scope.currentChange];
+
+        element.style.backgroundColor = '#FFEB3B';
+
+        container.scrollTop = element.offsetTop;
+      }
+
+      $scope.nextChange = function () {
+        if ($scope.currentChange === null) {
+          $scope.currentChange = 0;
+        } else {
+          $scope.currentChange += 1;
+        }
+
+        if ($scope.currentChange === $scope.changes.length) {
+          $scope.currentChange = 0;
+        }
+
+        for (var i = 0; i < $scope.changes.length; i++) {
+          $scope.changes[i].style.backgroundColor = null;
+        }
+
+        var container = document.getElementById('editor');
+        var element = $scope.changes[$scope.currentChange];
+
+        element.style.backgroundColor = '#FFEB3B';
+
+        container.scrollTop = element.offsetTop;
+      }
+
       $scope.undo = function () {
-	    $scope.currentPos -= 1;
-	    
-	    $scope.vars = angular.copy($scope.history[$scope.currentPos]);
+        $scope.currentPos -= 1;
+
+        $scope.vars = angular.copy($scope.history[$scope.currentPos]);
         $scope.variables = $scope.vars;
-          
+
         $scope.save(true);
       }
-	
-	  $scope.redo = function () {
-		$scope.currentPos += 1;
-		
-		$scope.vars = angular.copy($scope.history[$scope.currentPos]);
-		$scope.variables = $scope.vars;
-		
-		$scope.save(true);
-	  }
-	
-	  angular.element($window).bind('resize', _setEditorHeight);
-	
-	  $element.on('$destroy', function() {
-	    angular.element($window).unbind('resize');
-	  });
-	
-	  $scope.setMode = function(mode) {
-	    $scope.mode = mode;
-	  };
-	
-	  $scope.exportToPdf = function() {
-	    var projId = $scope.project._id;
-	    var docId = $scope.relatedData.currrentDocumentTemplate._id;
-	    var url = '/api/v1/projects/' + projId + '/' + docId + '/pdf';
-	    $window.open(url, '_blank');
-	  };
-	
-	  $scope.exportToWord = function() {
-	    var projId = $scope.project._id;
-	    var docId = $scope.relatedData.currrentDocumentTemplate._id;
-	    var url = '/api/v1/projects/' + projId + '/' + docId + '/word';
-	    $window.open(url, '_blank');
-	  };
+
+      $scope.redo = function () {
+        $scope.currentPos += 1;
+
+        $scope.vars = angular.copy($scope.history[$scope.currentPos]);
+        $scope.variables = $scope.vars;
+
+        $scope.save(true);
+      }
 
       function _loadData() {
         Project
@@ -226,37 +315,37 @@ angular.module('app').directive('projectEditor', function() {
             id: $routeParams._id
           })
           .$promise
-          .then(function(proj) {
+          .then(function (proj) {
             $scope.project = proj;
             return _loadDocumentTemplates(proj);
           })
-          .catch(function(err) {
+          .catch(function (err) {
             Notifier.error(err, 'Unable to load record');
             $location.path('/projects');
           })
-          .finally(function() {
+          .finally(function () {
             $scope.isLoading = false;
           });
-        
+
       }
 
       function _loadRelatedData(newDocTempl) {
         $scope.isLoading = true;
         $q
           .resolve()
-          .then(function() {
+          .then(function () {
             return _loadProvisionTemplates(newDocTempl);
           })
           .then(_loadTermTemplates)
-          .catch(function(err) {
+          .catch(function (err) {
             Notifier.error(err, 'Unable to load records');
           })
           .then(function () {
-	          // append loaded data to history array
-	          $scope.vars = angular.copy($scope.variables);
-	          $scope.history.push($scope.vars);
+            // append loaded data to history array
+            $scope.vars = angular.copy($scope.variables);
+            $scope.history.push($scope.vars);
           })
-          .finally(function() {
+          .finally(function () {
             $scope.isLoading = false;
           });
       }
@@ -268,7 +357,7 @@ angular.module('app').directive('projectEditor', function() {
             'fields[]': ['name', 'provisionTemplates']
           })
           .$promise
-          .then(function(docTempls) {
+          .then(function (docTempls) {
             $scope.relatedData.currrentDocumentTemplate = docTempls[0];
             $scope.relatedData.documentTemplates = docTempls;
           });
@@ -281,7 +370,7 @@ angular.module('app').directive('projectEditor', function() {
             'fields[]': ['displayName', 'style', 'termTemplates', 'templateHtml', 'orderedVariables']
           })
           .$promise
-          .then(function(provTempls) {
+          .then(function (provTempls) {
             $scope.relatedData.provisionTemplates = provTempls;
             $scope.relatedData.orderedVariables = _(provTempls)
               .map('orderedVariables')
@@ -289,6 +378,7 @@ angular.module('app').directive('projectEditor', function() {
               .uniq()
               .value();
           });
+
       }
 
       function _loadTermTemplates() {
@@ -307,10 +397,10 @@ angular.module('app').directive('projectEditor', function() {
             'fields[]': ['*']
           })
           .$promise
-          .then(function(termTempls) {
+          .then(function (termTempls) {
             $scope.variables = {};
-            _.each(termTempls, function(termTempl) {
-              var val = _.find($scope.project.values, { variable: termTempl.variable });
+            _.each(termTempls, function (termTempl) {
+              var val = _.find($scope.project.values, {variable: termTempl.variable});
               if (val) {
                 if (termTempl.termType === 'boolean') {
                   termTempl.value = val.value === 'true' || val.value === true;
@@ -326,6 +416,7 @@ angular.module('app').directive('projectEditor', function() {
               } else if (termTempl.termType === 'date') {
                 termTempl.value = termTempl.date ? new Date(termTempl.date.default) : new Date();
               }
+              termTempl.state = val.state || 0;
               termTempl.sortIndex = _.indexOf($scope.relatedData.orderedVariables, termTempl.variable);
               $scope.variables[termTempl.variable] = termTempl;
             });
@@ -333,7 +424,7 @@ angular.module('app').directive('projectEditor', function() {
       }
 
       function _setEditorHeight() {
-        $timeout(function() {
+        $timeout(function () {
           $scope.editorHeight = angular.element($window).innerHeight() - 115;
           $scope.$apply();
         });
@@ -371,10 +462,10 @@ angular.module('app').directive('projectEditor', function() {
 			
 		    // This is like a think function from a game loop
 		    var scroll_frame = function() {
-			    // if(element.scrollTop != previous_top) {
-				 //    reject("interrupted");
-				 //    return;
-			    // }
+			    if(element.scrollTop != previous_top) {
+				    reject("interrupted");
+				    return;
+			    }
 				
 			    // set the scrollTop for this frame
 			    var now = Date.now();
