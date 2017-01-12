@@ -46,96 +46,68 @@ angular.module('app').directive('projectEditor', function () {
       $scope.changes = []; // array of prev/next changes
       $scope.currentChange = null; // index of current position in changes array
 
-      angular.element($window).bind('resize', _setEditorHeight);
-
-      $element.on('$destroy', function() {
-        angular.element($window).unbind('resize');
-      });
-
       $scope.$watch('relatedData.currrentDocumentTemplate', function(newDocTempl) {
         if (newDocTempl) {
           _loadRelatedData(newDocTempl);
         }
 	
-	    $scope.changes = document.getElementsByClassName('selected');
+	    setTimeout(function () {
+		    $scope.changes = document.getElementsByClassName('selected highlighted');
+	        if ($scope.changes.length) {
+	            $scope.currentChange = -1;
+	        } else {
+		        $scope.changes = document.getElementsByClassName('unselected highlighted');
+		        $scope.currentChange = -1;
+	        }
+	        
+	    }, 50);
+        
         $scope.history = []; // reset history
       });
-
-      $scope.setMode = function(mode) {
-        $scope.mode = mode;
-      };
 
       $scope.highlight = function(variable, fromEditor) {
       	fromEditor = typeof fromEditor !== 'undefined' ? fromEditor : false;
         $scope.selectedVariable = variable;
         $scope.changes = document.getElementsByClassName('selected');
-
-        if ($scope.linkedScreens) {
-          setTimeout(function () {
-	          var containerEdit = document.getElementById('editor');
-	          var elementProp = document.getElementsByClassName('highlighted')[0];
-	          var elementEditor = document.getElementsByClassName('selected highlighted');
+        
+        setTimeout(function () {
+	        $scope.changes = document.getElementsByClassName('selected highlighted');
+	        $scope.currentChange = -1;
+	        if (!$scope.changes.length) {
+		        $scope.changes = document.getElementsByClassName('unselected highlighted');
+	        }
+	        console.log($scope.changes);
+	        console.log($scope.currentChange);
 	
-	          if (!elementEditor.length) {
-		          elementEditor = document.getElementsByClassName('unselected highlighted');
-		          if (!elementEditor.length) {
-			          elementEditor = document.getElementsByClassName('highlighted-for-scroll');
-		          }
-	          }
-	
-	          var elementPropRect = elementProp.getBoundingClientRect().top;
-	          var containerEditRect = containerEdit.getBoundingClientRect().top;
-	          var diff = elementPropRect - containerEditRect;
-	
-	          var scrollOffsetTop = elementEditor[0].offsetTop - diff;
-	          if (!fromEditor)
-		          smooth_scroll_to(containerEdit, scrollOffsetTop, 600);
-	          
-          }, 50);
-        }
-        // reset styling
-        for (var i = 0; i < $scope.changes.length; i++) {
-          $scope.changes[i].style.backgroundColor = null;
-        }
-        $scope.changes = document.getElementsByClassName('selected');
+        }, 50)
 
-        if ($scope.linkedScreens) {
-          setTimeout(function () {
-            var containerEdit = document.getElementById('editor');
-            var elementProp = document.getElementsByClassName('highlighted')[0];
-            var elementEditor = document.getElementsByClassName('selected highlighted');
-
-            if (!elementEditor.length) {
-              elementEditor = document.getElementsByClassName('highlighted-for-scroll');
-            }
-
-            if (!fromEditor
-              && elementEditor.length
-              && elementProp !== 'undefined'
-              && elementProp !== null) {
-              smooth_scroll_to(containerEdit, elementEditor[0].offsetTop - elementProp.offsetTop, 600);
-            }
-
-          }, 50);
-        }
-        // reset styling
-        for (var i = 0; i < $scope.changes.length; i++) {
-          $scope.changes[i].style.backgroundColor = null;
-        }
-      };
-
-      $scope.exportToPdf = function () {
-        var projId = $scope.project._id;
-        var docId = $scope.relatedData.currrentDocumentTemplate._id;
-        var url = '/api/v1/projects/' + projId + '/' + docId + '/pdf';
-        $window.open(url, '_blank');
-      };
-
-      $scope.exportToWord = function () {
-        var projId = $scope.project._id;
-        var docId = $scope.relatedData.currrentDocumentTemplate._id;
-        var url = '/api/v1/projects/' + projId + '/' + docId + '/word';
-        $window.open(url, '_blank');
+	    if ($scope.linkedScreens) {
+		    setTimeout(function () {
+			    var containerEdit = document.getElementById('editor');
+			    var elementProp = document.getElementsByClassName('highlighted')[0];
+			    var elementEditor = document.getElementsByClassName('selected highlighted');
+			
+			    if (!elementEditor.length) {
+			    	elementEditor = document.getElementsByClassName('unselected highlighted');
+			    	if (!elementEditor.length) {
+					    elementEditor = document.getElementsByClassName('highlighted-for-scroll');
+				    }
+			    }
+			
+			    var elementPropRect = elementProp.getBoundingClientRect().top;
+			    var containerEditRect = containerEdit.getBoundingClientRect().top;
+			    var diff = elementPropRect - containerEditRect;
+			    
+			    var scrollOffsetTop = elementEditor[0].offsetTop - diff;
+			    if (!fromEditor)
+			        smooth_scroll_to(containerEdit, scrollOffsetTop, 600);
+			
+		    }, 50);
+	    }
+	    // reset styling
+	    for(var i = 0; i < $scope.changes.length; i++) {
+		    $scope.changes[i].style.backgroundColor = null;
+	    }
       };
 
       $scope.save = function (historyTransition) {
@@ -161,153 +133,118 @@ angular.module('app').directive('projectEditor', function () {
           .catch(function (err) {
             Notifier.error(err, 'Unable to save project');
           })
-          .finally(function () {
+          .finally(function() {
             $scope.isSaving = false;
           });
-
-        // copy to another variable cause of angular scope specification.
-        $scope.vars = angular.copy($scope.variables);
-
+        
+	    // copy to another variable cause of angular scope specification.
+	    $scope.vars = angular.copy($scope.variables);
+  
         /*
-         if save() method called after history transition (undo()/redo() methods)
-         and has entering parameter  as bool value "true" - skip
-         pushing new value to array, just change current position index.
-         */
-        if (!historyTransition) {
-          // if current history element not last element in history array
-          if ($scope.currentPos + 1 !== $scope.history.length) {
-            // after current index delete array's all next elements (elements of redo after save new value).
-            $scope.history.splice($scope.currentPos + 1, $scope.history.length);
-          }
-          $scope.history.push($scope.vars);
-          $scope.currentPos = $scope.history.length - 1;
+           if save() method called after history transition (undo()/redo() methods)
+           and has entering parameter  as bool value "true" - skip
+           pushing new value to array, just change current position index.
+        */
+	    if (!historyTransition) {
+	      // if current history element not last element in history array
+	      if ($scope.currentPos+1 !== $scope.history.length) {
+		      // after current index delete array's all next elements (elements of redo after save new value).
+		      $scope.history.splice($scope.currentPos+1, $scope.history.length);
+	      }
+		  $scope.history.push($scope.vars);
+		  $scope.currentPos = $scope.history.length - 1;
         }
-
+        
       };
-
-      $scope.prevChange = function () {
-        if ($scope.currentChange === null) {
-          $scope.currentChange = 0;
-        } else {
-          $scope.currentChange -= 1;
-        }
-
-        if ($scope.currentChange === -1) {
-          $scope.currentChange = $scope.changes.length - 1;
-        }
-
-        for (var i = 0; i < $scope.changes.length; i++) {
-          $scope.changes[i].style.backgroundColor = null;
-        }
-
-        var container = document.getElementById('editor');
-        var element = $scope.changes[$scope.currentChange];
-
-        element.style.backgroundColor = '#FFEB3B';
-
-        smooth_scroll_to(container, element.offsetTop - 80, 600); // -80 makes some top padding
-
-      }
-
-      $scope.nextChange = function () {
-        if ($scope.currentChange === null) {
-          $scope.currentChange = 0;
-        } else {
-          $scope.currentChange += 1;
-        }
-
-        if ($scope.currentChange === $scope.changes.length) {
-          $scope.currentChange = 0;
-        }
-
-        for (var i = 0; i < $scope.changes.length; i++) {
-          $scope.changes[i].style.backgroundColor = null;
-        }
-
-        var container = document.getElementById('editor');
-        var element = $scope.changes[$scope.currentChange];
-
-        element.style.backgroundColor = '#FFEB3B';
-
-        smooth_scroll_to(container, element.offsetTop - 80, 600); // -80 makes some top padding
-
-      }
-
-
-      $scope.changeState = function () {
-        var index = this.variable.state;
-        if (index == $scope.variableStates.length - 1) {
-          index = 0;
-        } else {
-          index += 1;
-        }
-        this.variable.state = index;
-        $scope.save();
-      }
-
-      $scope.prevChange = function () {
-        if ($scope.currentChange === null) {
-          $scope.currentChange = 0;
-        } else {
-          $scope.currentChange -= 1;
-        }
-
-        if ($scope.currentChange === -1) {
-          $scope.currentChange = $scope.changes.length - 1;
-        }
-
-        for (var i = 0; i < $scope.changes.length; i++) {
-          $scope.changes[i].style.backgroundColor = null;
-        }
-
-        var container = document.getElementById('editor');
-        var element = $scope.changes[$scope.currentChange];
-
-        element.style.backgroundColor = '#FFEB3B';
-
-        container.scrollTop = element.offsetTop;
-      }
-
-      $scope.nextChange = function () {
-        if ($scope.currentChange === null) {
-          $scope.currentChange = 0;
-        } else {
-          $scope.currentChange += 1;
-        }
-
-        if ($scope.currentChange === $scope.changes.length) {
-          $scope.currentChange = 0;
-        }
-
-        for (var i = 0; i < $scope.changes.length; i++) {
-          $scope.changes[i].style.backgroundColor = null;
-        }
-
-        var container = document.getElementById('editor');
-        var element = $scope.changes[$scope.currentChange];
-
-        element.style.backgroundColor = '#FFEB3B';
-
-        container.scrollTop = element.offsetTop;
-      }
-
+	
+	  $scope.prevChange = function () {
+	  	if ($scope.currentChange === null) {
+	  		$scope.currentChange = 0;
+	    } else {
+		    $scope.currentChange -= 1;
+	    }
+	    
+		if ($scope.currentChange === -1) {
+			$scope.currentChange = $scope.changes.length-1;
+		}
+		
+		for (var i=0; i<$scope.changes.length; i++) {
+			$scope.changes[i].style.backgroundColor = null;
+		}
+		
+		var container = document.getElementById('editor');
+		var element = $scope.changes[$scope.currentChange];
+		
+		element.style.backgroundColor = '#FFEB3B';
+		
+		smooth_scroll_to(container, element.offsetTop-80, 600); // -80 makes some top padding
+		
+	  }
+	
+	  $scope.nextChange = function () {
+		if ($scope.currentChange === null) {
+		  $scope.currentChange = 0;
+		} else {
+		  $scope.currentChange += 1;
+		}
+		  
+		if ($scope.currentChange === $scope.changes.length) {
+			$scope.currentChange = 0;
+		}
+		
+		for (var i=0; i<$scope.changes.length; i++) {
+		  $scope.changes[i].style.backgroundColor = null;
+		}
+	    
+		var container = document.getElementById('editor');
+		var element = $scope.changes[$scope.currentChange];
+		element.style.backgroundColor = '#FFEB3B';
+		
+		smooth_scroll_to(container, element.offsetTop-80, 600); // -80 makes some top padding
+		  
+	  }
+      
       $scope.undo = function () {
-        $scope.currentPos -= 1;
-
-        $scope.vars = angular.copy($scope.history[$scope.currentPos]);
+	    $scope.currentPos -= 1;
+	    
+	    $scope.vars = angular.copy($scope.history[$scope.currentPos]);
         $scope.variables = $scope.vars;
-
+          
         $scope.save(true);
       }
-
-      $scope.redo = function () {
-        $scope.currentPos += 1;
-
-        $scope.vars = angular.copy($scope.history[$scope.currentPos]);
-        $scope.variables = $scope.vars;
-
-        $scope.save(true);
-      }
+	
+	  $scope.redo = function () {
+		$scope.currentPos += 1;
+		
+		$scope.vars = angular.copy($scope.history[$scope.currentPos]);
+		$scope.variables = $scope.vars;
+		
+		$scope.save(true);
+	  }
+	
+	  angular.element($window).bind('resize', _setEditorHeight);
+	
+	  $element.on('$destroy', function() {
+	    angular.element($window).unbind('resize');
+	  });
+	
+	  $scope.setMode = function(mode) {
+	    $scope.mode = mode;
+	  };
+	
+	  $scope.exportToPdf = function() {
+	    var projId = $scope.project._id;
+	    var docId = $scope.relatedData.currrentDocumentTemplate._id;
+	    var url = '/api/v1/projects/' + projId + '/' + docId + '/pdf';
+	    $window.open(url, '_blank');
+	  };
+	
+	  $scope.exportToWord = function() {
+	    var projId = $scope.project._id;
+	    var docId = $scope.relatedData.currrentDocumentTemplate._id;
+	    var url = '/api/v1/projects/' + projId + '/' + docId + '/word';
+	    $window.open(url, '_blank');
+	  };
 
       function _loadData() {
         Project
