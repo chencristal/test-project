@@ -43,13 +43,14 @@ Generator.prototype.generateVariableEditor = function (variable) {
   switch (variable.termType) {
     case 'text':
       return `
+        <span class="{{ ${varName}.state == 2 ? 'uncertain-bracket' : null }}">
         <input type="text"
                ng-model="${varName}.value"
                ng-blur="onChange()"
                ng-click="onClick(${varName}, $event)"
                ng-class="selectedVariable == ${varName} ? 'highlighted-for-scroll' : null"
                ng-disabled="${varName}.state == 1"
-               placeholder="{{ ${varName}.text.placeholder }}" />`;
+               placeholder="{{ ${varName}.text.placeholder }}" /></span>`;
 
     case 'boolean':
       return `
@@ -86,7 +87,9 @@ Generator.prototype.generateVariableEditor = function (variable) {
     case 'date':
       var uniqId = _getRandomString();
       return `
+        <span class="{{ ${varName}.state == 2 ? 'uncertain-bracket' : null }}">
         <input type="text"
+               class="{{ ${varName}.state == 2 ? 'uncertain-bracket' : null }}"
                ng-model="${varName}.value"
                ng-click="datePickers.isOpened_${uniqId} = true; onClick(${varName}, $event)"
                ng-required="true"
@@ -97,7 +100,7 @@ Generator.prototype.generateVariableEditor = function (variable) {
                close-text="Close"
                datepicker-append-to-body="true" 
                ng-class="selectedVariable == ${varName} ? 'highlighted-for-scroll' : null" 
-               ng-disabled="${varName}.state == 1"/>`;
+               ng-disabled="${varName}.state == 1"/></span>`;
 
     case 'default':
       // TODO: what to do here?
