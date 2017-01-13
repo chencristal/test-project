@@ -46,68 +46,69 @@ angular.module('app').directive('projectEditor', function () {
       $scope.changes = []; // array of prev/next changes
       $scope.currentChange = null; // index of current position in changes array
 
-      $scope.$watch('relatedData.currrentDocumentTemplate', function(newDocTempl) {
+      $scope.$watch('relatedData.currrentDocumentTemplate', function (newDocTempl) {
         if (newDocTempl) {
           _loadRelatedData(newDocTempl);
         }
-	
-	    setTimeout(function () {
-		    $scope.changes = document.getElementsByClassName('selected highlighted');
-	        if ($scope.changes.length) {
-	            $scope.currentChange = -1;
-	        } else {
-		        $scope.changes = document.getElementsByClassName('unselected highlighted');
-		        $scope.currentChange = -1;
-	        }
-	        
-	    }, 50);
-        
+
+        setTimeout(function () {
+          $scope.changes = document.getElementsByClassName('selected highlighted');
+          if ($scope.changes.length) {
+            $scope.currentChange = -1;
+          } else {
+            $scope.changes = document.getElementsByClassName('unselected highlighted');
+            $scope.currentChange = -1;
+          }
+
+        }, 50);
+
         $scope.history = []; // reset history
       });
 
-      $scope.highlight = function(variable, fromEditor) {
-      	fromEditor = typeof fromEditor !== 'undefined' ? fromEditor : false;
+      $scope.highlight = function (variable, fromEditor) {
+        fromEditor = typeof fromEditor !== 'undefined' ? fromEditor : false;
         $scope.selectedVariable = variable;
         $scope.changes = document.getElementsByClassName('selected');
-        
+
         setTimeout(function () {
-	        $scope.changes = document.getElementsByClassName('selected highlighted');
-	        $scope.currentChange = -1;
-	        if (!$scope.changes.length) {
-		        $scope.changes = document.getElementsByClassName('unselected highlighted');
-	        }
-	        console.log($scope.changes);
-	        console.log($scope.currentChange);
-	
+          $scope.changes = document.getElementsByClassName('selected highlighted');
+          $scope.currentChange = -1;
+          if (!$scope.changes.length) {
+            $scope.changes = document.getElementsByClassName('unselected highlighted');
+          }
+          console.log($scope.changes);
+          console.log($scope.currentChange);
+
         }, 50)
 
-	    if ($scope.linkedScreens) {
-		    setTimeout(function () {
-			    var containerEdit = document.getElementById('editor');
-			    var elementProp = document.getElementsByClassName('highlighted')[0];
-			    var elementEditor = document.getElementsByClassName('selected highlighted');
-			
-			    if (!elementEditor.length) {
-			    	elementEditor = document.getElementsByClassName('unselected highlighted');
-			    	if (!elementEditor.length) {
-					    elementEditor = document.getElementsByClassName('highlighted-for-scroll');
-				    }
-			    }
-			
-			    var elementPropRect = elementProp.getBoundingClientRect().top;
-			    var containerEditRect = containerEdit.getBoundingClientRect().top;
-			    var diff = elementPropRect - containerEditRect;
-			    
-			    var scrollOffsetTop = elementEditor[0].offsetTop - diff;
-			    if (!fromEditor)
-			        smooth_scroll_to(containerEdit, scrollOffsetTop, 600);
-			
-		    }, 50);
-	    }
-	    // reset styling
-	    for(var i = 0; i < $scope.changes.length; i++) {
-		    $scope.changes[i].style.backgroundColor = null;
-	    }
+        if ($scope.linkedScreens) {
+          setTimeout(function () {
+            var containerEdit = document.getElementById('editor');
+            var elementProp = document.getElementsByClassName('highlighted')[0];
+            var elementEditor = document.getElementsByClassName('selected highlighted');
+
+            if (!elementEditor.length) {
+              elementEditor = document.getElementsByClassName('unselected highlighted');
+              if (!elementEditor.length) {
+                elementEditor = document.getElementsByClassName('highlighted-for-scroll');
+              }
+            }
+
+            var elementPropRect = elementProp.getBoundingClientRect().top;
+            var containerEditRect = containerEdit.getBoundingClientRect().top;
+            var diff = elementPropRect - containerEditRect;
+            if (elementEditor.length) {
+              var scrollOffsetTop = elementEditor[0].offsetTop - diff;
+              if (!fromEditor)
+                smooth_scroll_to(containerEdit, scrollOffsetTop, 600);
+            }
+
+          }, 50);
+        }
+        // reset styling
+        for (var i = 0; i < $scope.changes.length; i++) {
+          $scope.changes[i].style.backgroundColor = null;
+        }
       };
 
       $scope.save = function (historyTransition) {
@@ -133,118 +134,131 @@ angular.module('app').directive('projectEditor', function () {
           .catch(function (err) {
             Notifier.error(err, 'Unable to save project');
           })
-          .finally(function() {
+          .finally(function () {
             $scope.isSaving = false;
           });
-        
-	    // copy to another variable cause of angular scope specification.
-	    $scope.vars = angular.copy($scope.variables);
-  
+
+        // copy to another variable cause of angular scope specification.
+        $scope.vars = angular.copy($scope.variables);
+
         /*
-           if save() method called after history transition (undo()/redo() methods)
-           and has entering parameter  as bool value "true" - skip
-           pushing new value to array, just change current position index.
-        */
-	    if (!historyTransition) {
-	      // if current history element not last element in history array
-	      if ($scope.currentPos+1 !== $scope.history.length) {
-		      // after current index delete array's all next elements (elements of redo after save new value).
-		      $scope.history.splice($scope.currentPos+1, $scope.history.length);
-	      }
-		  $scope.history.push($scope.vars);
-		  $scope.currentPos = $scope.history.length - 1;
+         if save() method called after history transition (undo()/redo() methods)
+         and has entering parameter  as bool value "true" - skip
+         pushing new value to array, just change current position index.
+         */
+        if (!historyTransition) {
+          // if current history element not last element in history array
+          if ($scope.currentPos + 1 !== $scope.history.length) {
+            // after current index delete array's all next elements (elements of redo after save new value).
+            $scope.history.splice($scope.currentPos + 1, $scope.history.length);
+          }
+          $scope.history.push($scope.vars);
+          $scope.currentPos = $scope.history.length - 1;
         }
-        
+
       };
-	
-	  $scope.prevChange = function () {
-	  	if ($scope.currentChange === null) {
-	  		$scope.currentChange = 0;
-	    } else {
-		    $scope.currentChange -= 1;
-	    }
-	    
-		if ($scope.currentChange === -1) {
-			$scope.currentChange = $scope.changes.length-1;
-		}
-		
-		for (var i=0; i<$scope.changes.length; i++) {
-			$scope.changes[i].style.backgroundColor = null;
-		}
-		
-		var container = document.getElementById('editor');
-		var element = $scope.changes[$scope.currentChange];
-		
-		element.style.backgroundColor = '#FFEB3B';
-		
-		smooth_scroll_to(container, element.offsetTop-80, 600); // -80 makes some top padding
-		
-	  }
-	
-	  $scope.nextChange = function () {
-		if ($scope.currentChange === null) {
-		  $scope.currentChange = 0;
-		} else {
-		  $scope.currentChange += 1;
-		}
-		  
-		if ($scope.currentChange === $scope.changes.length) {
-			$scope.currentChange = 0;
-		}
-		
-		for (var i=0; i<$scope.changes.length; i++) {
-		  $scope.changes[i].style.backgroundColor = null;
-		}
-	    
-		var container = document.getElementById('editor');
-		var element = $scope.changes[$scope.currentChange];
-		element.style.backgroundColor = '#FFEB3B';
-		
-		smooth_scroll_to(container, element.offsetTop-80, 600); // -80 makes some top padding
-		  
-	  }
-      
+
+      $scope.prevChange = function () {
+        if ($scope.currentChange === null) {
+          $scope.currentChange = 0;
+        } else {
+          $scope.currentChange -= 1;
+        }
+
+        if ($scope.currentChange === -1) {
+          $scope.currentChange = $scope.changes.length - 1;
+        }
+
+        for (var i = 0; i < $scope.changes.length; i++) {
+          $scope.changes[i].style.backgroundColor = null;
+        }
+
+        var container = document.getElementById('editor');
+        var element = $scope.changes[$scope.currentChange];
+
+        element.style.backgroundColor = '#FFEB3B';
+
+        smooth_scroll_to(container, element.offsetTop - 80, 600); // -80 makes some top padding
+
+      }
+
+      $scope.nextChange = function () {
+        if ($scope.currentChange === null) {
+          $scope.currentChange = 0;
+        } else {
+          $scope.currentChange += 1;
+        }
+
+        if ($scope.currentChange === $scope.changes.length) {
+          $scope.currentChange = 0;
+        }
+
+        for (var i = 0; i < $scope.changes.length; i++) {
+          $scope.changes[i].style.backgroundColor = null;
+        }
+
+        var container = document.getElementById('editor');
+        var element = $scope.changes[$scope.currentChange];
+        element.style.backgroundColor = '#FFEB3B';
+
+        smooth_scroll_to(container, element.offsetTop - 80, 600); // -80 makes some top padding
+
+      }
+
+
+      $scope.changeState = function ($event) {
+        $event.stopPropagation();
+        var index = this.variable.state;
+        if (index == $scope.variableStates.length - 1) {
+          index = 0;
+        } else {
+          index += 1;
+        }
+        this.variable.state = index;
+        $scope.save();
+      }
+
       $scope.undo = function () {
-	    $scope.currentPos -= 1;
-	    
-	    $scope.vars = angular.copy($scope.history[$scope.currentPos]);
+        $scope.currentPos -= 1;
+
+        $scope.vars = angular.copy($scope.history[$scope.currentPos]);
         $scope.variables = $scope.vars;
-          
+
         $scope.save(true);
       }
-	
-	  $scope.redo = function () {
-		$scope.currentPos += 1;
-		
-		$scope.vars = angular.copy($scope.history[$scope.currentPos]);
-		$scope.variables = $scope.vars;
-		
-		$scope.save(true);
-	  }
-	
-	  angular.element($window).bind('resize', _setEditorHeight);
-	
-	  $element.on('$destroy', function() {
-	    angular.element($window).unbind('resize');
-	  });
-	
-	  $scope.setMode = function(mode) {
-	    $scope.mode = mode;
-	  };
-	
-	  $scope.exportToPdf = function() {
-	    var projId = $scope.project._id;
-	    var docId = $scope.relatedData.currrentDocumentTemplate._id;
-	    var url = '/api/v1/projects/' + projId + '/' + docId + '/pdf';
-	    $window.open(url, '_blank');
-	  };
-	
-	  $scope.exportToWord = function() {
-	    var projId = $scope.project._id;
-	    var docId = $scope.relatedData.currrentDocumentTemplate._id;
-	    var url = '/api/v1/projects/' + projId + '/' + docId + '/word';
-	    $window.open(url, '_blank');
-	  };
+
+      $scope.redo = function () {
+        $scope.currentPos += 1;
+
+        $scope.vars = angular.copy($scope.history[$scope.currentPos]);
+        $scope.variables = $scope.vars;
+
+        $scope.save(true);
+      }
+
+      angular.element($window).bind('resize', _setEditorHeight);
+
+      $element.on('$destroy', function () {
+        angular.element($window).unbind('resize');
+      });
+
+      $scope.setMode = function (mode) {
+        $scope.mode = mode;
+      };
+
+      $scope.exportToPdf = function () {
+        var projId = $scope.project._id;
+        var docId = $scope.relatedData.currrentDocumentTemplate._id;
+        var url = '/api/v1/projects/' + projId + '/' + docId + '/pdf';
+        $window.open(url, '_blank');
+      };
+
+      $scope.exportToWord = function () {
+        var projId = $scope.project._id;
+        var docId = $scope.relatedData.currrentDocumentTemplate._id;
+        var url = '/api/v1/projects/' + projId + '/' + docId + '/word';
+        $window.open(url, '_blank');
+      };
 
       function _loadData() {
         Project
@@ -353,7 +367,7 @@ angular.module('app').directive('projectEditor', function () {
               } else if (termTempl.termType === 'date') {
                 termTempl.value = termTempl.date ? new Date(termTempl.date.default) : new Date();
               }
-              termTempl.state = val.state || 0;
+              termTempl.state = val ? val['state'] : 0;
               termTempl.sortIndex = _.indexOf($scope.relatedData.orderedVariables, termTempl.variable);
               $scope.variables[termTempl.variable] = termTempl;
             });
@@ -366,74 +380,78 @@ angular.module('app').directive('projectEditor', function () {
           $scope.$apply();
         });
       }
-	
-	  var smooth_scroll_to = function(element, target, duration) {
-	    target = Math.round(target);
-	    duration = Math.round(duration);
-	    if (duration < 0) {
-		    return Promise.reject("bad duration");
-	    }
-	    if (duration === 0) {
-		    element.scrollTop = target;
-		    return Promise.resolve();
-	    }
-	
-	    var start_time = Date.now();
-	    var end_time = start_time + duration;
-	
-	    var start_top = element.scrollTop;
-	    var distance = target - start_top;
-	
-	    // based on http://en.wikipedia.org/wiki/Smoothstep
-	    var smooth_step = function(start, end, point) {
-		    if(point <= start) { return 0; }
-		    if(point >= end) { return 1; }
-		    var x = (point - start) / (end - start); // interpolation
-		    return x*x*(3 - 2*x);
-		}
-		
-		return new Promise(function(resolve, reject) {
-		    // This is to keep track of where the element's scrollTop is
-		    // supposed to be, based on what we're doing
-		    var previous_top = element.scrollTop;
-			
-		    // This is like a think function from a game loop
-		    var scroll_frame = function() {
-			    if(element.scrollTop != previous_top) {
-				    reject("interrupted");
-				    return;
-			    }
-				
-			    // set the scrollTop for this frame
-			    var now = Date.now();
-			    var point = smooth_step(start_time, end_time, now);
-			    var frameTop = Math.round(start_top + (distance * point));
-			    element.scrollTop = frameTop;
-				
-			    // check if we're done!
-			    if(now >= end_time) {
-				    resolve();
-				    return;
-			    }
-				
-			    // If we were supposed to scroll but didn't, then we
-			    // probably hit the limit, so consider it done; not
-			    // interrupted.
-			    if(element.scrollTop === previous_top
-				    && element.scrollTop !== frameTop) {
-				    resolve();
-				    return;
-			    }
-			    previous_top = element.scrollTop;
-			
-			    // schedule next frame for execution
-			    setTimeout(scroll_frame, 0);
-		    }
-			
-		    // boostrap the animation process
-		    setTimeout(scroll_frame, 0);
-		});
-	  }
+
+      var smooth_scroll_to = function (element, target, duration) {
+        target = Math.round(target);
+        duration = Math.round(duration);
+        if (duration < 0) {
+          return Promise.reject("bad duration");
+        }
+        if (duration === 0) {
+          element.scrollTop = target;
+          return Promise.resolve();
+        }
+
+        var start_time = Date.now();
+        var end_time = start_time + duration;
+
+        var start_top = element.scrollTop;
+        var distance = target - start_top;
+
+        // based on http://en.wikipedia.org/wiki/Smoothstep
+        var smooth_step = function (start, end, point) {
+          if (point <= start) {
+            return 0;
+          }
+          if (point >= end) {
+            return 1;
+          }
+          var x = (point - start) / (end - start); // interpolation
+          return x * x * (3 - 2 * x);
+        }
+
+        return new Promise(function (resolve, reject) {
+          // This is to keep track of where the element's scrollTop is
+          // supposed to be, based on what we're doing
+          var previous_top = element.scrollTop;
+
+          // This is like a think function from a game loop
+          var scroll_frame = function () {
+            if (element.scrollTop != previous_top) {
+              reject("interrupted");
+              return;
+            }
+
+            // set the scrollTop for this frame
+            var now = Date.now();
+            var point = smooth_step(start_time, end_time, now);
+            var frameTop = Math.round(start_top + (distance * point));
+            element.scrollTop = frameTop;
+
+            // check if we're done!
+            if (now >= end_time) {
+              resolve();
+              return;
+            }
+
+            // If we were supposed to scroll but didn't, then we
+            // probably hit the limit, so consider it done; not
+            // interrupted.
+            if (element.scrollTop === previous_top
+              && element.scrollTop !== frameTop) {
+              resolve();
+              return;
+            }
+            previous_top = element.scrollTop;
+
+            // schedule next frame for execution
+            setTimeout(scroll_frame, 0);
+          }
+
+          // boostrap the animation process
+          setTimeout(scroll_frame, 0);
+        });
+      }
 
       _loadData();
       _setEditorHeight();

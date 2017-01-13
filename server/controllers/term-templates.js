@@ -19,7 +19,7 @@ exports.getTermTemplates = (req, res, next) => {
   function validateParams(data) {
     var allowedFields = [
       '*', 'termType', 'variable', 'text', 'boolean',
-      'variant', 'date', 'displayName', 'help', 'disabled'
+      'variant', 'date', 'displayName', 'help', 'disabled', 'state'
     ];
 
     if (data.includes && !_.every(data.includes, validationUtil.isValidObjectId)) {
@@ -76,7 +76,7 @@ exports.getTermTemplateById = (req, res, next) => {
 
 exports.createTermTemplate = (req, res, next) => {
   function parseParams(body) {
-    var allowedFields = ['termType', 'variable', 'displayName', 'help', 'text', 'boolean', 'variant', 'date'];
+    var allowedFields = ['termType', 'variable', 'displayName', 'help', 'text', 'boolean', 'variant', 'date', 'state'];
     var termTemplData = _.pick(body, allowedFields);
     return Promise.resolve(termTemplData);
   }
@@ -100,7 +100,7 @@ exports.createTermTemplate = (req, res, next) => {
 
 exports.updateTermTemplate = (req, res, next) => {
   function parseParams(body) {
-    var allowedFields = ['termType', 'variable', 'displayName', 'help', 'text', 'boolean', 'variant', 'date'];
+    var allowedFields = ['termType', 'variable', 'displayName', 'help', 'text', 'boolean', 'variant', 'date', 'state'];
     var termTemplData = _.pick(body, allowedFields);
     termTemplData._id = req.params._id;
     return Promise.resolve(termTemplData);

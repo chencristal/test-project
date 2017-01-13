@@ -47,20 +47,14 @@ Generator.prototype.generateVariableEditor = function (variable) {
                ng-model="${varName}.value"
                ng-blur="onChange()"
                ng-click="onClick(${varName})"
-               ng-class="[
-                selectedVariable == ${varName} ? 'highlighted-for-scroll' : null,
-                ${varName}.state == 1 ? 'bg-success' : null,
-                ${varName}.state == 2 ? 'bg-danger' : null ]"
+               ng-class="selectedVariable == ${varName} ? 'highlighted-for-scroll' : null"
                ng-disabled="${varName}.state == 1"
                placeholder="{{ ${varName}.text.placeholder }}" />`;
 
     case 'boolean':
       return `
         <span ng-click="onClick(${varName})"
-              ng-class="[
-                selectedVariable == ${varName} ? 'highlighted-for-scroll' : null,
-                ${varName}.state == 1 ? 'bg-success' : null,
-                ${varName}.state == 2 ? 'bg-danger' : null ]">
+              ng-class="selectedVariable == ${varName} ? 'highlighted-for-scroll' : null">
           <label>
             <input type="radio" 
                    ng-model="${varName}.value" 
@@ -73,8 +67,7 @@ Generator.prototype.generateVariableEditor = function (variable) {
             <input type="radio" 
                    ng-model="${varName}.value" 
                    ng-value="false" 
-                   ng-change="onChange()" 
-                   class="{{ variableStates[${varName}.state]['background'] }}"
+                   ng-change="onChange()"
                    ng-disabled="${varName}.state == 1"/>
             <span>{{ ::${varName}.boolean.exclusionText }}</span>
           </label>
@@ -86,9 +79,7 @@ Generator.prototype.generateVariableEditor = function (variable) {
                 ng-options="opt.value as opt.value for opt in ${varName}.variant.options"
                 ng-change="onChange()"
                 ng-click="onClick(${varName})"
-                ng-class="[selectedVariable == ${varName} ? 'highlighted-for-scroll' : null,
-                  ${varName}.state == 1 ? 'bg-success' : null,
-                  ${varName}.state == 2 ? 'bg-danger' : null ]" 
+                ng-class="selectedVariable == ${varName} ? 'highlighted-for-scroll' : null" 
                 ng-disabled="${varName}.state == 1">
         </select>`;
 
@@ -105,10 +96,7 @@ Generator.prototype.generateVariableEditor = function (variable) {
                datepicker-options="dateOptions"
                close-text="Close"
                datepicker-append-to-body="true" 
-               ng-class="[
-                selectedVariable == ${varName} ? 'highlighted-for-scroll' : null,
-                ${varName}.state == 1 ? 'bg-success' : null,
-                ${varName}.state == 2 ? 'bg-danger' : null ]" 
+               ng-class="selectedVariable == ${varName} ? 'highlighted-for-scroll' : null" 
                ng-disabled="${varName}.state == 1"/>`;
 
     case 'default':
@@ -129,8 +117,7 @@ Generator.prototype.generateExpressionHtml = function (token) {
       html += `<span 
         class="
           exp-if 
-          {{ variables.${param1.text}.state == 1 ? 'bg-success' : null }} 
-          {{ variables.${param1.text}.state == 2 ? 'bg-danger' : null }}" 
+          {{ variables.${param1.text}.state == 2 ? 'uncertain-bracket' : null }}" 
         ng-class="{
           selected: variables.${param1.text}.value, 
           unselected: !variables.${param1.text}.value, 
@@ -141,8 +128,7 @@ Generator.prototype.generateExpressionHtml = function (token) {
       html += `<span 
         class="
           exp-unless 
-          {{ variables.${param1.text}.state == 1 ? 'bg-success' : null }} 
-          {{ variables.${param1.text}.state == 2 ? 'bg-danger' : null }}" 
+          {{ variables.${param1.text}.state == 2 ? 'uncertain-bracket' : null }}" 
         ng-class="{
           selected: !variables.${param1.text}.value,
           unselected: variables.${param1.text}.value,
@@ -152,8 +138,7 @@ Generator.prototype.generateExpressionHtml = function (token) {
     case 'ifCond':
       html += `<span 
         class="
-          {{ variables.${param1.text}.state == 1 ? 'bg-success' : null }} 
-          {{ variables.${param1.text}.state == 2 ? 'bg-danger' : null }}" 
+          {{ variables.${param1.text}.state == 2 && variables.${param2.text}.state == 2 && variables.${param3.text}.state == 2 ? 'uncertain-bracket' : null }}" 
         ng-class="{ unselected: !$root.ifCond(`;
       html += `'${param1.text}'`;
       html += `, variables.${param2.text}.value`;
@@ -164,17 +149,14 @@ Generator.prototype.generateExpressionHtml = function (token) {
     case 'ifVariant':
       html += `<span 
         class="
-          {{ variables.${param1.text}.state == 1 ? 'bg-success' : null }} 
-          {{ variables.${param1.text}.state == 2 ? 'bg-danger' : null }}" 
+          {{ variables.${param1.text}.state == 2 && variables.${param1.text}.state == 2 ? 'uncertain-bracket' : null }}" 
         ng-class="{ unselected: !$root.ifVariant(`;
       html += `variables.${param1.text}.value`;
       html += `, '${param2.text}'`;
       html += `) }">`;
       break;
   }
-  html += `{{ variables.${param1.text}.state == 2 ? '[' : null }}`;
   html += _.map(token.tokens, self.generateHtml.bind(self)).join('');
-  html += `{{ variables.${param1.text}.state == 2 ? ']' : null }}`;
   html += `</span>`;
 
   return html;

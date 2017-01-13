@@ -69,6 +69,10 @@ var termTemplateSchema = new mongoose.Schema({
   disabled: {
     type: Boolean,
     default: false
+  },
+  state: {
+    type: Number,
+    default: 0
   }
 });
 
