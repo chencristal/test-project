@@ -76,8 +76,6 @@ angular.module('app').directive('projectEditor', function () {
           if (!$scope.changes.length) {
             $scope.changes = document.getElementsByClassName('unselected highlighted');
           }
-          console.log($scope.changes);
-          console.log($scope.currentChange);
 
         }, 50)
 
