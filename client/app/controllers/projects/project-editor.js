@@ -208,7 +208,7 @@ angular.module('app').directive('projectEditor', function () {
 
       $scope.changeState = function ($event) {
         $event.stopPropagation();
-        var index = this.variable.state || 0;
+        var index = this.variable.state ? this.variable.state : 0;
         if (index == $scope.variableStates.length - 1) {
           index = 0;
         } else {
