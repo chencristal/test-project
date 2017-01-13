@@ -65,9 +65,10 @@ angular.module('app').directive('projectEditor', function () {
         $scope.history = []; // reset history
       });
 
-      $scope.highlight = function (variable, fromEditor) {
+      $scope.highlight = function (variable, fromEditor, currentTarget) {
         fromEditor = typeof fromEditor !== 'undefined' ? fromEditor : false;
-        $scope.selectedVariable = variable;
+	    currentTarget = typeof currentTarget !== 'undefined' ? currentTarget : false;
+	    $scope.selectedVariable = variable;
         $scope.changes = document.getElementsByClassName('selected');
 
         setTimeout(function () {
@@ -84,6 +85,7 @@ angular.module('app').directive('projectEditor', function () {
             var containerEdit = document.getElementById('editor');
             var elementProp = document.getElementsByClassName('highlighted')[0];
             var elementEditor = document.getElementsByClassName('selected highlighted');
+            var containerProp = document.getElementById('properties');
 
             if (!elementEditor.length) {
               elementEditor = document.getElementsByClassName('unselected highlighted');
@@ -92,13 +94,20 @@ angular.module('app').directive('projectEditor', function () {
               }
             }
 
-            var elementPropRect = elementProp.getBoundingClientRect().top;
-            var containerEditRect = containerEdit.getBoundingClientRect().top;
-            var diff = elementPropRect - containerEditRect;
             if (elementEditor.length) {
-              var scrollOffsetTop = elementEditor[0].offsetTop - diff;
-              if (!fromEditor)
-                smooth_scroll_to(containerEdit, scrollOffsetTop, 600);
+              if (!fromEditor) {
+	              var elementPropRect = elementProp.getBoundingClientRect().top;
+	              var containerEditRect = containerEdit.getBoundingClientRect().top;
+	              var diff = elementPropRect - containerEditRect;
+	              var scrollOffsetTop = elementEditor[0].offsetTop - diff - 10;
+	              smooth_scroll_to(containerEdit, scrollOffsetTop, 600);
+              } else {
+	              var elementEditorRect = currentTarget.getBoundingClientRect().top;
+	              var containerPropRect = containerProp.getBoundingClientRect().top;
+	              var diff = elementEditorRect - containerPropRect;
+	              var scrollOffsetTop = elementProp.offsetTop - diff + 10;
+		          smooth_scroll_to(containerProp, scrollOffsetTop, 600);
+              }
             }
 
           }, 50);

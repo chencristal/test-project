@@ -46,14 +46,14 @@ Generator.prototype.generateVariableEditor = function (variable) {
         <input type="text"
                ng-model="${varName}.value"
                ng-blur="onChange()"
-               ng-click="onClick(${varName})"
+               ng-click="onClick(${varName}, $event)"
                ng-class="selectedVariable == ${varName} ? 'highlighted-for-scroll' : null"
                ng-disabled="${varName}.state == 1"
                placeholder="{{ ${varName}.text.placeholder }}" />`;
 
     case 'boolean':
       return `
-        <span ng-click="onClick(${varName})"
+        <span ng-click="onClick(${varName}, $event)"
               ng-class="selectedVariable == ${varName} ? 'highlighted-for-scroll' : null">
           <label>
             <input type="radio" 
@@ -78,7 +78,7 @@ Generator.prototype.generateVariableEditor = function (variable) {
         <select ng-model="${varName}.value"
                 ng-options="opt.value as opt.value for opt in ${varName}.variant.options"
                 ng-change="onChange()"
-                ng-click="onClick(${varName})"
+                ng-click="onClick(${varName}, $event)"
                 ng-class="selectedVariable == ${varName} ? 'highlighted-for-scroll' : null" 
                 ng-disabled="${varName}.state == 1">
         </select>`;
@@ -88,7 +88,7 @@ Generator.prototype.generateVariableEditor = function (variable) {
       return `
         <input type="text"
                ng-model="${varName}.value"
-               ng-click="datePickers.isOpened_${uniqId} = true; onClick(${varName})"
+               ng-click="datePickers.isOpened_${uniqId} = true; onClick(${varName}, $event)"
                ng-required="true"
                ng-change="onChange()"
                uib-datepicker-popup="MMMM d, yyyy"
