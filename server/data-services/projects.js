@@ -1,9 +1,7 @@
 'use strict';
 
-var _            = require('lodash');
-var mongoose     = require('mongoose');
 var customErrors = require('n-custom-errors');
-var Project      = mongoose.model('project');
+var Project      = require('mongoose').model('project');
 
 exports.getProjects = (filter, fields) => {
   return Project
@@ -21,12 +19,7 @@ exports.getProject = (filter, fields) => {
       if (!proj) {
         return customErrors.rejectWithObjectNotFoundError('project is not found');
       }
-      _.each(proj.values, function(variable, index) {
-          if(variable.value == parseFloat(variable.value)) {
-            var newvalue = parseFloat(variable.value);
-            proj.values[index] = {variable: variable.variable, state: variable.state, value: newvalue};
-          }
-      });
+      
       return proj;
     });
 };
