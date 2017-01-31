@@ -49,6 +49,15 @@ form.form-horizontal
                            datepicker-options="dateOptions"
                            close-text="Close"
                            datepicker-append-to-body="true")
+
+      div(ng-if="variable.termType === 'number'")
+        input.form-control(
+          type="number"
+          ng-model="variable.value"
+          ng-blur="save()"
+          placeholder="{{ variable.number.placeholder }}"
+          ng-disabled="variable.state == 1")
+
       button.btn.btn-variable-state(
         type="button"
         class="{{ variableStates[variable.state]['btn-class'] }}"

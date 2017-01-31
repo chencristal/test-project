@@ -102,6 +102,17 @@ Generator.prototype.generateVariableEditor = function (variable) {
                ng-class="selectedVariable == ${varName} ? 'highlighted-for-scroll' : null" 
                ng-disabled="${varName}.state == 1"/></span>`;
 
+    case 'number':
+      return `
+        <span class="{{ ${varName}.state == 2 ? 'uncertain-bracket' : null }}">
+        <input type="number"
+               ng-model="${varName}.value"
+               ng-blur="onChange()"
+               ng-click="onClick(${varName}, $event)"
+               ng-class="selectedVariable == ${varName} ? 'highlighted-for-scroll' : null"
+               ng-disabled="${varName}.state == 1"
+               placeholder="{{ ${varName}.number.placeholder }}" /></span>`;
+
     case 'default':
       // TODO: what to do here?
       return '';

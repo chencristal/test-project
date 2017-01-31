@@ -61,6 +61,9 @@ var termTemplateSchema = new mongoose.Schema({
       default: 'dropdown'
     }
   },
+  number: {
+    placeholder: Number
+  },
   displayName: {
     type: String,
     required: true
