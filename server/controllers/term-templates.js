@@ -168,7 +168,6 @@ exports.importFromCSV = (req, res, next) => {
     if(record.length < 3) continue;
     if (!_.includes(consts.TERM_TYPES, record[0]) || record[1].trim() == '')
       continue;
-    console.log(record);
     var data = {};
     data.termType = record[0];
     data.variable = record[1];
@@ -220,27 +219,25 @@ exports.generateCSV = (req, res, next) => {
       var termTempl = termTempls[i];
       if(!termTempl.help)
         termTempl.help = '';
-      termTempl.variable = termTempl.variable.replace(',',' ');
-      termTempl.displayName = termTempl.displayName.replace(',',' ');
-      termTempl.help = termTempl.help.replace(',',' ');
-      termTempl.variable = termTempl.variable.replace(',',' ');
-      termTempl.variable = termTempl.variable.replace(',',' ');
+      termTempl.variable = termTempl.variable.replace(/,/g,' ');
+      termTempl.displayName = termTempl.displayName.replace(/,/g,' ');
+      termTempl.help = termTempl.help.replace(/,/g,' ');
       output += termTempl.termType + ',' + termTempl.variable + ',' + termTempl.displayName + ',' + termTempl.help;
       if(termTempl.termType == 'text')
-        output += ',' + termTempl.text.placeholder;
+        output += ',' + termTempl.text.placeholder.replace(/,/g, ' ');
       else if(termTempl.termType == 'boolean')
         output += ',' + termTempl.boolean.default;
       else if(termTempl.termType == 'variant') {
-        output += ',' + termTempl.variant.default;
+        output += ',' + termTempl.variant.default.replace(/,/g, ' ');
         if(termTempl.variant.options.length > 0) {
           for(var j = 0; j < termTempl.variant.options.length; j ++)
-            output += ',' + termTempl.variant.options[j].value.replace(',', ' ');
+            output += ',' + termTempl.variant.options[j].value.replace(/,/g, ' ');
         }
       }
       else if(termTempl.termType == 'date')
         output += ',' + termTempl.date.default;
       else if(termTempl.termType == 'number')
-        output += ',' + termTempl.number.placeholder;
+        output += ',' + termTempl.number.placeholder.replace(',', ' ');
     }
     return output;
   }
