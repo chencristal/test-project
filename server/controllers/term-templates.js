@@ -255,7 +255,7 @@ exports.generateCSV = (req, res, next) => {
   .then(convert)
   .then(csv => {
     res.setHeader('Content-disposition', 'attachment; filename=termtemplates.csv');
-    res.setHeader('Content-type', 'text/csv');
+    res.setHeader('Content-type', 'text/csv; charset=utf-8');
     res.status(200).send(csv);
   })
   .catch(next);

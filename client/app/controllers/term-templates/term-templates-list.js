@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('app').controller('TermTemplatesListCtrl',
-  function($scope, $window, $http, $uibModal, $location, Notifier, TermTemplate) {
+  function($scope, $http, $uibModal, $location, Notifier, TermTemplate) {
 
   $scope.isLoading = true;
 
@@ -71,7 +71,8 @@ angular.module('app').controller('TermTemplatesListCtrl',
       data = data.split(/\r|\n/);
       $http.post('/api/v1/term-templates/import', data)
       .success(function(data) {
-        location.reload();
+        Notifier.info('Import is done successfully');
+        $location.path('/term-templates/');
       });
     }
 
