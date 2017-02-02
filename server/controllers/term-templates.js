@@ -168,6 +168,7 @@ exports.importFromCSV = (req, res, next) => {
     if(record.length < 3) continue;
     if (!_.includes(consts.TERM_TYPES, record[0]) || record[1].trim() == '')
       continue;
+    console.log(record);
     var data = {};
     data.termType = record[0];
     data.variable = record[1];
@@ -185,8 +186,14 @@ exports.importFromCSV = (req, res, next) => {
         data.boolean = { default: placeholder, exclusionText: 'Exclude', inclusionText: 'Include' };
       break;
       case 'variant':
-        var options = record.slice(5);
+        var opts = record.slice(5);
+        var options = [];
+        for(var j = 0; j < opts.length; j ++)
+          if(opts[j] != '')
+            options.push({id: j+1, value: opts[j]});
         var placeholder = record[4] ? record[4] : '0';
+        if(options.length == 0 && placeholder != '0')
+          options.push({id: 1, value: placeholder});
         data.variant = { default: placeholder, displayAs: 'dropdown', options: options };
       break;
       case 'date':
@@ -213,13 +220,23 @@ exports.generateCSV = (req, res, next) => {
       var termTempl = termTempls[i];
       if(!termTempl.help)
         termTempl.help = '';
+      termTempl.variable = termTempl.variable.replace(',','');
+      termTempl.displayName = termTempl.displayName.replace(',','');
+      termTempl.help = termTempl.help.replace(',','');
+      termTempl.variable = termTempl.variable.replace(',','');
+      termTempl.variable = termTempl.variable.replace(',','');
       output += termTempl.termType + ',' + termTempl.variable + ',' + termTempl.displayName + ',' + termTempl.help;
       if(termTempl.termType == 'text')
         output += ',' + termTempl.text.placeholder;
       else if(termTempl.termType == 'boolean')
         output += ',' + termTempl.boolean.default;
-      else if(termTempl.termType == 'variant')
+      else if(termTempl.termType == 'variant') {
         output += ',' + termTempl.variant.default;
+        if(termTempl.variant.options.length > 0) {
+          for(var j = 0; j < termTempl.variant.options.length; j ++)
+            output += ',' + termTempl.variant.options[j].value;
+        }
+      }
       else if(termTempl.termType == 'date')
         output += ',' + termTempl.date.default;
       else if(termTempl.termType == 'number')

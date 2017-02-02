@@ -68,7 +68,7 @@ angular.module('app').controller('TermTemplatesListCtrl',
     }
     function upload(data) {
       if(data == false) return;
-      data = data.split(/\r\n/);
+      data = data.split(/\r|\n/);
       $http.post('/api/v1/term-templates/import', data)
       .success(function(data) {
         location.reload();
@@ -76,6 +76,7 @@ angular.module('app').controller('TermTemplatesListCtrl',
     }
 
     var file = $('#csvfile')[0].files[0];
+    $('#csvfile')[0].value = '';
     if(!isValid(file)) {
       Notifier.error(new Error('Invalid file type'));
       return false;
