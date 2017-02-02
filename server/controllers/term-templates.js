@@ -164,7 +164,7 @@ exports.importFromCSV = (req, res, next) => {
     res.status(200).end();
 
   for(var i = 1; i < records.length; i ++) {
-    var record = records[i].split(',');
+    var record = records[i].split(/,(?=(?:[^"]*"[^"]*")*[^"]*$)/);
     if(record.length < 3) continue;
     if (!_.includes(consts.TERM_TYPES, record[0]) || record[1].trim() == '')
       continue;
@@ -173,24 +173,31 @@ exports.importFromCSV = (req, res, next) => {
     data.variable = record[1];
     data.displayName = record[2];
     data.help = record[3] ? record[3] : '';
+    data.help = data.help.replace(/\"/g,'');
     data.state = 0;
     data.disabled = false;
     switch(record[0]) {
       case 'text':
         var placeholder = record[4] ? record[4] : '[ ]';
+        placeholder = placeholder.replace(/\"/g,'');
         data.text = { placeholder: placeholder };
       break;
       case 'boolean':
         var placeholder = record[4].toLowerCase() == 'true' ? true : false;
-        data.boolean = { default: placeholder, exclusionText: 'Exclude', inclusionText: 'Include' };
+        var inclusion = record[5] ? record[5] : 'Include';
+        inclusion = inclusion.replace(/\"/g,'');
+        var exclusion = record[5] ? record[5] : 'Include';
+        exclusion = exclusion.replace(/\"/g,'');
+        data.boolean = { default: placeholder, inclusionText: inclusion, exclusionText: exclusion };
       break;
       case 'variant':
         var opts = record.slice(5);
         var options = [];
         for(var j = 0; j < opts.length; j ++)
           if(opts[j] != '')
-            options.push({id: j+1, value: opts[j]});
+            options.push({id: j+1, value: opts[j].replace(/\"/g,'')});
         var placeholder = record[4] ? record[4] : '0';
+        placeholder = placeholder.replace(/\"/g,'');
         if(options.length == 0 && placeholder != '0')
           options.push({id: 1, value: placeholder});
         data.variant = { default: placeholder, displayAs: 'dropdown', options: options };
@@ -219,25 +226,28 @@ exports.generateCSV = (req, res, next) => {
       var termTempl = termTempls[i];
       if(!termTempl.help)
         termTempl.help = '';
-      termTempl.variable = termTempl.variable.replace(/,/g,' ');
-      termTempl.displayName = termTempl.displayName.replace(/,/g,' ');
-      termTempl.help = termTempl.help.replace(/,/g,' ');
+      termTempl.variable = termTempl.variable;
+      termTempl.displayName = termTempl.displayName.replace(/,/g, ' ');
+      termTempl.help = '"' + termTempl.help + '"';
       output += termTempl.termType + ',' + termTempl.variable + ',' + termTempl.displayName + ',' + termTempl.help;
       if(termTempl.termType == 'text')
-        output += ',' + termTempl.text.placeholder.replace(/,/g, ' ');
-      else if(termTempl.termType == 'boolean')
+        output += ',' + '"' + termTempl.text.placeholder + '"';
+      else if(termTempl.termType == 'boolean') {
         output += ',' + termTempl.boolean.default;
+        output += ',' + '"' + termTempl.boolean.inclusionText + '"';
+        output += ',' + '"' + termTempl.boolean.exclusionText + '"';
+      }
       else if(termTempl.termType == 'variant') {
-        output += ',' + termTempl.variant.default.replace(/,/g, ' ');
+        output += ',' + '"' + termTempl.variant.default + '"';
         if(termTempl.variant.options.length > 0) {
           for(var j = 0; j < termTempl.variant.options.length; j ++)
-            output += ',' + termTempl.variant.options[j].value.replace(/,/g, ' ');
+            output += ',' + '"' + termTempl.variant.options[j].value + '"';
         }
       }
       else if(termTempl.termType == 'date')
         output += ',' + termTempl.date.default;
       else if(termTempl.termType == 'number')
-        output += ',' + termTempl.number.placeholder.replace(',', ' ');
+        output += ',' + termTempl.number.placeholder;
     }
     return output;
   }
