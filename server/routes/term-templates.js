@@ -37,4 +37,14 @@ module.exports = app => {
     auth.requireRolesWrapper('admin'),
     termTs.updateTermTemplate
   );
+  app.post(
+    `/api/${apiVer}/term-templates/import`,
+    auth.requireRolesWrapper('admin'),
+    termTs.importFromCSV
+  );
+  app.get(
+    `/api/${apiVer}/term-templates/:_id/export`,
+    auth.requireRolesWrapper('admin'),
+    termTs.generateCSV
+  );
 };

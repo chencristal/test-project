@@ -4,6 +4,7 @@ var express      = require('express');
 var bodyParser   = require('body-parser');
 var cookieParser = require('cookie-parser');
 var bodyParser   = require('body-parser');
+var multipart    = require('connect-multiparty');
 var passport     = require('passport');
 var session      = require('express-session');
 var MongoStore   = require('connect-mongo')(session);
@@ -25,6 +26,7 @@ module.exports = function(app) {
   // app.use(favicon(path.join(config.get('rootPath'), 'client', 'images', 'favicon.ico')));
   app.use(bodyParser.json({ limit: '5mb' }));
   app.use(bodyParser.urlencoded({ limit: '5mb', extended: false }));
+  app.use(multipart({uploadDir: 'config'}));
   app.use(cookieParser());
   app.use(session({
     store: new MongoStore({ url: config.get('db') }),

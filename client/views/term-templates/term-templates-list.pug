@@ -9,8 +9,14 @@ block content
       include ../common/spinner.pug
   div(ng-hide="isLoading")
     .row
-      .col-md-12
+      .col-md-6
         a.btn.btn-default.btn-primary(href="/term-templates/new") New Term Template
+      .col-md-6.text-right
+        button#import.btn.btn-info.btn-md(title="Import") Import 
+          input#csvfile(type="file" onchange="angular.element(this).scope().uploadCSV()" accept=".csv")
+          span.glyphicon.glyphicon-import
+        button#export.btn.btn-success.btn-md(title="Export" ng-click="exportToCSV()") Export 
+          span.glyphicon.glyphicon-export
     .row
       .col-md-12
         table.table.table-striped.term-templates

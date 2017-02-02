@@ -42,6 +42,11 @@ exports.createTermTemplate = termTemplData => {
     });
 };
 
+exports.createTermTemplateFromCSV = termTemplData => {
+  TermTemplate.create(termTemplData);
+  return true;
+};
+
 exports.saveTermTemplate = termTempl => {
   return termTempl.save();
 };

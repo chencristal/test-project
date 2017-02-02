@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('app').controller('TermTemplatesListCtrl',
-  function($scope, $uibModal, $location, Notifier, TermTemplate) {
+  function($scope, $window, $http, $uibModal, $location, Notifier, TermTemplate) {
 
   $scope.isLoading = true;
 
@@ -38,5 +38,66 @@ angular.module('app').controller('TermTemplatesListCtrl',
       .finally(function() {
         $scope.isSaving = false;
       });
+  };
+
+  $scope.uploadCSV = function() {
+    function isValid(file) {
+      var filename = file.name;
+      var ext = filename.split('.').pop();
+      return ext == 'csv';
+    }
+    function hasDuplicates(data) {
+      var records = data.split(/\n/);
+      var termVars = [];
+      for(var i = 0; i < $scope.termTemplates.length; i ++) {
+        var elem = $scope.termTemplates[i];
+        if(elem.variable)
+          termVars.push(elem.variable);
+      }
+      
+      for(var i = 0; i < records.length; i ++) {
+        var record = records[i].split(',');
+        var varname = record[1];  //Variable name
+        if(termVars.indexOf(varname) > -1) {
+          Notifier.error(new Error(), 'Duplicate data entry');
+          return false;
+        }
+        termVars.push(varname);
+      }
+      return data;
+    }
+    function upload(data) {
+      if(data == false) return;
+      data = data.split(/\r\n/);
+      $http.post('/api/v1/term-templates/import', data)
+      .success(function(data) {
+        location.reload();
+      });
+    }
+
+    var file = $('#csvfile')[0].files[0];
+    if(!isValid(file)) {
+      Notifier.error(new Error(), 'Invalid file type');
+      return false;
+    }
+    var promise = new Promise(function(resolve, reject) {
+      var f = new FileReader();
+      f.onload = function() {
+        var data = f.result;
+        resolve(data);
+      }
+      f.onerror = function(e) {
+        reject(e);
+      }
+      f.readAsText(file);
+    });
+    promise
+      .then(hasDuplicates, e => Notifier.error(e, "Error occurred while reading the file"))
+      .then(upload);
+    
+  };
+  $scope.exportToCSV = function() {
+    var url = '/api/v1/term-templates/skdjfalk/export';
+    $window.open(url, '_blank');
   };
 });

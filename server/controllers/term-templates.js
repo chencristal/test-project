@@ -2,6 +2,7 @@
 
 var _              = require('lodash');
 var Promise        = require('bluebird');
+var fs             = require('fs');
 var customErrors   = require('n-custom-errors');
 var consts         = require('../consts');
 var termTsSrvc     = require('../data-services/term-templates');
@@ -155,6 +156,50 @@ exports.enableTermTemplate = (req, res, next) => {
     })
     .then(() => res.status(203).end())
     .catch(next);
+};
+
+exports.importFromCSV = (req, res, next) => {
+  var records = req.body;
+ 
+  for(var i = 0; i < records.length; i ++) {
+    var record = records[i].split(',');
+    if(record.length < 3) continue;
+    var data = {};
+    data.termType = record[0] ? record[0] : 'text';
+    data.variable = record[1] ? record[1] : '';
+    data.displayName = record[2] ? record[2] : '';
+    data.help = record[3] ? record[3] : '';
+    data.state = 0;
+    data.disabled = false;
+    data.text = { placeholder: '' };
+    data.variant  = { default: '0', displayAs: 'dropdown', options: [] };
+    data.boolean = { default: false, exclusionText: 'Exclude', inclusionText: 'Include' };
+    data.number = { placeholder: '' };
+    
+    termTsSrvc.createTermTemplateFromCSV(data);
+  }
+
+  res.status(200).end();
+};
+exports.generateCSV = (req, res, next) => {
+  function convert(termTempls) {
+    var output = '';
+    output += 'TermType,Variable,DisplayName,State,Disabled';
+    for(var i = 0; i < termTempls.length; i ++) {
+      output += '\r\n';
+      var termTempl = termTempls[i];
+      output += termTempl.termType + ',' + termTempl.variable + ',' + termTempl.displayName + ',' + termTempl.state + ',' + termTempl.disabled;
+    }
+    return output;
+  }
+  termTsSrvc.getTermTemplates({})
+  .then(convert)
+  .then(csv => {
+    res.setHeader('Content-disposition', 'attachment; filename=termtemplates.csv');
+    res.setHeader('Content-type', 'text/csv');
+    res.status(200).send(csv);
+  })
+  .catch(next);
 };
 
 function _validateId(termTemplId) {
