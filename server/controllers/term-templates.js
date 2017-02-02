@@ -220,11 +220,11 @@ exports.generateCSV = (req, res, next) => {
       var termTempl = termTempls[i];
       if(!termTempl.help)
         termTempl.help = '';
-      termTempl.variable = termTempl.variable.replace(',','');
-      termTempl.displayName = termTempl.displayName.replace(',','');
-      termTempl.help = termTempl.help.replace(',','');
-      termTempl.variable = termTempl.variable.replace(',','');
-      termTempl.variable = termTempl.variable.replace(',','');
+      termTempl.variable = termTempl.variable.replace(',',' ');
+      termTempl.displayName = termTempl.displayName.replace(',',' ');
+      termTempl.help = termTempl.help.replace(',',' ');
+      termTempl.variable = termTempl.variable.replace(',',' ');
+      termTempl.variable = termTempl.variable.replace(',',' ');
       output += termTempl.termType + ',' + termTempl.variable + ',' + termTempl.displayName + ',' + termTempl.help;
       if(termTempl.termType == 'text')
         output += ',' + termTempl.text.placeholder;
@@ -234,7 +234,7 @@ exports.generateCSV = (req, res, next) => {
         output += ',' + termTempl.variant.default;
         if(termTempl.variant.options.length > 0) {
           for(var j = 0; j < termTempl.variant.options.length; j ++)
-            output += ',' + termTempl.variant.options[j].value;
+            output += ',' + termTempl.variant.options[j].value.replace(',', ' ');
         }
       }
       else if(termTempl.termType == 'date')
