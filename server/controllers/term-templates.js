@@ -160,21 +160,44 @@ exports.enableTermTemplate = (req, res, next) => {
 
 exports.importFromCSV = (req, res, next) => {
   var records = req.body;
- 
-  for(var i = 0; i < records.length; i ++) {
+  if(!Array.isArray(records) || records.length < 2)
+    res.status(200).end();
+
+  for(var i = 1; i < records.length; i ++) {
     var record = records[i].split(',');
     if(record.length < 3) continue;
+    if (!_.includes(consts.TERM_TYPES, record[0]) || record[1].trim() == '')
+      continue;
     var data = {};
-    data.termType = record[0] ? record[0] : 'text';
-    data.variable = record[1] ? record[1] : '';
-    data.displayName = record[2] ? record[2] : '';
+    data.termType = record[0];
+    data.variable = record[1];
+    data.displayName = record[2];
     data.help = record[3] ? record[3] : '';
     data.state = 0;
     data.disabled = false;
-    data.text = { placeholder: '' };
-    data.variant  = { default: '0', displayAs: 'dropdown', options: [] };
-    data.boolean = { default: false, exclusionText: 'Exclude', inclusionText: 'Include' };
-    data.number = { placeholder: '' };
+    switch(record[0]) {
+      case 'text':
+        var placeholder = record[4] ? record[4] : '[ ]';
+        data.text = { placeholder: placeholder };
+      break;
+      case 'boolean':
+        var placeholder = record[4].toLowerCase() == 'true' ? true : false;
+        data.boolean = { default: placeholder, exclusionText: 'Exclude', inclusionText: 'Include' };
+      break;
+      case 'variant':
+        var options = record.slice(5);
+        var placeholder = record[4] ? record[4] : '0';
+        data.variant = { default: placeholder, displayAs: 'dropdown', options: options };
+      break;
+      case 'date':
+        placeholder = record[4] ? record[4] : '';
+        data.date = { default: placeholder };
+      break;
+      case 'number':
+        var placeholder = parseFloat(record[4])? parseFloat(record[4]) : 0;
+        data.number = { placeholder: placeholder };
+      break;
+    }    
     
     termTsSrvc.createTermTemplateFromCSV(data);
   }
@@ -184,11 +207,23 @@ exports.importFromCSV = (req, res, next) => {
 exports.generateCSV = (req, res, next) => {
   function convert(termTempls) {
     var output = '';
-    output += 'TermType,Variable,DisplayName,State,Disabled';
+    output += 'TermType,Variable,DisplayName,Help,Default';
     for(var i = 0; i < termTempls.length; i ++) {
       output += '\r\n';
       var termTempl = termTempls[i];
-      output += termTempl.termType + ',' + termTempl.variable + ',' + termTempl.displayName + ',' + termTempl.state + ',' + termTempl.disabled;
+      if(!termTempl.help)
+        termTempl.help = '';
+      output += termTempl.termType + ',' + termTempl.variable + ',' + termTempl.displayName + ',' + termTempl.help;
+      if(termTempl.termType == 'text')
+        output += ',' + termTempl.text.placeholder;
+      else if(termTempl.termType == 'boolean')
+        output += ',' + termTempl.boolean.default;
+      else if(termTempl.termType == 'variant')
+        output += ',' + termTempl.variant.default;
+      else if(termTempl.termType == 'date')
+        output += ',' + termTempl.date.default;
+      else if(termTempl.termType == 'number')
+        output += ',' + termTempl.number.placeholder;
     }
     return output;
   }

@@ -59,7 +59,7 @@ angular.module('app').controller('TermTemplatesListCtrl',
         var record = records[i].split(',');
         var varname = record[1];  //Variable name
         if(termVars.indexOf(varname) > -1) {
-          Notifier.error(new Error(), 'Duplicate data entry');
+          Notifier.error(new Error('Duplicate data entry') );
           return false;
         }
         termVars.push(varname);
@@ -77,7 +77,7 @@ angular.module('app').controller('TermTemplatesListCtrl',
 
     var file = $('#csvfile')[0].files[0];
     if(!isValid(file)) {
-      Notifier.error(new Error(), 'Invalid file type');
+      Notifier.error(new Error('Invalid file type'));
       return false;
     }
     var promise = new Promise(function(resolve, reject) {
@@ -92,12 +92,12 @@ angular.module('app').controller('TermTemplatesListCtrl',
       f.readAsText(file);
     });
     promise
-      .then(hasDuplicates, e => Notifier.error(e, "Error occurred while reading the file"))
+      .then(hasDuplicates, e => Notifier.error(e))
       .then(upload);
     
   };
   $scope.exportToCSV = function() {
-    var url = '/api/v1/term-templates/skdjfalk/export';
+    var url = '/api/v1/term-templates/234kdjfi2l/export';
     $window.open(url, '_blank');
   };
 });
