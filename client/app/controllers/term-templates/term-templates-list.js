@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('app').controller('TermTemplatesListCtrl',
-  function($scope, $http, $uibModal, $location, Notifier, TermTemplate) {
+  function($scope, $window, $http, $uibModal, $location, Notifier, TermTemplate) {
 
   $scope.isLoading = true;
 
