@@ -215,7 +215,7 @@ exports.importFromCSV = (req, res, next) => {
     termTsSrvc.createTermTemplateFromCSV(data);
   }
 
-  res.status(200).end();
+  res.status(200).send('Import of ' + (records.length - 1) + ' records completed successfully');
 };
 exports.generateCSV = (req, res, next) => {
   function convert(termTempls) {

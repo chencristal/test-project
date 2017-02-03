@@ -59,7 +59,7 @@ angular.module('app').controller('TermTemplatesListCtrl',
         var record = records[i].split(',');
         var varname = record[1];  //Variable name
         if(termVars.indexOf(varname) > -1) {
-          Notifier.error(new Error('Duplicate data entry') );
+          Notifier.error(new Error('Duplicate entry found: ' + varname) );
           return false;
         }
         termVars.push(varname);
@@ -69,9 +69,15 @@ angular.module('app').controller('TermTemplatesListCtrl',
     function upload(data) {
       if(data == false) return;
       data = data.split(/\r|\n/);
+      for(var i = 0; i < data.length; i ++) {
+        if(data[i] == '') {
+          data.splice(i,1);
+          i--;
+        }
+      }
       $http.post('/api/v1/term-templates/import', data)
-      .success(function(data) {
-        Notifier.info('Import is done successfully');
+      .success(function(res) {
+        Notifier.info(res);
         $location.path('/term-templates/');
       });
     }
