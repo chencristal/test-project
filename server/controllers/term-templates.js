@@ -220,7 +220,7 @@ exports.importFromCSV = (req, res, next) => {
 exports.generateCSV = (req, res, next) => {
   function convert(termTempls) {
     var output = '';
-    output += 'TermType,Variable,DisplayName,Help,Default';
+    output += 'TermType,Variable,DisplayName,Help,Default,Option1,Option2';
     for(var i = 0; i < termTempls.length; i ++) {
       output += '\r\n';
       var termTempl = termTempls[i];
