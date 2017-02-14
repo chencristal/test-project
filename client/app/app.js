@@ -310,6 +310,19 @@ angular.module('app').run(function($rootScope) {
     }
   };
 
+  $rootScope.math = function(v1, op, v2) {
+    switch (op) {
+      case 'add':
+        return v1 + v2;
+      case 'substract':
+        return v1 - v2;
+      case 'multiply':
+        return v1 * v2;
+      case 'divide':
+        return v1 / v2;
+    }
+  }
+
   $rootScope.ifVariant = function(v, opt) {
     return v === opt;
   };

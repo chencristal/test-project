@@ -28,7 +28,7 @@ angular.module('app').controller('ProvisionTemplateEditCtrl',
       .$update()
       .then(function() {
         Notifier.info('ProvisionTemplate updated successfully');
-        $location.path('/provision-templates');
+        // $location.path('/provision-templates');  // chen_debug
       })
       .catch(function(err) {
         Notifier.error(err, 'Unable to save record');

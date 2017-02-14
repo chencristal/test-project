@@ -51,7 +51,15 @@ function _parseToken(token) {
         text: token.original
       };
     case 'MustacheStatement':
-      return _parseToken(token.path);
+      if (token.path.original === 'math' && _.size(token.params) === 3) {  // chen_debug
+        return {
+          type: 'statement',
+          text: token.path.original,
+          params: _.map(token.params, _parseToken),
+          tokens: _.map(_.get(token, 'program.body'), _parseToken)
+        };
+      } else 
+        return _parseToken(token.path);
     case 'BlockStatement':
       return {
         type: 'statement',

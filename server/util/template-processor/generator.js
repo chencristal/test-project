@@ -153,11 +153,8 @@ Generator.prototype.generateExpressionHtml = function (token) {
       html += `<span 
         class="
           {{ variables.${param1.text}.state == 2 && variables.${param2.text}.state == 2 && variables.${param3.text}.state == 2 ? 'uncertain-bracket' : null }}" 
-        ng-class="{ unselected: !$root.ifCond(`;
-      html += `'${param1.text}'`;
-      html += `, variables.${param2.text}.value`;
-      html += `, variables.${param3.text}.value`;
-      html += `) }">`;
+        ng-class="{ unselected: !$root.ifCond('${param1.text}', variables.${param2.text}.value, 
+        variables.${param3.text}.value) }">`;
       break;
 
     case 'ifVariant':
@@ -168,6 +165,16 @@ Generator.prototype.generateExpressionHtml = function (token) {
       html += `variables.${param1.text}.value`;
       html += `, '${param2.text}'`;
       html += `) }">`;
+      break;
+
+    case 'math':  // chen_debug
+      html = `
+        <span class="{{ variables.${param1.text}.state == 2 ? 'uncertain-bracket' : null }}">
+        <label ng-class="selectedVariable == variables.${param1.text} ? 'highlighted-for-scroll' : null"
+               ng-disabled="variables.${param1.text}.state == 1"
+               placeholder="{{ variables.${param1.text}.number.placeholder }}">
+               {{$root.math(variables.${param1.text}.value, '${param2.text}', variables.${param3.text}.value)}}
+        </label>`;
       break;
   }
   html += _.map(token.tokens, self.generateHtml.bind(self)).join('');

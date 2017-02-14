@@ -70,6 +70,9 @@ Validator.prototype.validateStatement = function(statement, params) {
     case 'ifCond':
       requiredParamsCount = 3;
       break;
+    case 'math':
+      requiredParamsCount = 3;
+      break;
     case 'ifVariant':
       requiredParamsCount = 2;
       break;
@@ -90,6 +93,10 @@ Validator.prototype.validateStatement = function(statement, params) {
     params = _.tail(params);
   } else if (statement === 'ifVariant') {
     params = _.take(params, 1);
+  } else if (statement === 'math') {  // chen_debug
+    this.validateMathCondOperator.call(this, params[1].type, params[1].text);
+    params = _.filter(params, _.iteratee(['type', 'variable']));
+    // params = _.tail(params);
   }
 
   this.validateParams.call(this, params);
@@ -102,5 +109,16 @@ Validator.prototype.validateIfCondOperator = function(type, operator) {
   }
   if (!_.includes(consts.IFCOND_OPERATORS, operator)) {
     throw customErrors.getUnprocessableRequestError(`Unexpected ifCond operator: ${operator}`);
+  }
+};
+
+// chen_debug
+Validator.prototype.validateMathCondOperator = function(type, operator) {
+  if (type !== 'operator') {
+    throw customErrors.getUnprocessableRequestError(
+      `Expected an operator (add, substract, etc), got ${type}`);
+  }
+  if (!_.includes(consts.MATH_OPERATORS, operator)) {
+    throw customErrors.getUnprocessableRequestError(`Unexpected math operator: ${operator}`);
   }
 };
