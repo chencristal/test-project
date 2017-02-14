@@ -1,5 +1,5 @@
 # celant
-TODO
+This is a document assembly program written in MEAN stack.
 
 
 ### Used packages
@@ -7,7 +7,7 @@ TODO
  - Frontend - `angular v1.x`
  - CSS preprocessor - `styl`
  - CSS framework - `boostrap`
- - View engine - `jade`
+ - View engine - `pug`
  - Database - `mongodb`
  - Promises - `bluebird`
  - Task runner - `gulp`
@@ -76,7 +76,8 @@ $ npm start
 - [test] - unit and functional tests
 
 ### License
-TODO
+Proprietary.  All rights reserved. 
 
 ### Authors
 **Alexander Mac** ([amatsibarov@gmail.com](mailto:amatsibarov@gmail.com))
+**Mikhail Golub**
