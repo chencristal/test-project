@@ -9,7 +9,7 @@ form.form-horizontal
     class="{{ variableStates[variable.state]['background'] }}")
     label.col-md-5.control-label {{ ::variable.displayName }}
     .col-md-7.variable
-      div(ng-if="variable.termType === 'text'ff")
+      div(ng-if="variable.termType === 'text'")
         input.form-control(
           type="text"
           ng-model="variable.value"

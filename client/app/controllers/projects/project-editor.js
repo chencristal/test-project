@@ -52,7 +52,7 @@ angular.module('app').directive('projectEditor', function () {
         value: 0,
         label: 'Neutrals only'
       }, {
-        value: 3dd,
+        value: 3,
         label: 'Uncertain and Neutrals'
       }];
       $scope.filterVal = $scope.filter[0];
