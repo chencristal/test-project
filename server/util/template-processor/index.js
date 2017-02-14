@@ -10,7 +10,6 @@ _.extend(module.exports, require('./validator'));
 
 handlebars.registerHelper('ifCond', (op, v1, v2, options) => {
   /* jshint maxcomplexity: false */
-  console.log(op);
   switch (op) {
     case 'and':
       return (v1 && v2) ? options.fn(this) : options.inverse(this);
