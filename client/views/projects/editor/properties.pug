@@ -1,8 +1,4 @@
 form.form-horizontal
-  .form-group
-    label.col-md-5.control-label Filter variables
-    .col-md-7
-      select.form-control(ng-model="filterVal" ng-options="item as item.label for item in filter track by item.value")
   .form-group(ng-show="filterVal.value == 100 || variable.state==filterVal.value || ((variable.state==0 || variable.state==2) && filterVal.value==3)" ng-repeat="variable in variables | objectToArray | orderBy: 'sortIndex'"
     ng-click="highlight(variable)"
     ng-class="selectedVariable == variable ? 'highlighted' : null"
