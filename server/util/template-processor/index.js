@@ -57,3 +57,7 @@ handlebars.registerHelper('math', (v1, op, v2) => {
 handlebars.registerHelper('ifVariant', (v, opt, options) => {
   return v === opt ? options.fn(this) : options.inverse(this);
 });
+
+handlebars.registerHelper('add', (v1,v2,options) => {
+  return 'test';
+});
