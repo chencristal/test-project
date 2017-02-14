@@ -39,6 +39,23 @@ angular.module('app').directive('projectEditor', function () {
           'span-class': 'fa fa-question'
         }
       ];
+      $scope.filter = [{
+        value: 100,
+        label: 'All states'
+      }, {
+        value: 1,
+        label: 'Confirmed states only'
+      }, {
+        value: 2,
+        label: 'Uncertain states only'
+      }, {
+        value: 0,
+        label: 'Neutrals only'
+      }, {
+        value: 3,
+        label: 'Uncertain and Neutrals'
+      }];
+      $scope.filterVal = $scope.filter[0];
 
       $scope.history = []; // history for undo-redo
       $scope.currentPos = 0; // index of current position in history array

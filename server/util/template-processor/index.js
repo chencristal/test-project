@@ -35,3 +35,7 @@ handlebars.registerHelper('ifCond', (op, v1, v2, options) => {
 handlebars.registerHelper('ifVariant', (v, opt, options) => {
   return v === opt ? options.fn(this) : options.inverse(this);
 });
+
+handlebars.registerHelper('add', (v1,v2,options) => {
+  return 'test';
+});
