@@ -313,13 +313,20 @@ angular.module('app').run(function($rootScope) {
   $rootScope.math = function(v1, op, v2) {
     switch (op) {
       case 'add':
+      case 'plus':
         return v1 + v2;
-      case 'substract':
+      case 'subtract':
+      case 'minus':
         return v1 - v2;
       case 'multiply':
+      case 'multiplied by':
         return v1 * v2;
       case 'divide':
+      case 'divided by':
         return v1 / v2;
+      case 'modulus':
+      case 'modulo':
+        return v1 % v2;
     }
   }
 

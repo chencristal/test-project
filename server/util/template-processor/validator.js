@@ -116,7 +116,7 @@ Validator.prototype.validateIfCondOperator = function(type, operator) {
 Validator.prototype.validateMathCondOperator = function(type, operator) {
   if (type !== 'operator') {
     throw customErrors.getUnprocessableRequestError(
-      `Expected an operator (add, substract, etc), got ${type}`);
+      `Expected an operator (add, subtract, etc), got ${type}`);
   }
   if (!_.includes(consts.MATH_OPERATORS, operator)) {
     throw customErrors.getUnprocessableRequestError(`Unexpected math operator: ${operator}`);

@@ -9,7 +9,8 @@ module.exports = {
   PROVISION_STYLES: ['sheet', 'normal'],
   HANDLEBAR: {
     STATEMENTS: ['if', 'unless', 'ifCond', 'ifVariant', 'math', 'add'],
-    MATH_OPERATORS: ['add', 'substract', 'multiply', 'divide'],   // chen_debug
+    MATH_OPERATORS: ['add', 'subtract', 'multiply', 'divide', 'modulus',
+                    'plus', 'minus', 'multiplied by', 'divided by', 'modulo'],   // chen_debug
     IFCOND_OPERATORS: ['and', 'not-and', 'and-not', 'not-and-not', 'or', 'not-or', 'or-not', 'not-or-not']
   },
   CHARS: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'

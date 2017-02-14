@@ -38,16 +38,22 @@ handlebars.registerHelper('ifCond', (op, v1, v2, options) => {
 //
 handlebars.registerHelper('math', (v1, op, v2) => {
   /* jshint maxcomplexity: false */
-  console.log(op);
   switch (op) {
     case 'add':
+    case 'plus':
       return v1 + v2;
-    case 'substract':
+    case 'subtract':
+    case 'minus':
       return v1 - v2;
     case 'multiply':
+    case 'multiplied by':
       return v1 * v2;
     case 'divide':
+    case 'divided by':
       return v1 / v2;
+    case 'modulus':
+    case 'modulo':
+      return v1 % v2;
     default:
       throw new Error('Invalid operator');
   }
