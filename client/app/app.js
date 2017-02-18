@@ -310,7 +310,7 @@ angular.module('app').run(function($rootScope) {
     }
   };
 
-  $rootScope.math = function(v1, op, v2) {
+  $rootScope.math = function(v1, op, v2) {  // chen_debug
     switch (op) {
       case 'add':
       case 'plus':

@@ -77,6 +77,11 @@ function _parseToken(token) {
         type: 'variable',
         text: token.original
       };
+    case 'NumberLiteral':
+      return {
+        type: 'constant',
+        text: token.value
+      }
     default:
       throw new Error('Invalid token type: ' + token.type);
   }

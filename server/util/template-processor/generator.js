@@ -168,13 +168,7 @@ Generator.prototype.generateExpressionHtml = function (token) {
       break;
 
     case 'math':  // chen_debug
-      html = `
-        <span class="{{ variables.${param1.text}.state == 2 ? 'uncertain-bracket' : null }}">
-        <label ng-class="selectedVariable == variables.${param1.text} ? 'highlighted-for-scroll' : null"
-               ng-disabled="variables.${param1.text}.state == 1"
-               placeholder="{{ variables.${param1.text}.number.placeholder }}">
-               {{$root.math(variables.${param1.text}.value, '${param2.text}', variables.${param3.text}.value)}}
-        </label>`;
+      html = self.generateMathHtml.call(self, token);
       break;
   }
   html += _.map(token.tokens, self.generateHtml.bind(self)).join('');
@@ -182,6 +176,90 @@ Generator.prototype.generateExpressionHtml = function (token) {
 
   return html;
 };
+
+Generator.prototype.generateMathHtml = function(token) {    // chen_debug
+  var self = this;
+  var html = '';
+  var param1 = token.params[0];
+  var param2 = token.params[1];
+  var param3 = token.params[2];
+  var date1 = _.find(self.allowedVariables, 
+    {
+      'variable': token.params[0].text, 
+      'termType': 'date'
+    });
+
+  if (date1 === undefined) {    // first variable is not date
+    if (param1.type == 'variable' && param3.type == 'variable') {
+      html = `
+          <span class="{{ variables.${param1.text}.state == 2 ? 'uncertain-bracket' : null }}">
+          <label ng-class="selectedVariable == variables.${param1.text} ? 'highlighted-for-scroll' : null"
+                 ng-disabled="variables.${param1.text}.state == 1"
+                 placeholder="{{ variables.${param1.text}.number.placeholder }}">
+                 {{$root.math(variables.${param1.text}.value, '${param2.text}', variables.${param3.text}.value)}}
+          </label>`;
+    }
+    else if (param1.type == 'variable' && param3.type == 'constant') {
+      html = `
+          <span class="{{ variables.${param1.text}.state == 2 ? 'uncertain-bracket' : null }}">
+          <label ng-class="selectedVariable == variables.${param1.text} ? 'highlighted-for-scroll' : null"
+                 ng-disabled="variables.${param1.text}.state == 1"
+                 placeholder="{{ variables.${param1.text}.number.placeholder }}">
+                 {{$root.math(variables.${param1.text}.value, '${param2.text}', ${param3.text})}}
+          </label>`;
+    }
+    else if (param1.type == 'constant' && param3.type == 'variable') {
+      html = `
+          <span class="{{ variables.${param3.text}.state == 2 ? 'uncertain-bracket' : null }}">
+          <label ng-class="selectedVariable == variables.${param3.text} ? 'highlighted-for-scroll' : null"
+                 ng-disabled="variables.${param3.text}.state == 1"
+                 placeholder="{{ variables.${param3.text}.number.placeholder }}">
+                 {{$root.math(${param1.text}, '${param2.text}', variables.${param3.text}.value)}}
+          </label>`;
+    }
+    else if (param1.type == 'constant' && param3.type == 'constant') {
+      html = `
+          <span>
+          <label>
+                 {{$root.math(${param1.text}, '${param2.text}', ${param3.text})}}
+          </label>`;
+    }
+  }
+  else {          // first variable is date actually
+
+    var varName = `variables.${date1.variable}`;
+    var offsetAttr = ``;
+    var uniqId = _getRandomString();
+
+    if (param2.text == 'add' || param2.text == 'add-date' || param2.text == 'add-day') {
+      offsetAttr = `ng-offset="${param3.text}"`;
+    } else if (param2.text == 'add-month') {
+      offsetAttr = `ng-offset-month="${param3.text}"`;
+    } else if (param2.text == 'add-year') {
+      offsetAttr = `ng-offset-year="${param3.text}"`;
+    }
+
+    html =  `
+        <span class="{{ ${varName}.state == 2 ? 'uncertain-bracket' : null }}">
+        <input type="text"
+               class="{{ ${varName}.state == 2 ? 'uncertain-bracket' : null }}"
+               ng-model="${varName}.value"
+               ${offsetAttr}
+               ng-click="datePickers.isOpened_${uniqId} = true; onClick(${varName}, $event)"
+               ng-required="true"
+               ng-change="onChange()"
+               uib-datepicker-popup="MMMM d, yyyy"
+               is-open="datePickers.isOpened_${uniqId}"
+               datepicker-options="dateOptions"
+               close-text="Close"
+               datepicker-append-to-body="true" 
+               ng-class="selectedVariable == ${varName} ? 'highlighted-for-scroll' : null" 
+               ng-disabled="${varName}.state == 1"/></span>`;
+  }
+  
+
+  return html;
+}
 
 function _getRandomString() {
   return Math.random().toString(36).slice(2);

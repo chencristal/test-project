@@ -169,7 +169,7 @@ function _parseTemplate(provisionTemplData) {
         .then(html => {
           var variables = _.map(termTempls, 'variable');
           var usedVariables = templProc.getUsedVariables(tokensRoot, variables);
-          var usedTermTempls = _.filter(termTempls, tt => _.includes(usedVariables, tt.variable));
+          var usedTermTempls = _.filter(termTempls, tt => _.includes(usedVariables, tt.variable));;
           provisionTemplData.termTemplates = usedTermTempls;
           provisionTemplData.templateHtml = html;
           provisionTemplData.orderedVariables = usedVariables;
