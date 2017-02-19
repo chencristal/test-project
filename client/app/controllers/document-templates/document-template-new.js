@@ -24,9 +24,9 @@ angular.module('app').controller('DocumentTemplateNewCtrl',
   };
 
   $scope.refreshProvisionTemplates = function(query) {
-    if (!query) {
-      return [];
-    }
+    // if (!query) {
+    //   return [];
+    // }
     return ProvisionTemplate
       .query({ query: query })
       .$promise

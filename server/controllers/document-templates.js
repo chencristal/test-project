@@ -48,11 +48,20 @@ exports.getDocumentTemplates = (req, res, next) => {
     return data;
   }
 
+  function resetOrder(docTempls) {
+    var orderedTempls = [];
+    _.each(req.query.includes, function(id) {
+      var docTempl = _.find(docTempls, d => {return d._id == id});
+      orderedTempls.push(docTempl);
+    });
+    res.send(orderedTempls);
+  }
+
   parseParams(req.query)
     .then(validateParams)
     .then(buildFilter)
     .then(data => docTemplsSrvc.getDocumentTemplates(data.filter, data.fields.join(' ')))
-    .then(docTempls => res.send(docTempls))
+    .then(resetOrder)
     .catch(next);
 };
 

@@ -12,9 +12,9 @@ angular.module('app').controller('ProjectTemplateNewCtrl',
   $scope.documentTemplates = [];
 
   $scope.refreshDocumentTemplates = function(query) {
-    if (!query) {
-      return [];
-    }
+    // if (!query) {
+    //   return [];
+    // }
     return DocumentTemplate
       .query({ query: query })
       .$promise
