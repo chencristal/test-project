@@ -12,9 +12,9 @@ angular.module('app').controller('DocumentTemplateNewCtrl',
   $scope.provisionTemplates = [];
 
   $scope.refreshDocumentTypes = function(query) {
-    if (!query) {
-      return [];
-    }
+    // if (!query) {
+    //   return [];
+    // }
     return DocumentTemplateType
       .query({ query: query })
       .$promise
