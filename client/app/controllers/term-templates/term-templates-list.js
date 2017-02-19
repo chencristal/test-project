@@ -14,6 +14,8 @@ angular.module('app').controller('TermTemplatesListCtrl',
       .then(function(termTemplates) {
         $scope.termTemplates = termTemplates;
         $scope.isLoading = false;
+        $scope.orderBy = 'termType';
+        $scope.reverseSort = false;
       });
   })();
 

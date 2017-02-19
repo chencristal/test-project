@@ -23,14 +23,23 @@ block content
           thead
             tr
               td.term-type
-                strong Term type
+                strong(ng-click="orderBy='termType'; reverseSort=!reverseSort") Term type &nbsp;&nbsp;
+                  span(ng-show="orderBy == 'termType'")
+                    span.glyphicon.glyphicon-menu-up(ng-show="!reverseSort")
+                    span.glyphicon.glyphicon-menu-down(ng-show="reverseSort")
               td.variable
-                strong Variable
+                strong(ng-click="orderBy='variable'; reverseSort=!reverseSort") Variable &nbsp;&nbsp;
+                  span(ng-show="orderBy == 'variable'")
+                    span.glyphicon.glyphicon-menu-up(ng-show="!reverseSort")
+                    span.glyphicon.glyphicon-menu-down(ng-show="reverseSort")
               td
-                strong Display name
+                strong(ng-click="orderBy='displayName'; reverseSort=!reverseSort") Display name &nbsp;&nbsp;
+                  span(ng-show="orderBy == 'displayName'")
+                    span.glyphicon.glyphicon-menu-up(ng-show="!reverseSort")
+                    span.glyphicon.glyphicon-menu-down(ng-show="reverseSort")
               td
           tbody
-            tr(ng-repeat="termTemplate in termTemplates" ng-class="{ disabled: termTemplate.disabled }")
+            tr(ng-repeat="termTemplate in termTemplates|orderBy:orderBy:reverseSort" ng-class="{ disabled: termTemplate.disabled }")
               td {{ termTemplate.termType }}
               td {{ termTemplate.variable }}
               td {{ termTemplate.displayName }}
