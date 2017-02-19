@@ -50,6 +50,10 @@ exports.getDocumentTemplates = (req, res, next) => {
 
   function resetOrder(docTempls) {
     var orderedTempls = [];
+    if(!req.query.includes) {
+      res.send(docTempls);
+      return;
+    }
     _.each(req.query.includes, function(id) {
       var docTempl = _.find(docTempls, d => {return d._id == id});
       orderedTempls.push(docTempl);
