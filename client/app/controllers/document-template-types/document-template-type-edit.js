@@ -14,6 +14,7 @@ angular.module('app').controller('DocumentTemplateTypeEditCtrl',
       .$promise
       .then(function(documentTemplateType) {
         $scope.documentTemplateType = documentTemplateType;
+        $scope.documentTemplateType.stylelbl = "Replace Styles JSON";
         $scope.isLoading = false;
       })
       .catch(function(err) {

@@ -5,6 +5,7 @@ angular.module('app').controller('DocumentTemplateTypeNewCtrl',
 
   $scope.documentTemplateType = {
     style: 'normal',
+    stylelbl: 'Styles(JSON)'
   };
   $scope.isNew = true;
   $scope.isSaving = false;

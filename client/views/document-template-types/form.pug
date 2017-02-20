@@ -12,8 +12,8 @@ form.form-horizontal(name="documentTemplateTypeForm")
                          ng-model="documentTemplateType.description" ng-disabled="isSaving")
 
   .form-group(ng-class="{ 'has-error': documentTemplateTypeForm.styles.$error.required }")
-    label.col-md-3.control-label(for="file") Styles(JSON)
+    label.col-md-3.control-label(for="file") {{::documentTemplateType.stylelbl}}
     .col-md-9
-      input.form-control(name="file" type="file" on-file-change="grabJSON"
+      input.form-control(name="file" id="file" type="file" on-file-change="grabJSON"
                          accept=".json" ng-disabled="isSaving")
     input(type="hidden" id="styles" ng-model="documentTemplateType.styles" name="styles" ng-required="true")
