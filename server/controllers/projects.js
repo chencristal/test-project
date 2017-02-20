@@ -159,6 +159,9 @@ exports.generateWord = (req, res, next) => {
   parseParams(req.params)
     .then(_getCompiledTemplate)
     .then(text => {
+      if (!validationUtil.isValidObjectId(req.params.docTypeId)) {
+        return customErrors.rejectWithUnprocessableRequestError({ paramName: 'docTypeId', errMsg: 'must be a valid id' });
+      }
       docTemplTypesSrvc.getDocumentTemplateType({_id: req.params.docTypeId}, 'styles')
       .then(docTemplType => {
         var styles = docTemplType.styles ? JSON.parse(docTemplType.styles) : {};
@@ -194,9 +197,6 @@ function _getCompiledTemplate(data) {
     }
     if (!validationUtil.isValidObjectId(data.docId)) {
       return customErrors.rejectWithUnprocessableRequestError({ paramName: 'docId', errMsg: 'must be a valid id' });
-    }
-    if (!validationUtil.isValidObjectId(data.docTypeId)) {
-      return customErrors.rejectWithUnprocessableRequestError({ paramName: 'docTypeId', errMsg: 'must be a valid id' });
     }
     return Promise.resolve(data);
   }
