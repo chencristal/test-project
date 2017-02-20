@@ -252,8 +252,7 @@ Generator.prototype.generateMathHtml = function(token) {    // chen_debug
 
     html =  `
         <span class="{{ ${varName}.state == 2 ? 'uncertain-bracket' : null }}">
-        <label class="{{ ${varName}.state == 2 ? 'uncertain-bracket' : null }}"
-               ng-model="${varName}.value"
+        <label ng-model="${varName}.value"
                ${offsetAttr}
                ng-required="true"
                ng-class="selectedVariable == ${varName} ? 'highlighted-for-scroll' : null" 
