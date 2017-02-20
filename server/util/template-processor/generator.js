@@ -231,30 +231,33 @@ Generator.prototype.generateMathHtml = function(token) {    // chen_debug
     var offsetAttr = ``;
     var uniqId = _getRandomString();
 
-    if (param2.text == 'add' || param2.text == 'add-date' || param2.text == 'add-day') {
-      offsetAttr = `ng-offset="${param3.text}"`;
-    } else if (param2.text == 'add-month') {
-      offsetAttr = `ng-offset-month="${param3.text}"`;
-    } else if (param2.text == 'add-year') {
-      offsetAttr = `ng-offset-year="${param3.text}"`;
+    if (param3.type == 'variable') {
+      if (param2.text == 'add' || param2.text == 'add-date' || param2.text == 'add-day') {
+        offsetAttr = `ng-offset="variables.${param3.text}.value" ng-date-offset-variable="true"`;
+      } else if (param2.text == 'add-month') {
+        offsetAttr = `ng-offset-month="variables.${param3.text}.value" ng-date-offset-variable="true"`;
+      } else if (param2.text == 'add-year') {
+        offsetAttr = `ng-offset-year="variables.${param3.text}.value" ng-date-offset-variable="true"`;
+      }
     }
+    else if (param3.type == 'constant') {
+      if (param2.text == 'add' || param2.text == 'add-date' || param2.text == 'add-day') {
+        offsetAttr = `ng-offset="${param3.text}"`;
+      } else if (param2.text == 'add-month') {
+        offsetAttr = `ng-offset-month="${param3.text}"`;
+      } else if (param2.text == 'add-year') {
+        offsetAttr = `ng-offset-year="${param3.text}"`;
+      }
+    }    
 
     html =  `
         <span class="{{ ${varName}.state == 2 ? 'uncertain-bracket' : null }}">
-        <input type="text"
-               class="{{ ${varName}.state == 2 ? 'uncertain-bracket' : null }}"
+        <label class="{{ ${varName}.state == 2 ? 'uncertain-bracket' : null }}"
                ng-model="${varName}.value"
                ${offsetAttr}
-               ng-click="datePickers.isOpened_${uniqId} = true; onClick(${varName}, $event)"
                ng-required="true"
-               ng-change="onChange()"
-               uib-datepicker-popup="MMMM d, yyyy"
-               is-open="datePickers.isOpened_${uniqId}"
-               datepicker-options="dateOptions"
-               close-text="Close"
-               datepicker-append-to-body="true" 
                ng-class="selectedVariable == ${varName} ? 'highlighted-for-scroll' : null" 
-               ng-disabled="${varName}.state == 1"/></span>`;
+               ng-disabled="${varName}.state == 1"></label></span>`;
   }
   
 
