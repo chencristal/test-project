@@ -11,7 +11,8 @@ var documentTemplateTypeSchema = new mongoose.Schema({
     unique: true,
     index: true
   },
-  description: String
+  description: String,
+  styles: String
 });
 
 documentTemplateTypeSchema.plugin(timestamps, { index: true });

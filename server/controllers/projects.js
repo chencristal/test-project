@@ -1,16 +1,17 @@
 'use strict';
 
-var _               = require('lodash');
-var Promise         = require('bluebird');
-var customErrors    = require('n-custom-errors');
-var moment          = require('moment');
-var projectsSrvc    = require('../data-services/projects');
-var provisionTsSrvc = require('../data-services/provision-templates');
-var termTsSrvc      = require('../data-services/term-templates');
-var validationUtil  = require('../util/validations');
-var templProc       = require('../util/template-processor');
-var pdfConverter    = require('../util/converters/pdf');
-var wordConverter   = require('../util/converters/word');
+var _                 = require('lodash');
+var Promise           = require('bluebird');
+var customErrors      = require('n-custom-errors');
+var moment            = require('moment');
+var projectsSrvc      = require('../data-services/projects');
+var docTemplTypesSrvc = require('../data-services/document-template-types');
+var provisionTsSrvc   = require('../data-services/provision-templates');
+var termTsSrvc        = require('../data-services/term-templates');
+var validationUtil    = require('../util/validations');
+var templProc         = require('../util/template-processor');
+var pdfConverter      = require('../util/converters/pdf');
+var wordConverter     = require('../util/converters/word');
 
 exports.getProjects = (req, res, next) => {
   projectsSrvc
@@ -150,16 +151,22 @@ exports.generateWord = (req, res, next) => {
   function parseParams(params) {
     return Promise.resolve({
       projId: params.projectId,
-      docId: params.docId
+      docId: params.docId,
+      docTypeId: params.docTypeId
     });
   }
 
   parseParams(req.params)
     .then(_getCompiledTemplate)
     .then(text => {
-      res.setHeader('Content-disposition', 'attachment; filename=converted.docx');
-      res.setHeader('Content-type', 'application/docx');
-      return wordConverter.write(text, res);
+      docTemplTypesSrvc.getDocumentTemplateType({_id: req.params.docTypeId}, 'styles')
+      .then(docTemplType => {
+        var styles = docTemplType.styles ? JSON.parse(docTemplType.styles) : {};
+        res.setHeader('Content-disposition', 'attachment; filename=converted.docx');
+        res.setHeader('Content-type', 'application/docx');
+        return wordConverter.write(text, styles, res);  
+      })
+      .catch(next);  
     })
     .catch(next);
 };
@@ -187,6 +194,9 @@ function _getCompiledTemplate(data) {
     }
     if (!validationUtil.isValidObjectId(data.docId)) {
       return customErrors.rejectWithUnprocessableRequestError({ paramName: 'docId', errMsg: 'must be a valid id' });
+    }
+    if (!validationUtil.isValidObjectId(data.docTypeId)) {
+      return customErrors.rejectWithUnprocessableRequestError({ paramName: 'docTypeId', errMsg: 'must be a valid id' });
     }
     return Promise.resolve(data);
   }

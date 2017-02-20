@@ -66,7 +66,7 @@ exports.getDocumentTemplateTypeById = (req, res, next) => {
 
 exports.createDocumentTemplateType = (req, res, next) => {
   function parseParams(body) {
-    var allowedFields = ['name', 'description'];
+    var allowedFields = ['name', 'description', 'styles'];
     var docTemplTypeData = _.pick(body, allowedFields);
     return Promise.resolve(docTemplTypeData);
   }
@@ -90,7 +90,7 @@ exports.createDocumentTemplateType = (req, res, next) => {
 
 exports.updateDocumentTemplateType = (req, res, next) => {
   function parseParams(body) {
-    var allowedFields = ['name', 'description'];
+    var allowedFields = ['name', 'description', 'styles'];
     var docTemplTypeData = _.pick(body, allowedFields);
     docTemplTypeData._id = req.params._id;
     return Promise.resolve(docTemplTypeData);

@@ -13,7 +13,7 @@ module.exports = app => {
     projects.generatePdf
   );
   app.get(
-    `/api/${apiVer}/projects/:projectId/:docId/word`,
+    `/api/${apiVer}/projects/:projectId/:docId/:docTypeId/word`,
     auth.requireRolesWrapper('user'),
     projects.generateWord
   );
