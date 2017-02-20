@@ -37,4 +37,39 @@ angular.module('app').controller('DocumentTemplateTypeEditCtrl',
         $scope.isSaving = false;
       });
   };
+  $scope.grabJSON = function(files) {
+    function isValid(file) {
+      var filename = file.name;
+      var ext = filename.split('.').pop().toLowerCase();
+      return ext == 'json';
+    }
+    var file = files[0];
+    if(!isValid(file)) {
+      Notifier.error(new Error('Invalid file type'));
+      $scope.documentTemplateType.styles = '';
+      $scope.$apply();
+      return;
+    }
+    var f = new FileReader();
+    f.onload = function() {
+      var data = f.result;
+      try{
+        JSON.parse(data);
+      } catch(e) {
+        Notifier.error('Error parsing JSON data');
+        $scope.documentTemplateType.styles = '';
+        $scope.$apply();
+        return;
+      }
+      $scope.documentTemplateType.styles = data;
+      $scope.$apply();
+    }
+    f.onerror = function(e) {
+      $scope.documentTemplateType.styles = '';
+      $scope.$apply();
+      Notifier.error(e);
+      return;
+    }
+    f.readAsText(file);
+  };
 });

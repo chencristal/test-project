@@ -9,11 +9,10 @@ var request      = require('request');
 var customErrors = require('n-custom-errors');
 var consts       = require('../../consts');
 var jquery       = fs.readFileSync('./node_modules/jquery/dist/jquery.js', 'utf-8');
-var styles       = require('./styles.json');
 
 var WEBSRVC_URL = 'http://vps95616.vps.ovh.ca:8080/convert';
 
-exports.write = (html, output) => {
+exports.write = (html, styles, output) => {
   return new Promise((resolve, reject) => {
     jsdom.env({
       html: html,

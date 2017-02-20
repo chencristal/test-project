@@ -280,7 +280,8 @@ angular.module('app').directive('projectEditor', function () {
       $scope.exportToWord = function () {
         var projId = $scope.project._id;
         var docId = $scope.relatedData.currrentDocumentTemplate._id;
-        var url = '/api/v1/projects/' + projId + '/' + docId + '/word';
+        var docTypeId = $scope.relatedData.currrentDocumentTemplate.documentType;
+        var url = '/api/v1/projects/' + projId + '/' + docId + '/' + docTypeId + '/word';
         $window.open(url, '_blank');
       };
 
@@ -329,7 +330,7 @@ angular.module('app').directive('projectEditor', function () {
         return DocumentTemplate
           .query({
             'includes[]': proj.projectTemplate.documentTemplates,
-            'fields[]': ['name', 'provisionTemplates']
+            'fields[]': ['name', 'documentType', 'provisionTemplates']
           })
           .$promise
           .then(function (docTempls) {

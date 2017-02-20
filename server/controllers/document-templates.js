@@ -16,7 +16,7 @@ exports.getDocumentTemplates = (req, res, next) => {
   }
 
   function validateParams(data) {
-    var allowedFields = ['name', 'provisionTemplates'];
+    var allowedFields = ['name', 'documentType', 'provisionTemplates'];
 
     if (data.params.includes && !_.every(data.params.includes, validationUtil.isValidObjectId)) {
       return customErrors.rejectWithUnprocessableRequestError({
