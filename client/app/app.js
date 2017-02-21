@@ -328,7 +328,30 @@ angular.module('app').run(function($rootScope) {
       case 'modulo':
         return v1 % v2;
     }
-  }
+  };
+
+  $rootScope.case = function(op, v) {
+    var camelCase = (str) => {
+      return str.replace(/(?:^\w|[A-Z]|\b\w)/g, function(letter, index) {
+        return index == 0 ? letter.toLowerCase() : letter.toUpperCase();
+      }).replace(/\s+/g, '');
+    }
+    var titleCase = (str) => {
+      return str.toLowerCase().replace(/\b[a-z]/g, firstLetter => {return firstLetter.toUpperCase();})
+    }
+
+    v = v.toString();
+    switch(op) {
+      case 'lower':
+        return v.toLowerCase();
+      case 'upper':
+        return v.toUpperCase();
+      case 'title':
+        return titleCase(v);
+      default:
+        throw new Error('Invalid operator');
+    }
+  };
 
   $rootScope.ifVariant = function(v, opt) {
     return v === opt;

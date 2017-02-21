@@ -38,7 +38,6 @@ handlebars.registerHelper('ifCond', (op, v1, v2, options) => {
 //
 handlebars.registerHelper('math', (v1, op, v2) => {
   /* jshint maxcomplexity: false */  
-
   var parse_date = (param) => {
     var months = ['January', 'February', 'March', 'April', 'May', 'June',
       'July', 'August', 'September', 'October', 'November', 'December'];
@@ -101,6 +100,29 @@ handlebars.registerHelper('math', (v1, op, v2) => {
 
 handlebars.registerHelper('ifVariant', (v, opt, options) => {
   return v === opt ? options.fn(this) : options.inverse(this);
+});
+
+handlebars.registerHelper('case', (op,v) => {
+  var camelCase = (str) => {
+    return str.replace(/(?:^\w|[A-Z]|\b\w)/g, function(letter, index) {
+      return index == 0 ? letter.toLowerCase() : letter.toUpperCase();
+    }).replace(/\s+/g, '');
+  }
+  var titleCase = (str) => {
+    return str.toLowerCase().replace(/\b[a-z]/g, firstLetter => {return firstLetter.toUpperCase();})
+  }
+
+  v = v.toString();
+  switch(op) {
+    case 'lower':
+      return v.toLowerCase();
+    case 'upper':
+      return v.toUpperCase();
+    case 'title':
+      return titleCase(v);
+    default:
+      throw new Error('Invalid operator');
+  }
 });
 
 handlebars.registerHelper('add', (v1,v2,options) => {

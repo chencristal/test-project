@@ -170,6 +170,10 @@ Generator.prototype.generateExpressionHtml = function (token) {
     case 'math':  // chen_debug
       html = self.generateMathHtml.call(self, token);
       break;
+
+    case 'case':
+      html = self.generateCaseHtml.call(self, token);
+      break;
   }
   html += _.map(token.tokens, self.generateHtml.bind(self)).join('');
   html += `</span>`;
@@ -262,7 +266,31 @@ Generator.prototype.generateMathHtml = function(token) {    // chen_debug
 
   return html;
 }
+Generator.prototype.generateCaseHtml = function(token) {
+  console.log(token);
+  var self = this;
+  var html = '';
+  var param1 = token.params[0];
+  var param2 = token.params[1];
+  if(param2.type == 'variable') {
+    html = `
+          <span class="{{ variables.${param2.text}.state == 2 ? 'uncertain-bracket' : null }}">
+          <label ng-class="selectedVariable == variables.${param2.text} ? 'highlighted-for-scroll' : null"
+                 ng-disabled="variables.${param2.text}.state == 1"
+                 placeholder="{{ variables.${param2.text}.text.placeholder }}">
+                 {{$root.case('${param1.text}', variables.${param2.text}.value)}}
+          </label>`;
+  }
+  else {
+    html = `
+          <span>
+          <label>
+                 {{$root.case('${param1.text}', '${param2.text}')}}
+          </label>`;
+  }
 
+  return html;
+}
 function _getRandomString() {
   return Math.random().toString(36).slice(2);
 }

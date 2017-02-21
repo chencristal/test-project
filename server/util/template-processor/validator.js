@@ -73,6 +73,9 @@ Validator.prototype.validateStatement = function(statement, params) {
     case 'math':
       requiredParamsCount = 3;
       break;
+    case 'case':
+      requiredParamsCount = 2;
+      break;
     case 'ifVariant':
       requiredParamsCount = 2;
       break;
@@ -97,6 +100,9 @@ Validator.prototype.validateStatement = function(statement, params) {
     this.validateMathCondOperator.call(this, params[1].type, params[1].text);
     params = _.filter(params, _.iteratee(['type', 'variable']));
     // params = _.tail(params);
+  } else if (statement === 'case') {
+    this.validateCaseCondOperator.call(this, params[0].type, params[0].text);
+    params = _.filter(params, _.iteratee(['type', 'variable']));
   }
 
   this.validateParams.call(this, params);
@@ -120,5 +126,15 @@ Validator.prototype.validateMathCondOperator = function(type, operator) {
   }
   if (!_.includes(consts.MATH_OPERATORS, operator)) {
     throw customErrors.getUnprocessableRequestError(`Unexpected math operator: ${operator}`);
+  }
+};
+
+Validator.prototype.validateCaseCondOperator = function(type, operator) {
+  if (type !== 'operator') {
+    throw customErrors.getUnprocessableRequestError(
+      `Expected an operator (lower, upper, title), got ${type}`);
+  }
+  if (!_.includes(consts.CASE_OPERATORS, operator)) {
+    throw customErrors.getUnprocessableRequestError(`Unexpected case operator: ${operator}`);
   }
 };
