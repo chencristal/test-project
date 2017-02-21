@@ -33,9 +33,9 @@ angular.module('app').controller('DocumentTemplateEditCtrl',
   })();
 
   $scope.refreshDocumentTypes = function(query) {
-    if (!query) {
-      return [];
-    }
+    // if (!query) {
+    //   return [];
+    // }
     return DocumentTemplateType
       .query({ query: query })
       .$promise
@@ -45,9 +45,9 @@ angular.module('app').controller('DocumentTemplateEditCtrl',
   };
 
   $scope.refreshProvisionTemplates = function(query) {
-    if (!query) {
-      return [];
-    }
+    // if (!query) {
+    //   return [];
+    // }
     return ProvisionTemplate
       .query({ query: query })
       .$promise
