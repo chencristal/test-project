@@ -125,6 +125,3 @@ handlebars.registerHelper('case', (op,v) => {
   }
 });
 
-handlebars.registerHelper('add', (v1,v2,options) => {
-  return 'test';
-});
