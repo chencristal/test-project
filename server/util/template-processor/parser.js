@@ -65,6 +65,13 @@ function _parseToken(token) {
           params: _.map(token.params, _parseToken),
           tokens: _.map(_.get(token, 'program.body'), _parseToken)
         };
+      } else if (token.path.original === 'article' && _.size(token.params) === 1) {
+        return {
+          type: 'statement',
+          text: token.path.original,
+          params: _.map(token.params, _parseToken),
+          tokens: _.map(_.get(token, 'program.body'), _parseToken)
+        };
       } else 
         return _parseToken(token.path);
     case 'BlockStatement':

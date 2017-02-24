@@ -76,6 +76,9 @@ Validator.prototype.validateStatement = function(statement, params) {
     case 'case':
       requiredParamsCount = 2;
       break;
+    case 'article':
+      requiredParamsCount = 1;
+      break;
     case 'ifVariant':
       requiredParamsCount = 2;
       break;
@@ -103,7 +106,9 @@ Validator.prototype.validateStatement = function(statement, params) {
   } else if (statement === 'case') {
     this.validateCaseCondOperator.call(this, params[0].type, params[0].text);
     params = _.filter(params, _.iteratee(['type', 'variable']));
+
   }
+
 
   this.validateParams.call(this, params);
 };

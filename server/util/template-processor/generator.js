@@ -174,6 +174,10 @@ Generator.prototype.generateExpressionHtml = function (token) {
     case 'case':
       html = self.generateCaseHtml.call(self, token);
       break;
+
+    case 'article':
+      html = self.generateArticleHtml.call(self, token);
+      break;
   }
   html += _.map(token.tokens, self.generateHtml.bind(self)).join('');
   html += `</span>`;
@@ -286,6 +290,30 @@ Generator.prototype.generateCaseHtml = function(token) {
           <span>
           <label>
                  {{$root.case('${param1.text}', '${param2.text}')}}
+          </label>`;
+  }
+
+  return html;
+}
+Generator.prototype.generateArticleHtml = function(token) {
+  console.log(token);
+  var self = this;
+  var html = '';
+  var param1 = token.params[0];
+  if(param1.type == 'variable') {
+    html = `
+          <span class="{{ variables.${param1.text}.state == 2 ? 'uncertain-bracket' : null }}">
+          <label ng-class="selectedVariable == variables.${param1.text} ? 'highlighted-for-scroll' : null"
+                 ng-disabled="variables.${param1.text}.state == 1"
+                 placeholder="{{ variables.${param1.text}.text.placeholder }}">
+                 {{$root.article(variables.${param1.text}.value)}}
+          </label>`;
+  }
+  else {
+    html = `
+          <span>
+          <label>
+                 {{$root.article('${param1.text}')}}
           </label>`;
   }
 

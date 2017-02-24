@@ -8,7 +8,7 @@ module.exports = {
   TERM_TYPES: ['text', 'boolean', 'variant', 'date', 'number'],
   PROVISION_STYLES: ['sheet', 'normal'],
   HANDLEBAR: {
-    STATEMENTS: ['if', 'unless', 'ifCond', 'ifVariant', 'math', 'case'],
+    STATEMENTS: ['if', 'unless', 'ifCond', 'ifVariant', 'math', 'case', 'article'],
     MATH_OPERATORS: ['add', 'subtract', 'multiply', 'divide', 'modulus',
                     'plus', 'minus', 'multiplied by', 'divided by', 'modulo', 
                     'add-year', 'add-month', 'add-date', 'add-day'],   // chen_debug
