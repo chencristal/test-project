@@ -107,6 +107,8 @@ Validator.prototype.validateStatement = function(statement, params) {
     this.validateCaseCondOperator.call(this, params[0].type, params[0].text);
     params = _.filter(params, _.iteratee(['type', 'variable']));
 
+  } else if (statement === 'article') {
+    params = _.filter(params, _.iteratee(['type', 'variable']));
   }
 
 

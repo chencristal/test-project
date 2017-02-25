@@ -366,6 +366,8 @@ angular.module('app').run(function($rootScope) {
   };
 
   $rootScope.case = function(op, v) {
+    if(v == undefined)
+      return '';
     var camelCase = (str) => {
       return str.replace(/(?:^\w|[A-Z]|\b\w)/g, function(letter, index) {
         return index == 0 ? letter.toLowerCase() : letter.toUpperCase();
@@ -374,7 +376,7 @@ angular.module('app').run(function($rootScope) {
     var titleCase = (str) => {
       return str.toLowerCase().replace(/\b[a-z]/g, firstLetter => {return firstLetter.toUpperCase();})
     }
-
+    
     v = v.toString();
     switch(op) {
       case 'lower':
@@ -389,7 +391,8 @@ angular.module('app').run(function($rootScope) {
   };
 
   $rootScope.article = function(v) {
-
+    if(v == undefined)
+      return '';
     return AvsAnSimple.query(v);
 
   };
