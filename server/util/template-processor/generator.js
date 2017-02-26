@@ -271,7 +271,6 @@ Generator.prototype.generateMathHtml = function(token) {    // chen_debug
   return html;
 }
 Generator.prototype.generateCaseHtml = function(token) {
-  console.log(token);
   var self = this;
   var html = '';
   var param1 = token.params[0];
@@ -296,7 +295,6 @@ Generator.prototype.generateCaseHtml = function(token) {
   return html;
 }
 Generator.prototype.generateArticleHtml = function(token) {
-  console.log(token);
   var self = this;
   var html = '';
   var param1 = token.params[0];
