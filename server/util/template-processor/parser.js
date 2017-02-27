@@ -11,6 +11,13 @@ exports.parse = templ => {
     .catch(err => customErrors.rejectWithUnprocessableRequestError(err.message));
 };
 
+exports.getViewedVariables = (templ, values) => {   // chen_debug
+  return _hbParse(templ)
+    .then(_parseToken)
+    .then(tokensRoot => _parseTokenWithValues(tokensRoot, values))
+    .catch(err => customErrors.rejectWithUnprocessableRequestError(err.message));
+};
+
 exports.getUsedVariables = (tokensRoot, variables) => {
   var params = _getTokenParams(tokensRoot);
   var usedVariables = _(params)
@@ -32,6 +39,85 @@ function _hbParse(templ) {
       reject(err);
     }
   });
+}
+
+function _parseTokenWithValues(token, values) {   // chen_debug
+  var _variables = [];
+
+  function _parseValues(token) {
+    if (!token) {
+      return '';
+    }
+
+    switch (token.type) {
+      case 'program':
+        _.map(token.tokens, _parseValues);
+      case 'variable': {
+        var _temp = _.find(values, {'variable': token.text});
+        if (_.find(_variables, _temp) == undefined) {
+          _variables = _.concat(_variables, _temp);
+        }
+      }
+      case 'statement': {
+        if (token.text == 'if') {
+          var _temp = _.find(values, {'variable': token.params[0].text});
+          if (_.find(_variables, _temp) == undefined)
+            _variables = _.concat(_variables, _temp);
+
+          if (_temp.value == 'true' || _temp.value == true) {
+            _.map(token.tokens,  _parseValues);
+          }
+        }
+        else if (token.text == 'unless') {
+          var _temp = _.find(values, {'variable': token.params[0].text});
+          if (_.find(_variables, _temp) == undefined)
+            _variables = _.concat(_variables, _temp);
+
+          if (_temp.value == 'false' || _temp.value == false) {
+            _.map(token.tokens,  _parseValues);
+          }
+        }
+        else if (token.text == 'math') {
+          _.forEach(token.params, function(param) {
+            if (param.type == 'variable') {
+              var _temp = _.find(values, {'variable': param.text});
+              if (_.find(_variables, _temp) == undefined) {
+                _variables = _.concat(_variables, _temp);
+              }
+            }
+          });
+        }
+        else if (token.text == 'ifVariant') {
+          _.forEach(token.params, function(param) {
+            if (param.type == 'variable') {
+              var _temp = _.find(values, {'variable': param.text});
+              if (_.find(_variables, _temp) == undefined) {
+                _variables = _.concat(_variables, _temp);
+              }
+            }
+          });
+        }
+        else if (token.text == 'ifCond') {
+          _.forEach(token.params, function(param) {
+            if (param.type == 'variable') {
+              var _temp = _.find(values, {'variable': param.text});
+              if (_.find(_variables, _temp) == undefined) {
+                _variables = _.concat(_variables, _temp);
+              }
+            }
+          });
+        }
+      }
+    }
+  }
+
+  _parseValues(token);
+
+  /*_.forEach(values, function(value) {
+    _viewedVars.push((_.find(_variables, {'variable': value.variable}) !== undefined) ? 'true' : 'false');
+  });*/
+
+  return _variables;
 }
 
 function _parseToken(token) {

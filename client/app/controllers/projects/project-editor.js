@@ -6,7 +6,7 @@ angular.module('app').directive('projectEditor', function () {
     scope: {},
     templateUrl: 'views/projects/editor/index.html',
     controller: function ($scope, $window, $element, $timeout, $routeParams, $location, $q, Notifier,
-                          Project, DocumentTemplate, ProvisionTemplate, TermTemplate) {
+                          Project, DocumentTemplate, ProvisionTemplate, TermTemplate, ProvisionVariable) {
       /* jshint maxstatements: false */
 
       $scope.isLoading = true;
@@ -63,9 +63,14 @@ angular.module('app').directive('projectEditor', function () {
       $scope.changes = []; // array of prev/next changes
       $scope.currentChange = null; // index of current position in changes array
 
+      // chen_debug
+      $scope.viewedVars = []; // array of viewable variables
+      $scope.viewStatus = [];
+
       $scope.$watch('relatedData.currrentDocumentTemplate', function (newDocTempl) {
         if (newDocTempl) {
-          _loadRelatedData(newDocTempl);
+          _loadProvisionVariables(newDocTempl);   // chen_debug
+          _loadRelatedData(newDocTempl);          
         }
 
         setTimeout(function () {
@@ -84,8 +89,8 @@ angular.module('app').directive('projectEditor', function () {
 
       $scope.highlight = function (variable, fromEditor, currentTarget) {
         fromEditor = typeof fromEditor !== 'undefined' ? fromEditor : false;
-	    currentTarget = typeof currentTarget !== 'undefined' ? currentTarget : false;
-	    $scope.selectedVariable = variable;
+  	    currentTarget = typeof currentTarget !== 'undefined' ? currentTarget : false;
+  	    $scope.selectedVariable = variable;
         $scope.changes = document.getElementsByClassName('selected');
 
         setTimeout(function () {
@@ -160,10 +165,23 @@ angular.module('app').directive('projectEditor', function () {
           })
           .finally(function () {
             $scope.isSaving = false;
+
+            // chen_debug
+            $q
+            .resolve()
+            .then(function () {
+              return _loadProvisionVariables($scope.relatedData.currrentDocumentTemplate);   // chen_debug
+            })
+            .then(function () {
+              _.each($scope.variables, function (variable) {
+                $scope.viewStatus[variable.variable] = 
+                  (_.find($scope.viewedVars, {'variable': variable.variable}) !== undefined) ? true : false;
+              });
+            })
           });
 
         // copy to another variable cause of angular scope specification.
-        $scope.vars = angular.copy($scope.variables);
+        $scope.vars = angular.copy($scope.variables);        
 
         /*
          if save() method called after history transition (undo()/redo() methods)
@@ -339,6 +357,18 @@ angular.module('app').directive('projectEditor', function () {
           });
       }
 
+      function _loadProvisionVariables(docTempl) {    // chen_debug
+        return ProvisionVariable
+          .query({
+            'includes[]': docTempl.provisionTemplates,
+            'project': $scope.project._id
+          })
+          .$promise
+          .then(function (viewedVars) {
+            $scope.viewedVars = viewedVars;
+          });
+      }
+
       function _loadProvisionTemplates(docTempl) {
         return ProvisionTemplate
           .query({
@@ -354,7 +384,6 @@ angular.module('app').directive('projectEditor', function () {
               .uniq()
               .value();
           });
-
       }
 
       function _loadTermTemplates() {
@@ -397,6 +426,8 @@ angular.module('app').directive('projectEditor', function () {
               termTempl.state = val ? val['state'] : 0;
               termTempl.sortIndex = _.indexOf($scope.relatedData.orderedVariables, termTempl.variable);
               $scope.variables[termTempl.variable] = termTempl;
+              $scope.viewStatus[termTempl.variable] = 
+                (_.find($scope.viewedVars, {'variable': termTempl.variable}) !== undefined) ? true : false;
             });
           });
       }
