@@ -2,13 +2,13 @@
 
 angular.module('app', [
   'ngResource',
-  'ngAnimate',
   'ngRoute',
   'ngCookies',
   'ui.bootstrap',
   'ui.select',
   'textAngular',
-  'mwl.confirm'
+  'mwl.confirm',
+  'ngAnimate'
 ])
 .config(function($routeProvider, $locationProvider, $httpProvider) {
   $locationProvider.html5Mode(true);

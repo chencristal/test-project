@@ -1,5 +1,5 @@
 form.form-horizontal
-  .form-group(ng-show="(filterVal.value == 100 || variable.state==filterVal.value || ((variable.state==0 || variable.state==2) && filterVal.value==3)) && viewStatus.{{ ::variable.variable }} == true" ng-repeat="variable in variables | objectToArray | orderBy: 'sortIndex'"
+  .form-group.animate-show(ng-show="(filterVal.value == 100 || variable.state==filterVal.value || ((variable.state==0 || variable.state==2) && filterVal.value==3)) && viewStatus.{{ ::variable.variable }} == true" ng-repeat="variable in variables | objectToArray | orderBy: 'sortIndex'"
     ng-click="highlight(variable)"
     ng-class="selectedVariable == variable ? 'highlighted' : null"
     class="{{ variableStates[variable.state]['background'] }}")
