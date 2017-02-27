@@ -13,6 +13,7 @@
     "db:scripts": "node server/db/scripts"
   },
   "dependencies": {
+    "angular-animate": "^1.6.2",
     "bluebird": "^3.4.1",
     "body-parser": "^1.15.2",
     "connect-mongo": "^1.3.2",

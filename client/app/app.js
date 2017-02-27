@@ -2,6 +2,7 @@
 
 angular.module('app', [
   'ngResource',
+  'ngAnimate',
   'ngRoute',
   'ngCookies',
   'ui.bootstrap',

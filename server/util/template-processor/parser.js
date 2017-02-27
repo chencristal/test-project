@@ -44,6 +44,44 @@ function _hbParse(templ) {
 function _parseTokenWithValues(token, values) {   // chen_debug
   var _variables = [];
 
+  function _parseBoolean(text) {
+    var _temp = _.find(values, {'variable': text});
+
+    if (_temp !== undefined) {
+      if (_temp.value == 'true' || _temp.value == true) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+  function _parseIfCond(token) {
+    var op = token.params[0].text,
+        v1 = _parseBoolean(token.params[1].text),
+        v2 = _parseBoolean(token.params[2].text);
+
+    switch (op) {
+      case 'and':
+        return (v1 && v2);
+      case 'not-and':
+        return (!v1 && v2);
+      case 'and-not':
+        return (v1 && !v2);
+      case 'not-and-not':
+        return (!v1 && !v2);
+      case 'or':
+        return (v1 || v2);
+      case 'not-or':
+        return (!v1 || v2);
+      case 'or-not':
+        return (v1 || !v2);
+      case 'not-or-not':
+        return (!v1 || !v2);
+      default:
+        return false;
+    }
+  }
+
   function _parseValues(token) {
     if (!token) {
       return '';
@@ -64,7 +102,7 @@ function _parseTokenWithValues(token, values) {   // chen_debug
           if (_.find(_variables, _temp) == undefined)
             _variables = _.concat(_variables, _temp);
 
-          if (_temp.value == 'true' || _temp.value == true) {
+          if (_parseBoolean(token.params[0].text) == true) {
             _.map(token.tokens,  _parseValues);
           }
         }
@@ -73,7 +111,7 @@ function _parseTokenWithValues(token, values) {   // chen_debug
           if (_.find(_variables, _temp) == undefined)
             _variables = _.concat(_variables, _temp);
 
-          if (_temp.value == 'false' || _temp.value == false) {
+          if (_parseBoolean(token.params[0].text) == false) {
             _.map(token.tokens,  _parseValues);
           }
         }
@@ -106,6 +144,10 @@ function _parseTokenWithValues(token, values) {   // chen_debug
               }
             }
           });
+
+          if (_parseIfCond(token) == true) {
+            _.map(token.tokens, _parseValues);
+          }
         }
       }
     }

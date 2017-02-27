@@ -40,14 +40,17 @@
     .col:last-child
       border-right: none
     .properties
-      font-family: Arial
+      font-family: Arial      
       .form-group
+        transition: all linear 0.8s;
         border-bottom: 1px solid #eee
         padding-bottom: 10px
         padding: 10px 0
-        margin-bottom: 0
+        margin-bottom: 0        
         .control-label
           font-size: 12px
+        &.ng-hide
+          opacity: 0
         &.highlighted
           border: 1px solid #66afe9
           border-radius: 3px
