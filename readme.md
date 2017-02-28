@@ -63,6 +63,7 @@ $ npm start
   - [css]
   - [images]
   - [views]
+- [documentation] - static html app documentation for end-users
 - [server]
   - [controllers] - controllers
   - [db] - database manager and models
@@ -79,5 +80,7 @@ $ npm start
 Proprietary.  All rights reserved. 
 
 ### Authors
-**Alexander Mac** ([amatsibarov@gmail.com](mailto:amatsibarov@gmail.com))
-**Mikhail Golub**
+**Alexander Mac**, 
+**Mikhail Golub**,
+**Cristal Chen**,
+**Donnie Kim**
