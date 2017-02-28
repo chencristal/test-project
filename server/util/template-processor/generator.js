@@ -25,16 +25,21 @@ Generator.prototype.generateHtml = function (token) {
 
   var self = this;
 
-  switch (token.type) {
-    case 'content':
-      return token.text || '';
-    case 'program':
-      return _.map(token.tokens, self.generateHtml.bind(self)).join('');
-    case 'variable':
-      var variable = _.find(self.allowedVariables, {'variable': token.text});
-      return self.generateVariableEditor.call(self, variable);
-    case 'statement':
-      return self.generateExpressionHtml(token);
+  if (token.type === undefined) {   // chen_debug (if the token is array)
+    return _.map(token, self.generateHtml.bind(self)).join('');
+  }
+  else {
+    switch (token.type) {
+      case 'content':
+        return token.text || '';
+      case 'program':
+        return _.map(token.tokens, self.generateHtml.bind(self)).join('');
+      case 'variable':
+        var variable = _.find(self.allowedVariables, {'variable': token.text});
+        return self.generateVariableEditor.call(self, variable);
+      case 'statement':
+        return self.generateExpressionHtml(token);
+    }
   }
 };
 
