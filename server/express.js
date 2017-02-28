@@ -11,6 +11,7 @@ var MongoStore   = require('connect-mongo')(session);
 var config       = require('../config/environment');
 var log          = require('./util/logger');
 var favicon      = require('serve-favicon');
+var path         = require('path');
 
 module.exports = function(app) {
   app.set('views', config.get('viewsPath'));
