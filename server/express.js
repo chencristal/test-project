@@ -10,6 +10,7 @@ var session      = require('express-session');
 var MongoStore   = require('connect-mongo')(session);
 var config       = require('../config/environment');
 var log          = require('./util/logger');
+var favicon      = require('serve-favicon');
 
 module.exports = function(app) {
   app.set('views', config.get('viewsPath'));
