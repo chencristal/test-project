@@ -138,11 +138,16 @@ var AvsAnSimple = (function (root) {
 })({});
 
 handlebars.registerHelper('article', (v) => {
-
+  if(v == undefined)
+    return '';
+  
   return AvsAnSimple.query(v);
 });
 
 handlebars.registerHelper('case', (op,v) => {
+  if(v == undefined)
+    return '';
+
   var camelCase = (str) => {
     return str.replace(/(?:^\w|[A-Z]|\b\w)/g, function(letter, index) {
       return index == 0 ? letter.toLowerCase() : letter.toUpperCase();
