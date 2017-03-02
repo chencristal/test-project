@@ -101,6 +101,48 @@
 
       .redline-mode
         .exp-if
+          &.selected
+            display: inline
+            color: black
+            font-weight: bold
+            text-decoration: underline
+            input
+              color: black
+              font-weight: bold
+              text-decoration: underline
+            input::-moz-input-placeholder
+              font-weight: bold
+              color: black
+              text-decoration: underline
+            input::-webkit-input-placeholder
+              font-weight: bold
+              color: black
+              text-decoration: underline
+            &.highlighted
+              color: blue
+              input
+                color: blue
+              input::-moz-input-placeholder
+                color: blue
+              input::-webkit-input-placeholder
+                color: blue
+              &.defaulted
+                color: black
+                font-weight: normal
+                text-decoration: none
+                input
+                  font-weight: normal
+                  color: black                  
+                  text-decoration: none
+                input::-moz-input-placeholder
+                  font-weight: normal
+                  color: black
+                  text-decoration: none
+                input::-webkit-input-placeholder
+                  font-weight: normal
+                  color: black
+                  text-decoration: none
+
           &.unselected
             display: inline
             color: black
@@ -122,6 +164,8 @@
                 color: red
               input::-webkit-input-placeholder
                 color: red
+              &.defaulted
+                display: none
         .exp-unless
           &.unselected
             display: none

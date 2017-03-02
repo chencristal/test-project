@@ -150,6 +150,7 @@ Generator.prototype.generateExpressionHtml = function (token) {
           exp-if 
           {{ variables.${param1.text}.state == 2 ? 'uncertain-bracket' : null }}" 
         ng-class="{
+          defaulted: variables.${param1.text}.value === variables.${param1.text}.boolean.default,
           selected: variables.${param1.text}.value, 
           unselected: !variables.${param1.text}.value, 
           highlighted: selectedVariable === variables.${param1.text} }">`;
@@ -161,6 +162,7 @@ Generator.prototype.generateExpressionHtml = function (token) {
           exp-unless 
           {{ variables.${param1.text}.state == 2 ? 'uncertain-bracket' : null }}" 
         ng-class="{
+          defaulted: variables.${param1.text}.value !== variables.${param1.text}.boolean.default,
           selected: !variables.${param1.text}.value,
           unselected: variables.${param1.text}.value,
           highlighted: selectedVariable === variables.${param1.text} }">`;
