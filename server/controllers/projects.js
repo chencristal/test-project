@@ -233,6 +233,11 @@ function _getCompiledTemplate(data) {
           }
           return result;
         }, {});
+        console.log(data.values);
+        data.expandables = _(data.termTempls)
+                          .filter({termType: 'expandable_text'})
+                          .map('variable')
+                          .value();
         return data;
       });
   }
@@ -242,6 +247,12 @@ function _getCompiledTemplate(data) {
       .getDocumentProvisionTemplates(data.docId, 'template')
       .then(provTempls => {
         var template = _.map(provTempls, provTempl => provTempl.template).join('\n');
+        var variables = Object.keys(data.values);
+        _.each(data.expandables, expandable => {
+          var subs = _.filter(variables, v => v.indexOf(expandable + '__') === 0);
+          subs = _.map(subs, sub => data.values[sub]).join('');
+          template = _.replace(template, `{{${expandable}}}`, `{{${expandable}}}${subs}`);
+        });
         data.template = template;
         return data;
     });

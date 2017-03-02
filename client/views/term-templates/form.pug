@@ -5,6 +5,7 @@ form.form-horizontal(name="termTemplateForm")
         select.form-control(name="termType" ng-model="termTemplate.termType" ng-required="true" ng-disabled="isSaving || !isNew")
           option(value="" disabled="true") Select term type
           option(value="text") Text
+          option(value="expandable_text") Expandable Text
           option(value="boolean") Boolean
           option(value="variant") Variant
           option(value="date") Date
@@ -30,6 +31,13 @@ form.form-horizontal(name="termTemplateForm")
         input.form-control(name="placeholder" type="text" placeholder="Placeholder"
                            ng-model="termTemplate.text.placeholder" ng-required="true" ng-disabled="isSaving")
 
+  // Expandable Text
+  div(ng-if="termTemplate.termType === 'expandable_text'")
+    .form-group(ng-class="{ 'has-error': termTemplateForm.placeholder.$error.required }")
+      label.col-md-3.control-label(for="placeholder") Placeholder
+      .col-md-9
+        input.form-control(name="placeholder" type="text" placeholder="Placeholder"
+                           ng-model="termTemplate.text.placeholder" ng-required="true" ng-disabled="isSaving")
 
   // Date
   div(ng-if="termTemplate.termType === 'date'")

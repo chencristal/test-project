@@ -77,7 +77,7 @@ exports.getTermTemplateById = (req, res, next) => {
 
 exports.createTermTemplate = (req, res, next) => {
   function parseParams(body) {
-    var allowedFields = ['termType', 'variable', 'displayName', 'help', 'text', 'boolean', 'variant', 'date', 'number', 'state'];
+    var allowedFields = ['termType', 'variable', 'displayName', 'help', 'text','expandable_text', 'boolean', 'variant', 'date', 'number', 'state'];
     var termTemplData = _.pick(body, allowedFields);
     return Promise.resolve(termTemplData);
   }
@@ -101,7 +101,7 @@ exports.createTermTemplate = (req, res, next) => {
 
 exports.updateTermTemplate = (req, res, next) => {
   function parseParams(body) {
-    var allowedFields = ['termType', 'variable', 'displayName', 'help', 'text', 'boolean', 'variant', 'date', 'number', 'state'];
+    var allowedFields = ['termType', 'variable', 'displayName', 'help', 'text','expandable_text', 'boolean', 'variant', 'date', 'number', 'state'];
     var termTemplData = _.pick(body, allowedFields);
     termTemplData._id = req.params._id;
     return Promise.resolve(termTemplData);

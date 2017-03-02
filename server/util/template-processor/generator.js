@@ -57,6 +57,18 @@ Generator.prototype.generateVariableEditor = function (variable) {
                ng-disabled="${varName}.state == 1"
                placeholder="{{ ${varName}.text.placeholder }}" /></span>`;
 
+    case 'expandable_text':
+      var master = variable.variable;
+      return `
+        <span class="{{ variable.state == 2 ? 'uncertain-bracket' : null }}" ng-repeat="variable in variables | objectToArray | orderBy: 'sortIndex'" ng-if="variable.variable.indexOf('${master}') === 0">
+        <input type="text"
+               ng-model="variable.value"
+               ng-blur="onChange()"
+               ng-click="onClick(variable, $event)"
+               ng-class="selectedVariable == variable ? 'highlighted-for-scroll' : null"
+               ng-disabled="variable.state == 1"
+               placeholder="{{ ${varName}.text.placeholder }}" /></span>`;
+
     case 'boolean':
       return `
         <span ng-click="onClick(${varName}, $event)"

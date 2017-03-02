@@ -144,16 +144,20 @@ angular.module('app').directive('projectEditor', function () {
         historyTransition = typeof historyTransition !== 'undefined' ? historyTransition : false;
         $scope.isSaving = true;
 
+        var newProjValues = [];
         _.each($scope.variables, function (v) {
           var variable = _.pick(v, ['variable', 'value', 'state']);
           var projVal = _.find($scope.project.values, {variable: variable.variable});
           if (projVal) {
             projVal.value = variable.value;
             projVal.state = variable.state;
+            newProjValues.push(projVal);
           } else {
-            $scope.project.values.push(variable);
+            // $scope.project.values.push(variable);
+            newProjValues.push(variable);
           }
         });
+        $scope.project.values = newProjValues;
 
         var projectForSave = new Project($scope.project);
         projectForSave.projectTemplate = projectForSave.projectTemplate._id;
@@ -174,8 +178,14 @@ angular.module('app').directive('projectEditor', function () {
             })
             .then(function () {
               _.each($scope.variables, function (variable) {
-                $scope.viewStatus[variable.variable] = 
-                  (_.find($scope.viewedVars, {'variable': variable.variable}) !== undefined) ? true : false;
+                if(variable.termType == 'expandable_sub_text') {
+                  var master = variable.variable.split('__')[0];
+                  $scope.viewStatus[variable.variable] = $scope.viewStatus[master];
+                }
+                else {
+                  $scope.viewStatus[variable.variable] = 
+                    (_.find($scope.viewedVars, {'variable': variable.variable}) !== undefined) ? true : false;
+                }
               });
             })
           });
@@ -247,6 +257,32 @@ angular.module('app').directive('projectEditor', function () {
 
       }
 
+      $scope.addSubField = function (variable, $event) {
+        function getSubFields() {
+          var master = variable.variable;
+          var subs = _.filter($scope.variables, function(v) { return v.variable.indexOf(master + '__') === 0;});
+          if(!subs || subs.length == 0)
+            subs = [variable];
+          subs = _.orderBy(subs, ['sortIndex'],['asc']);
+          
+          return subs;
+        }
+        var subs = getSubFields();
+        var temp = subs[0].variable.split('__');
+        
+        var order = temp.length > 1 ? parseInt(temp[1]) + 1 : 1;
+        var sub = angular.copy($scope.variables[variable.variable]);
+        sub.sortIndex = sub.sortIndex + parseFloat(1/(1+order));
+        sub.variable = sub.variable + '__' + order;
+        sub.termType = 'expandable_sub_text';
+        sub.displayName = '';
+        sub.state = 0;
+        $scope.variables[sub.variable] = sub;
+        $scope.viewStatus[sub.variable] = $scope.viewStatus[variable.variable];
+      }
+      $scope.removeSubField = function (variable, $event) {
+        delete $scope.variables[variable.variable];
+      }
 
       $scope.changeState = function ($event) {
         $event.stopPropagation();
@@ -428,6 +464,24 @@ angular.module('app').directive('projectEditor', function () {
               $scope.variables[termTempl.variable] = termTempl;
               $scope.viewStatus[termTempl.variable] = 
                 (_.find($scope.viewedVars, {'variable': termTempl.variable}) !== undefined) ? true : false;
+            });
+            _.each($scope.variables, function(v) {
+              if(v.termType == 'expandable_text') {
+                var subs = _.filter($scope.project.values, function(sub) { return sub.variable.indexOf(v.variable + '__') === 0; });
+                _.each(subs, function(sub) {
+                  var newVar = angular.copy(v);
+                  newVar.variable = sub.variable;
+                  newVar.termType = 'expandable_sub_text';
+                  newVar.displayName = '';
+                  var temp = newVar.variable.split('__');        
+                  var order = parseInt(temp[1]);
+                  newVar.sortIndex = v.sortIndex + parseFloat(1/(1+order));
+                  newVar.state = sub.state;
+                  newVar.value = sub.value;
+                  $scope.variables[newVar.variable] = newVar;
+                  $scope.viewStatus[newVar.variable] = $scope.viewStatus[v.variable];
+                });
+              }
             });
           });
       }
