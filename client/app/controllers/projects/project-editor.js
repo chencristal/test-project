@@ -275,6 +275,7 @@ angular.module('app').directive('projectEditor', function () {
         sub.sortIndex = sub.sortIndex + parseFloat(1/(1+order));
         sub.variable = sub.variable + '__' + order;
         sub.termType = 'expandable_sub_text';
+        sub.value = '';
         sub.displayName = '';
         sub.state = 0;
         $scope.variables[sub.variable] = sub;

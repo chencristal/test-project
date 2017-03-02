@@ -22,7 +22,8 @@ var termTemplateSchema = new mongoose.Schema({
   },
   expandable_text : {
     placeholder: String,
-    options: []
+    newline: Boolean,
+    prettify: Boolean
   },
   date: {
     default: Date
