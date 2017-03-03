@@ -203,7 +203,7 @@ function _getCompiledTemplate(data) {
 
   function loadTermTemplates(data) {
     return termTsSrvc
-      .getTermTemplates({}, 'variable termType')
+      .getTermTemplates({}, 'variable termType expandable_text')
       .then(termTempls => {
         data.termTempls = termTempls;
         return data;
@@ -248,9 +248,32 @@ function _getCompiledTemplate(data) {
         var template = _.map(provTempls, provTempl => provTempl.template).join('\n');
         var variables = Object.keys(data.values);
         _.each(data.expandables, expandable => {
-          var subs = _.filter(variables, v => v.indexOf(expandable + '__') === 0);
-          subs = _.map(subs, sub => data.values[sub]).join('');
-          template = _.replace(template, `{{${expandable}}}`, `{{${expandable}}}${subs}`);
+          var newline = expandable.expandable_text.newline ? true : false;
+          var prettify = expandable.expandable_text.prettify ? true : false;
+          var subs = _.filter(variables, v => v.indexOf(expandable.variable + '__') === 0);
+          subs = _.map(subs, sub => data.values[sub]);
+
+          if(subs.length > 0) {
+            var glue = ' ';
+            if(newline && prettify)
+              glue = ',<br/>';
+            else if(newline)
+              glue = '<br/>';
+            else if(prettify)
+              glue = ', ';
+            if(prettify) {
+              var temp = subs.slice(0,-1).join(glue);
+              var last = subs[subs.length-1];
+              if(newline)
+                subs = temp + '<br/>and ' + last;
+              else
+                subs = temp + ' and ' + last;
+            }
+            else
+              subs = subs.join(glue);
+
+            template = _.replace(template, `{{${expandable.variable}}}`, `{{${expandable.variable}}}${glue}${subs}`);            
+          }
         });
         data.template = template;
         return data;
