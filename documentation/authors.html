@@ -3,7 +3,7 @@
 <!--[if IE 9]> <html lang="en" class="ie9"> <![endif]-->  
 <!--[if !IE]><!--> <html lang="en"> <!--<![endif]-->  
 <head>
-    <title>Responsive website template for documentations</title>
+    <title>Documentation - Authors</title>
     <!-- Meta -->
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -30,7 +30,7 @@
     
 </head> 
 
-<body class="body-blue">
+<body class="body-red">
     <div class="page-wrapper">
         <!-- ******Header****** -->
         <header id="header" class="header">
@@ -39,290 +39,299 @@
                     <h1 class="logo">
                         <a href="index.html">
                             <span aria-hidden="true" class="icon_documents_alt icon"></span>
-                            <span class="text-highlight">Pretty</span><span class="text-bold">Docs</span>
+                            <span class="text-highlight">Celant-Redux</span><span class="text-bold"> Documentation</span>
                         </a>
                     </h1>
                 </div><!--//branding-->
                 <ol class="breadcrumb">
                     <li><a href="index.html">Home</a></li>
-                    <li class="active">Charts</li>
+                    <li class="active">Authors</li>
                 </ol>
             </div><!--//container-->
         </header><!--//header-->
         <div class="doc-wrapper">
             <div class="container">
                 <div id="doc-header" class="doc-header text-center">
-                    <h1 class="doc-title"><span aria-hidden="true" class="icon icon_datareport_alt"></span> Charts</h1>
-                    <div class="meta"><i class="fa fa-clock-o"></i> Last updated: Jan 25th, 2016</div>
+                    <h1 class="doc-title"><span aria-hidden="true" class="icon fa fa-pencil"></span> Authors</h1>
+                    <div class="meta"><i class="fa fa-clock-o"></i> Last updated: March 1, 2017</div>
                 </div><!--//doc-header-->
                 <div class="doc-body">
                     <div class="doc-content">
                         <div class="content-inner">
-                            <section id="chartjs" class="doc-section">
-                                <h2 class="section-title">Chart.js</h2>
+                            <section id="overview" class="doc-section">
+                                <h2 class="section-title">Overview</h2>
                                 <div class="section-block">
-                                    <h3 class="block-title">1. Screenshot</h3>
-                                    <p>The screenshots used in this page are taken from <a href="https://wrapbootstrap.com/theme/appkit-admin-theme-angularjs-WB051SCJ1?ref=3wm" target="_blank">AppKit</a>. AppKit is a Bootstrap Angular admin theme.</p>
-                                    <div class="screenshot-holder">
-                                        <a href="https://wrapbootstrap.com/theme/appkit-admin-theme-angularjs-WB051SCJ1?ref=3wm" target="_blank"><img class="img-responsive" src="assets/images/demo/appkit-chart-chartjs.jpg" alt="screenshot" /></a>
-                                        <a class="mask" href="https://wrapbootstrap.com/theme/appkit-admin-theme-angularjs-WB051SCJ1?ref=3wm" target="_blank"><i class="icon fa fa-link"></i></a>
-                                    </div> 
+                                    <h3 class="block-title">Who are Authors?   </h3>
+                                    <p>The Authors create smart templates that users use to create documents.  The best people to draft these templates are the knowledge workers in the organization, who are intimately involved in, and knowledgeable about, the business decisions and considerations involved in the drafting of the document. They may be professionals such as attorneys, or mid-to-senior level executives.</p>
+
                                 </div><!--//section-block-->
                                 <div class="section-block">
-                                    <h3 class="block-title">2. Global Configurations</h3>
-                                    <p><strong><i class="fa fa-external-link-square"></i> Source:</strong> <a href="http://www.chartjs.org/docs/" target="_blank">http://www.chartjs.org/docs/</a></p>
-                                    <div class="code-block">
-                                        <pre><code class="language-javascript">Chart.defaults.global = {
-    // Boolean - Whether to animate the chart
-    animation: true,
+                                    <h3 class="block-title">Template Architecture</h3>
+                                    <p>There are 4 major templates, ordered in a hierarchy, from largest to smallest:</p>
+                                        <ol class="list">
+                                            <li>Project Templates</li>
+                                            <li>Document Templates</li>
+                                            <li>Provision Templates</li>
+                                            <li>Term Templates</li>
+                                        </ol>
+                                    <p>Each template, other than the Term Template, is made up of its smaller components.  For instance, a Project Template consists of Document Templates, a Document Template consists of Provision Templates, and so on. You may have also noticed Document Template Type, but we will explain that later.  Let's start with a discussion of the most basic template, which is the Term Template. </p>
 
-    // Number - Number of animation steps
-    animationSteps: 60,
-
-    // String - Animation easing effect
-    // Possible effects are:
-    // [easeInOutQuart, linear, easeOutBounce, easeInBack, easeInOutQuad,
-    //  easeOutQuart, easeOutQuad, easeInOutBounce, easeOutSine, easeInOutCubic,
-    //  easeInExpo, easeInOutBack, easeInCirc, easeInOutElastic, easeOutBack,
-    //  easeInQuad, easeInOutExpo, easeInQuart, easeOutQuint, easeInOutCirc,
-    //  easeInSine, easeOutExpo, easeOutCirc, easeOutCubic, easeInQuint,
-    //  easeInElastic, easeInOutSine, easeInOutQuint, easeInBounce,
-    //  easeOutElastic, easeInCubic]
-    animationEasing: &#x22;easeOutQuart&#x22;,
-
-    // Boolean - If we should show the scale at all
-    showScale: true,
-
-    // Boolean - If we want to override with a hard coded scale
-    scaleOverride: false,
-
-    // ** Required if scaleOverride is true **
-    // Number - The number of steps in a hard coded scale
-    scaleSteps: null,
-    // Number - The value jump in the hard coded scale
-    scaleStepWidth: null,
-    // Number - The scale starting value
-    scaleStartValue: null,
-
-    // String - Colour of the scale line
-    scaleLineColor: &#x22;rgba(0,0,0,.1)&#x22;,
-
-    // Number - Pixel width of the scale line
-    scaleLineWidth: 1,
-
-    // Boolean - Whether to show labels on the scale
-    scaleShowLabels: true,
-
-    // Interpolated JS string - can access value
-    scaleLabel: &#x22;&#x3C;%=value%&#x3E;&#x22;,
-
-    // Boolean - Whether the scale should stick to integers, not floats even if drawing space is there
-    scaleIntegersOnly: true,
-
-    // Boolean - Whether the scale should start at zero, or an order of magnitude down from the lowest value
-    scaleBeginAtZero: false,
-
-    // String - Scale label font declaration for the scale label
-    scaleFontFamily: &#x22;&#x27;Helvetica Neue&#x27;, &#x27;Helvetica&#x27;, &#x27;Arial&#x27;, sans-serif&#x22;,
-
-    // Number - Scale label font size in pixels
-    scaleFontSize: 12,
-
-    // String - Scale label font weight style
-    scaleFontStyle: &#x22;normal&#x22;,
-
-    // String - Scale label font colour
-    scaleFontColor: &#x22;#666&#x22;,
-
-    // Boolean - whether or not the chart should be responsive and resize when the browser does.
-    responsive: false,
-
-    // Boolean - whether to maintain the starting aspect ratio or not when responsive, if set to false, will take up entire container
-    maintainAspectRatio: true,
-
-    // Boolean - Determines whether to draw tooltips on the canvas or not
-    showTooltips: true,
-
-    // Function - Determines whether to execute the customTooltips function instead of drawing the built in tooltips (See [Advanced - External Tooltips](#advanced-usage-custom-tooltips))
-    customTooltips: false,
-
-    // Array - Array of string names to attach tooltip events
-    tooltipEvents: [&#x22;mousemove&#x22;, &#x22;touchstart&#x22;, &#x22;touchmove&#x22;],
-
-    // String - Tooltip background colour
-    tooltipFillColor: &#x22;rgba(0,0,0,0.8)&#x22;,
-
-    // String - Tooltip label font declaration for the scale label
-    tooltipFontFamily: &#x22;&#x27;Helvetica Neue&#x27;, &#x27;Helvetica&#x27;, &#x27;Arial&#x27;, sans-serif&#x22;,
-
-    // Number - Tooltip label font size in pixels
-    tooltipFontSize: 14,
-
-    // String - Tooltip font weight style
-    tooltipFontStyle: &#x22;normal&#x22;,
-
-    // String - Tooltip label font colour
-    tooltipFontColor: &#x22;#fff&#x22;,
-
-    // String - Tooltip title font declaration for the scale label
-    tooltipTitleFontFamily: &#x22;&#x27;Helvetica Neue&#x27;, &#x27;Helvetica&#x27;, &#x27;Arial&#x27;, sans-serif&#x22;,
-
-    // Number - Tooltip title font size in pixels
-    tooltipTitleFontSize: 14,
-
-    // String - Tooltip title font weight style
-    tooltipTitleFontStyle: &#x22;bold&#x22;,
-
-    // String - Tooltip title font colour
-    tooltipTitleFontColor: &#x22;#fff&#x22;,
-
-    // Number - pixel width of padding around tooltip text
-    tooltipYPadding: 6,
-
-    // Number - pixel width of padding around tooltip text
-    tooltipXPadding: 6,
-
-    // Number - Size of the caret on the tooltip
-    tooltipCaretSize: 8,
-
-    // Number - Pixel radius of the tooltip border
-    tooltipCornerRadius: 6,
-
-    // Number - Pixel offset from point x to tooltip edge
-    tooltipXOffset: 10,
-
-    // String - Template string for single tooltips
-    tooltipTemplate: &#x22;&#x3C;%if (label){%&#x3E;&#x3C;%=label%&#x3E;: &#x3C;%}%&#x3E;&#x3C;%= value %&#x3E;&#x22;,
-
-    // String - Template string for multiple tooltips
-    multiTooltipTemplate: &#x22;&#x3C;%= value %&#x3E;&#x22;,
-
-    // Function - Will fire on animation progression.
-    onAnimationProgress: function(){},
-
-    // Function - Will fire on animation completion.
-    onAnimationComplete: function(){}
-}</code></pre>
-                                    </div><!--//code-block-->
                                 </div><!--//section-block-->
                             </section><!--//doc-section-->
                             
-                            <section id="flot" class="doc-section">
-                                <h2 class="section-title">Flot Charts</h2>
-                                <div class="section-block">
-                                    <h3 class="block-title">1. Screenshot</h3>
-                                    <div class="screenshot-holder">
-                                        <a href="https://wrapbootstrap.com/theme/appkit-admin-theme-angularjs-WB051SCJ1?ref=3wm" target="_blank"><img class="img-responsive" src="assets/images/demo/appkit-chart-flot.jpg" alt="screenshot" /></a>
-                                        <a class="mask" href="https://wrapbootstrap.com/theme/appkit-admin-theme-angularjs-WB051SCJ1?ref=3wm" target="_blank"><i class="icon fa fa-link"></i></a>
-                                    </div> 
+                            <section id="term_templates" class="doc-section">
+                                <h2 class="section-title">Term Templates</h2>
+                                <p>Term Templates, on a fundamental level, are variables that represent a value (or multiple values) that will be determined by the User.  As you can see from above below screen shot, you can create New Term Template, or alternatively, you can import them from CSV.</p>
+                                <div class="screenshot-holder">
+                                    <img class="img-responsive" src="assets/images/author/term-template.png" alt="screenshot" />
+                                </div> 
+                                <h6>When creating a new Term Template, there are 6 Term Template types to choose from:</h6>  
+                                <ol> 
+                                    <li>Text</li>
+                                    <li>Expandable Text</li>
+                                    <li>Number</li>
+                                    <li>Date</li>
+                                    <li>Boolean (True/False)</li>
+                                    <li>Variant (Dropdown)</li>
+                                </ol>
+                                <div class="screenshot-holder">
+                                    <img class="img-responsive" src="assets/images/author/term-template-new.png" alt="screenshot" />
+                                </div> 
+                                <div id="1text" class="section-block">
+                                    <h3 class="block-title">1. Text</h3>
+                                    <p>Text is the field that hold text variable.  Under Term Type, choose Text. Then under Variable field, you name the variable.  Characters that are permitted are A-Z, a-z, 0-9, and underscore.  Special characters are NOT permitted, except for the underscore.  An example would be "company_name" (without quotes).</p>
+                                    <p>The Display Name field is what the User will see when prompted to input the field.  This can contain special characters including spaces, which should help in describing briefly the information the is requested from the User - for example, "Company Name". It can also be phrased as a question, as as: "What is the Company Name?"</p>
+                                    <p>The Placeholder is the "Default" text.  It is required.  If you are not sure what to put into this field, you can also in brackets "[  ]".</p>
+                                    <p>Help field is the text that the User will see on the right hand side of the screen when as Help text.  [You can also imbed videos, pictures or links.]</p>
                                 </div><!--//section-block-->
-                                <div class="section-block">
-                                    <h3 class="block-title">2. Basic Usage</h3>
-                                    <p><strong><i class="fa fa-external-link-square"></i> Source:</strong> <a href="https://github.com/flot/flot/blob/master/README.md" target="_blank">https://github.com/flot/flot/blob/master/README.md</a></p>
-                                    <p>Create a placeholder div to put the graph in:</p>
-                                    <p><pre><code class="language-markup">&#x3C;div id=&#x22;placeholder&#x22;&#x3E;&#x3C;/div&#x3E;</code></pre></p>
-                                    <p>You need to set the width and height of this div, otherwise the plot library doesn't know how to scale the graph. You can do it inline like this:</p>
-                                    <p><pre><code class="language-markup">&#x3C;div id=&#x22;placeholder&#x22; style=&#x22;width:600px;height:300px&#x22;&#x3E;&#x3C;/div&#x3E;</code></pre></p>
-                                    <p>You can also do it with an external stylesheet. Make sure that the placeholder isn't within something with a display:none CSS property - in that case, Flot has trouble measuring label dimensions which results in garbled looks and might have trouble measuring the placeholder dimensions which is fatal (it'll throw an exception).</p>
+                                <div id="2expandable" class="section-block">
+                                    <h3 class="block-title">2. Expandable Text</h3>
+                                    <p>Text is the field that hold text variable.  Under Term Type, choose Text. Then under Variable field, you name the variable.  Characters that are permitted are A-Z, a-z, 0-9, and underscore.  Special characters are NOT permitted, except for the underscore.  An example would be "company_name" (without quotes).</p>
+                                    <p>The Display Name field is what the User will see when prompted to input the field.  This can contain special characters including spaces, which should help in describing briefly the information the is requested from the User - for example, "Company Name". It can also be phrased as a question, as as: "What is the Company Name?"</p>
+                                    <p>The Placeholder is the "Default" text.  It is required.  If you are not sure what to put into this field, you can also in brackets "[  ]".</p>
+                                    <p>Expandable Text  is similar to the Text variable except that in addition, it  permits Users to create sub-fields, that is a separate text box that appears right after the current text box.  This is handy if the contract contemplates one or more parties.  There are two additional check-boxes: 1. Automatically insert commas/and will insert the commas and 'and' at appropriate places.  2.  Insert line break will insert a new line before the new text box; this is helpful for lists.  </p>
+                                    <p> Under Variable field, you name the variable.  Characters that are permitted are A-Z, a-z, 0-9, and underscore.  Special characters are NOT permitted, except for the underscore.  An example would be "company_name" (without quotes).</p>
+                                    <p>The Display Name field is what the User will see when prompted to input the field.  This can contain special characters including spaces, which should help in describing briefly the information the is requested from the User - for example, "Company Name". It can also be phrased as a question, as as: "What is the Company Name?"</p>
+                                    <p>The Placeholder is the "Default" text.  It is required.  If you are not sure what to put into this field, you can also in brackets "[  ]".  Each sub-field will start out with this Placeholder text.</p>
+                                    <p>Help field is the text that the User will see on the right hand side of the screen when as Help text.  [You can also imbed videos, pictures or links.]</p>
+                                </div><!--//section-block-->
+                                <div id="3number" class="section-block">
+                                    <h3 class="block-title">3. Number</h3>
+                                    <p>Number field allows the User to input numbers.  While it is true that you can put numbers into text boxes as well, Number field permits <b>math</b> function to work.  In short, it allows for simple arithmetic, such as additions and subtractions.  For example, in the Provision Template, you can do: <code>{{math number_variable_name 'add' 10}}</code> </p>
+                                    <p>Under Variable field, you name the variable.  Characters that are permitted are A-Z, a-z, 0-9, and underscore.  Special characters are NOT permitted, except for the underscore.  An example would be "employee_number" (without quotes).</p>
+                                    <p>The Display Name field is what the User will see when prompted to input the field.  This can contain special characters including spaces, which should help in describing briefly the information the is requested from the User - for example, "Employee Number". It can also be phrased as a question, as as: "What is the Employee Number?"</p>
+                                    <p>The Placeholder is the "Default" text.  It is required.  If you are not sure what to put into this field, you can set it to zero.</p>
 
-                                    <p>Then when the div is ready in the DOM, which is usually on document ready, run the plot function:</p>
-                                    <p><pre><code class="language-javascript">$.plot($(&#x22;#placeholder&#x22;), data, options);</code></pre></p>
-                                    <p>Here, data is an array of data series and options is an object with settings if you want to customize the plot. Take a look at the examples for some ideas of what to put in or look at the <a href="#">API reference</a>. Here's a quick example that'll draw a line from (0, 0) to (1, 1):</p>
-                                    
-                                    <p><pre><code class="language-javascript">$.plot($(&#x22;#placeholder&#x22;), [ [[0, 0], [1, 1]] ], { yaxis: { max: 1 } });</code></pre></p>
-                                    <p>The plot function immediately draws the chart and then returns a plot object with a couple of methods.</p>
-                                    
+                                    <p>Help field is the text that the User will see on the right hand side of the screen when as Help text.  [You can also imbed videos, pictures or links.]</p>
+                                </div><!--//section-block-->
+                                
+                                <div id="4date" class="section-block">
+                                    <h3 class="block-title">4. Date</h3>
+                                    <p>Date field allows the User to input dates.  The Date Picker calendar will also appear for the User to make it easier to pick a date.  While it is true that you can put dates into text boxes as well, Date field permits <b>math</b> function to work.  In short, it allows for simple arithmetic, such as additions and subtractions.  For example, in the Provision Template, you can do:<code> {{math date_variable_name 'add-year' 7}}</code>  </p>
+                                    <p>Under Variable field, you name the variable.  Characters that are permitted are A-Z, a-z, 0-9, and underscore.  Special characters are NOT permitted, except for the underscore.  An example would be "start_date" (without quotes).</p>
+                                    <p>The Display Name field is what the User will see when prompted to input the field.  This can contain special characters including spaces, which should help in describing briefly the information the is requested from the User - for example, "Start Date". It can also be phrased as a question, as as: "When did employee start?"</p>
+                                    <p>The Placeholder is the "Default" date.  It is required.  If you are not sure what to put into this field, you can set it to today.</p>
+
+                                    <p>Help field is the text that the User will see on the right hand side of the screen when as Help text.  [You can also imbed videos, pictures or links.]</p>
+
+                                </div><!--//section-block-->
+                                <div id="5boolean" class="section-block">
+                                    <h3 class="block-title">5. Boolean</h3>
+                                    <p>Boolean holds values TRUE or FALSE, and displays to the User as a Radio button.  They must choose one or the other, and null value is not permitted.  Because of its flexibility, you can also use it as a choice of two, such as Include/Exclude or Registered/Non-Registered. Although appearing simple, Booleans are probably the most frequently used variable types, as they are able to manipulate the document beyond the purview of the input field. For example, when used in conjunction with IF statement in the Provision Template, you can add or delete large portions of text using the following syntax:</p>
+<p><pre><code>{{#if boolean_name}}This text will appear if boolean is true.{{else}} Otherwise, this text will appear.{{/if}}</code></pre></p> 
+                                    <p>Under Variable field, you name the variable.  Characters that are permitted are A-Z, a-z, 0-9, and underscore.  Special characters are NOT permitted, except for the underscore.  An example would be "is_registered_transaction" (without quotes).</p>
+                                    <p>The Display Name field is what the User will see when prompted to input the field.  This can contain special characters including spaces, which should help in describing briefly the information the is requested from the User - for example, "Type of Transaction". It can also be phrased as a question, as as: "Is this Registered Transaction?"</p>
+                                    <p>Inclusion text and Exclusion text are the text that will appear in the radio button as options.  The default values are Include and Exclude, but if you are using Boolean as a choice-of-two, then you can rename them as necessary, such as "Registered Trasaction"/"Non-Registered Transaction".</p>
+                                    <p>The Placeholder is the "Default" value.  It is required.  It is initially set to TRUE.</p>
+
+                                    <p>Help field is the text that the User will see on the right hand side of the screen when as Help text.  [You can also imbed videos, pictures or links.]</p>
+
+                                </div><!--//section-block-->
+                                <div id="6variant" class="section-block">
+                                    <h3 class="block-title">6. Variant</h3>
+                                    <p>While Boolean is flexible and useful, especially in conjunction with the use of IF, it is limited to a choice of two: TRUE and FALSE values.  When more alternatives than two are required, Variant is the Term Template that can handle the task because it can have unlimited options.  
+                                    <p>Under Variable field, you name the variable.  Characters that are permitted are A-Z, a-z, 0-9, and underscore.  Special characters are NOT permitted, except for the underscore.  An example would be "filing_type" (without quotes).</p>
+                                    <p>The Display Name field is what the User will see when prompted to input the field.  This can contain special characters including spaces, which should help in describing briefly the information the is requested from the User - for example, "Filing Type". It can also be phrased as a question, as as: "What Document are you filing?"</p>
+                                    <p>Click on Add option, and give name to the Option. This option name will be used in the Provision Template, if you want to use it with the IF statement.</p>
+                                    <p>Out of the Options, you need to choose a Default value.  It is required.  The dropdown will update to reflect the Options that have been added.  If you are not sure what to put into this field, you can set it as the first item in the dropdown.</p>
+                                    <p>Display as gives you a choice to show the choices as radio buttons or a dropdown menu.</p>
+
+                                    <p>Help field is the text that the User will see on the right hand side of the screen when as Help text.  [You can also imbed videos, pictures or links.]</p>
+
                                 </div><!--//section-block-->
                             </section><!--//doc-section-->
                             
-                            <section id="morris" class="doc-section">
-                                <h2 class="section-title">Morris.js</h2>
-                                <div class="section-block">
-                                    <h3 class="block-title">1. Screenshot</h3>
-                                    <div class="screenshot-holder">
-                                        <a href="https://wrapbootstrap.com/theme/appkit-admin-theme-angularjs-WB051SCJ1?ref=3wm" target="_blank"><img class="img-responsive" src="assets/images/demo/appkit-chart-flot.jpg" alt="screenshot" /></a>
-                                        <a class="mask" href="https://wrapbootstrap.com/theme/appkit-admin-theme-angularjs-WB051SCJ1?ref=3wm" target="_blank"><i class="icon fa fa-link"></i></a>
-                                    </div> 
+                            <section id="provision_templates" class="doc-section">
+                                <h2 class="section-title">Provision Templates</h2>
+                                <p>Provision Templates use Term Templates, regular text and other functions to build paragraphs, or "Provisions".  These Provisions will be collected later to form a Document via the Document Template later on.</p>
+                                <div id="1newprovision" class="section-block">
+                                    <h3 class="block-title">1. New Provision Templates</h3>
+                                    <p>Display name is the name that will be used when identifying this provision in the Document Template section.  It is only used to for this purpose.</p>
+                                    <p>Style is a pre-configured style which will tell the app how to present this Provision to the User.  Normal is default. [There is also the Term Sheet style.]</p>
+                                    <p>Condition is a boolean that needs to be true to display this Provision.  You can leave it blank and have this always be shown.  </p>
+                                    <p>Template is where you type in regular text, together with embedded Term Templates and other Provision Functions to create logic-enabled template.  This is the screen in which Authors will spend the most time.</p>
+                                <div class="screenshot-holder">
+                                    <img class="img-responsive" src="assets/images/author/provision-template.png" alt="screenshot" />
+                                </div> 
                                 </div><!--//section-block-->
-                                <div class="section-block">
-                                    <h3 class="block-title">2. Getting Started</h3>
-                                    <p>Add <strong>morris.js</strong> and its dependencies (<a href="#">jQuery</a> &amp; <a href="#">Raphaël</a>) to your page.</p>
-                                    <p><pre><code class="language-markup">1 &#x3C;link rel=&#x22;stylesheet&#x22; href=&#x22;//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css&#x22;&#x3E;
-2 &#x3C;script src=&#x22;//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js&#x22;&#x3E;&#x3C;/script&#x3E;
-3 &#x3C;script src=&#x22;//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js&#x22;&#x3E;&#x3C;/script&#x3E;
-4 &#x3C;script src=&#x22;//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js&#x22;&#x3E;&#x3C;/script&#x3E;</code></pre></p>
-                                     
-                                    
-                                </div><!--//section-block-->
-                                <div class="section-block">
-                                    <h3 class="block-title">3. Your first chart</h3>
-                                    <p>Start by adding a <code>&lt;div&gt;</code> to your page that will contain your chart. Make
-sure it has an ID so you can refer to it in your Javascript later.</p>
-                                    <p><pre><code class="language-markup">&#x3C;div id=&#x22;myfirstchart&#x22; style=&#x22;height: 250px;&#x22;&#x3E;&#x3C;/div&#x3E;</code></pre></p>
+                                <div id="2ifelseunless" class="section-block">
+                                    <h3 class="block-title">2. IF, ELSE and UNLESS statements</h3>
+                                    <p>If, Else and Unless statements work together with booleans to make the magic happen!  This is because long text strings can be wrapped in IF clauses, so that it appears and/or disappears when boolean values match. The syntax is:</p>
+<p><pre><code>{{#if boolean_termtemplate}} This is the text that will appear if boolean_termtemplate is TRUE. {{else}} This is the text that will appear if boolean_termtemplate is FALSE. {{/if}}</code></pre></p>
+
+                                    <p>Be mindful of the # when opening the if clause, and always end it with {{/if}}.</p>
+                                    <p>Unless is the opposite of If; you can think of it as if-not.  The syntax is: 
+<p><pre><code>{{#unless boolean_termtemplate}} This is the text that will appear if boolean_termtemplate is FALSE. {{else}}  This is the text that will appear if boolean_termtemplate is TRUE. {{/unless}}</code></pre></p>
+
+                                    <p>Again, be mindful of # when opening unless, and always close with {{/unless}}</p>
+                                    <p><code>{{else}}</code> always has to be within <code>{{#if bool-name}} ... {{/if}}</code> or <code>{{#unless bool-name}} ... {{/unless}}</code>  tags. Both If and Unless can be nested within other If and Unless statements.  </p>
+
                                     <div class="callout-block callout-info">
                                         <div class="icon-holder">
                                             <i class="fa fa-info-circle"></i>
                                         </div><!--//icon-holder-->
                                         <div class="content">
                                             <h4 class="callout-title">Note:</h4>
-                                            <p>in order to display something, you’ll need to have given the div some dimensions. Here I’ve used inline CSS just for illustration.</p>
+                                            <p> [One thing that is important to note is that IF statements need to be within a "carriage return" of the text it is modifying.  If there are "enter/return" characters in between, it is unable to process it.  One way to work around this limitation is to use If statements for each paragraph.]</p>
                                         </div><!--//content-->
-                                    </div>
-                                    <p>Next add a <code>&lt;script&gt;</code> block to the end of your page, containing the following
-javascript code:</p>
-                                    <p><pre><code class="language-javascript">new Morris.Line({
-  // ID of the element in which to draw the chart.
-  element: &#x27;myfirstchart&#x27;,
-  // Chart data records -- each entry in this array corresponds to a point on
-  // the chart.
-  data: [
-    { year: &#x27;2008&#x27;, value: 20 },
-    { year: &#x27;2009&#x27;, value: 10 },
-    { year: &#x27;2010&#x27;, value: 5 },
-    { year: &#x27;2011&#x27;, value: 5 },
-    { year: &#x27;2012&#x27;, value: 20 }
-  ],
-  // The name of the data record attribute that contains x-values.
-  xkey: &#x27;year&#x27;,
-  // A list of names of data record attributes that contain y-values.
-  ykeys: [&#x27;value&#x27;],
-  // Labels for the ykeys -- will be displayed when you hover over the
-  // chart.
-  labels: [&#x27;Value&#x27;]
-});</code></pre></p>
+                                    </div><!--//callout-->
 
+                                    <p>In addition, if you want to use more complex logic including AND/OR, you will need to use <code>ifCond</code>, which is described later.</p>
                                      
                                     
                                 </div><!--//section-block-->
+                                <div id="3ifCond" class="section-block">
+                                    <h3 class="block-title">3. ifCond Statements</h3>
+                                    <p>ifCond is used when complex logic is required.  The syntax is similar to if, but it is able to handle two inputs. For examples:
+<p><pre><code>
+{{#ifCond bool1 'and' bool2}} If both bool1 and bool2 are true, this text will appear.{{else}} Otherwise, this will appear. {{/ifCond}} </code> </pre></p>
+<p><pre><code>{{#ifCond bool1 'or' bool2}} If both bool1 or bool2 are true, this text will appear.{{else}} Otherwise, this will appear. {{/ifCond}}</code></pre></p>
+                                    <p>The 8 operators are as follows: <code>'and'</code>, <code>'and-not'</code>, <code>'not-and'</code>, <code>'not-and-not'</code>, <code>'or'</code>, <code>'not-or'</code>, <code>'or-not'</code>, and <code>'not-or-not'</code>.  The order of first and second booleans are important, especially when determining operators such as 'and-not', since the second boolean must be false for the condition to pass.  The nested content is displayed when the result of the expression is true.  
+
+
+                                    <div class="callout-block callout-warning">
+                                        <div class="icon-holder">
+                                            <i class="fa fa-info-circle"></i>
+                                        </div><!--//icon-holder-->
+                                        <div class="content">
+                                            <h4 class="callout-title">Note:</h4>
+                                            <p>IfCond statement not only supports expressions with two variables - it also supports expressions such as [<code> and (or-not), v1 and (v2 or not v3), </code>] for example.</p>
+                                        </div><!--//content-->
+                                    </div><!--//callout-->
+
+                                </div><!--//section-block-->
+                                <div id="4math" class="section-block">
+                                    <h3 class="block-title">4. math Function</h3>
+                                    <p>math function is used to manipulate Number and Date Term Templates. Simple algorithms are supported for Numbers, which are: <code>'add'</code>, <code>'subtract'</code>, <code>'multiply'</code>, and <code>'divide'</code>.  Synonyms are also supported:  <code>'plus'</code>, <code>'minus'</code>, <code>'multiplied_by'</code>, and <code>'divided_by'</code>. ifCond is used when complex logic is required.  The syntax is as follows: <code>{{math number1 'add' number2}}</code> or <code>{{math number1 'minus' 1}}</code>
+                                    <p>For date manipulation, only additions are currently supported.  They are: <code>'add-day'</code>, <code>'add-month'</code>, and <code>'add-year'</code>.  For example:  <code>{{math date1 'add-year' tenor_years}}</code> or <code>{{math date1 'add-month' 6}}</code></p>
+
+                                    <div class="callout-block callout-info">
+                                        <div class="icon-holder">
+                                            <i class="fa fa-info-circle"></i>
+                                        </div><!--//icon-holder-->
+                                        <div class="content">
+                                            <h4 class="callout-title">Note:</h4>
+                                            <p>If you divided by zero, you will get Infinity.  If you do illegal operations, it will result in NaN, which stands for Not-A-Number</p>
+                                        </div><!--//content-->
+                                    </div><!--//callout-->
+
+                                </div><!--//section-block-->
+                                <div id="5case" class="section-block">
+                                    <h3 class="block-title">5. case Function</h3>
+                                    <p>case function is used to manipulate text Term Template, in terms of its casing. The supported chages are: ALL CAPS, all lower case, and Title Case which use the following commands: <code>'upper'</code>, <code>'lower'</code>, and <code>'title'</code>.  The syntax is as follows: <code>{{case 'upper' text1}}</code> or <code>{{case 'title' text1}}</code>
+
+                                    <div class="callout-block callout-info">
+                                        <div class="icon-holder">
+                                            <i class="fa fa-info-circle"></i>
+                                        </div><!--//icon-holder-->
+                                        <div class="content">
+                                            <h4 class="callout-title">Note:</h4>
+                                            <p>'upper' is helpful on the cover page of a document, or in the signature blocks of documents since the name of the entities are frequently upper cased in those contexts.</p>
+                                        </div><!--//content-->
+                                    </div><!--//callout-->
+
+                                </div><!--//section-block-->
+                                <div id="6article" class="section-block">
+                                    <h3 class="block-title">6. article Function</h3>
+                                    <p>article function is used to insert an appropriate indefinite article, that is, "a" or "an" in front of a text Term Template.  It is much smarter than simple Does-the-word-start-with-a-vowel check and you will appreciate its high accuracy.   The syntax is: <code> {{article text1}}</code>
+
+                                    <div class="callout-block callout-info">
+                                        <div class="icon-holder">
+                                            <i class="fa fa-info-circle"></i>
+                                        </div><!--//icon-holder-->
+                                        <div class="content">
+                                            <h4 class="callout-title">Note:</h4>
+                                            <p>The article function only returns "a" or "an" so in a document, you will most likely need to place the text it is determining for, so it would look like: <code>{{article text1}} {{text1}}.</code>  Remember to put a space between the two.</p>
+                                        </div><!--//content-->
+                                    </div><!--//callout-->
+
+                                </div><!--//section-block-->
+
                             </section><!--//doc-section-->
                             
-                            <section id="inline" class="doc-section">
-                                <h2 class="section-title">Inline Charts</h2>
-                                <div class="section-block">
-                                    <h3 class="block-title">1. Screenshot</h3>
+                            <section id="document_templates" class="doc-section">
+                                <h2 class="section-title">Document Templates</h2>
+                                
+                                    <p>Document Templates contain two types of data, both of which are required.  First is simply called the Document Template, which contains information relating to which Provisions are to be contained in the Document.  Second is a style document in JSON format, which contains stylistic and formatting information required to render Microsoft Word documents.   </p>
+                                    
+                                    <div id="1newdocument" class="section-block">
+                                    <h3 class="block-title">1. New Document Template</h3>
+
                                     <div class="screenshot-holder">
-                                        <a href="https://wrapbootstrap.com/theme/appkit-admin-theme-angularjs-WB051SCJ1?ref=3wm" target="_blank"><img class="img-responsive" src="assets/images/demo/appkit-chart-inline.jpg" alt="screenshot" /></a>
-                                        <a class="mask" href="https://wrapbootstrap.com/theme/appkit-admin-theme-angularjs-WB051SCJ1?ref=3wm" target="_blank"><i class="icon fa fa-link"></i></a>
-                                    </div>
+                                        <img class="img-responsive" src="assets/images/author/document-template-new.png" alt="screenshot" />
+                                    </div> 
+
+                                    <p> In the Name field, put in the name of the Document Template.  It is visible to the User when they select a document in their Edit screen (top middle bar).  It is also used to identify the document in the Project Template screen, when aggregating the Documents to form a Project Template.</p> 
+                                    <p> In the Provision Templates field, it will list all of the provisions available to be included.  You can also start to type the name of the Provision, and it will attempt to auto-complete with matching names.</p> 
+
+
                                 </div><!--//section-block-->
-                                <div class="section-block">
-                                    <h3 class="block-title">2. Charts Used</h3>
-                                    <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim.</p>
-                                    <ul class="list list-unstyled">
-                                        <li><a href="#" target="_blank"><i class="fa fa-external-link-square"></i> Peity</a></li>
-                                        <li><a href="#" target="_blank"><i class="fa fa-external-link-square"></i> Easy Pie Chart</a></li>
-                                        <li><a href="#" target="_blank"><i class="fa fa-external-link-square"></i> Sparklines</a></li>
-                                    </ul>
+                                <div id="2documenttype" class="section-block">
+                                    <h3 class="block-title">2. Document Template Types</h3>
+                                    <div class="screenshot-holder">
+                                        <img class="img-responsive" src="assets/images/author/document-template-type.png" alt="screenshot" />
+                                    </div> 
+                                    <p>In the Name field, type in the name of the Document Template Type.  This is used in the Document Template screen to determine its formatting for purposes of generating MS Word documents.  In the Description, please describe the formatting.  In the Styles(JSON) field, the Authors can upload the JSON files.  Once uploaded, it must be linked to the Document Template in order to take its effect on the Document.</p>
+
                                 </div><!--//section-block-->
+                            </section><!--//doc-section-->
+                                <section id="project_templates" class="doc-section">
+                                    <h2 class="section-title">Project Templates</h2>
+                                    <div id="1whymultiple" class="section-block">
+                                        <h3 class="block-title">1. Why Multiple Documents?</h3>
+
+                                        <p>Legal documents and other complex documents come in sets.  Multiple documents working in conjunction in modern transactions is typical, because it allows for modularity and allows multiple specialists to work on the project with clear divisions of labor and responsbility.  It is also sometimes affected by certain documents being governed by different jurisdictions. </p>
+                                    </div><!--//section-block-->
+                                    <div id="2newproject" class="section-block">
+                                        <h3 class="block-title">2. New Project Template</h3>
+                                        <div class="screenshot-holder">
+                                            <img class="img-responsive" src="assets/images/author/project-template.png" alt="screenshot" />
+                                        </div> 
+                                        <p>In the Name, please put in the name of the Project.  This is the name that the Users will see, when they create their Projects. </p>
+                                        <p>In the Document Templates field, it will list all of the Document Templates available to be included in the Project Template.  You can also start to type the name of the Document Template, and it will attempt to auto-complete with matching names. </p>
+
+                                    <div class="callout-block callout-info">
+                                        <div class="icon-holder">
+                                            <i class="fa fa-info-circle"></i>
+                                        </div><!--//icon-holder-->
+                                        <div class="content">
+                                            <h4 class="callout-title">Note:</h4>
+                                            <p>A Document is only available to the User when it has been associated with a Project Template.</p>
+                                        </div><!--//content-->
+                                    </div><!--//callout-->
+
+
+                                    </div><!--//section-block-->
                                 <div class="section-block">
                                     <div class="jumbotron text-center">
-                                        <h1>Jumbotron Example</h1>
-                                        <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim.</p>
+                                        <h1>Do you have a question that is not answered?</h1>
+                                        <p>You can visit the FAQ page, or please feel free to contact us.</p>
                                         <ul class="list list-inline center-block">
-                                            <li><a class="btn btn-cta btn-pink" href="https://wrapbootstrap.com/theme/appkit-admin-theme-angularjs-WB051SCJ1?ref=3wm" target="_blank"><i class="fa fa-external-link"></i> AppKit Details</a></li>
-                                            <li><a class="btn btn-cta btn-primary" href="https://wrapbootstrap.com/theme/appkit-admin-theme-angularjs-WB051SCJ1?ref=3wm" target="_blank"><i class="fa fa-eye"></i> AppKit Demo</a></li>
+                                            <li><a class="btn btn-cta btn-pink" href="faqs.html"><i class="fa fa-external-link"></i> FAQ</a></li>
+                                            <li><a class="btn btn-cta btn-primary" href="#"><i class="fa fa-eye"></i> Contact Us</a></li>
                                         </ul>
                                     </div><!--//jumbotron-->
+
                                 </div><!--//section-->
                             </section><!--//doc-section-->
 
@@ -332,10 +341,39 @@ javascript code:</p>
                     <div class="doc-sidebar">
                         <nav id="doc-nav">
                             <ul id="doc-menu" class="nav doc-menu hidden-xs" data-spy="affix">
-                                <li><a class="scrollto" href="#chartjs">Chart.js</a></li>
-                                <li><a class="scrollto" href="#flot">Flot Charts</a></li>
-                                <li><a class="scrollto" href="#morris">Morris.js</a></li>
-                                <li><a class="scrollto" href="#inline">Inline Charts</a></li>
+                                <li><a class="scrollto" href="#overview">Overview</a></li>
+                                <li><a class="scrollto" href="#term_templates">Term Templates</a>
+                                    <ul class="nav doc-sub-menu">
+                                        <li><a class="scrollto" href="#1text">1. Text</a></li>
+                                        <li><a class="scrollto" href="#2expandable">2. Expandable Text</a></li>
+                                        <li><a class="scrollto" href="#3number">3. Number</a></li>
+                                        <li><a class="scrollto" href="#4date">4. Date</a></li>
+                                        <li><a class="scrollto" href="#5boolean">5. Boolean</a></li>
+                                        <li><a class="scrollto" href="#6variant">6. Variant</a></li>
+                                    </ul><!--//nav-->
+                                </li>
+                                <li><a class="scrollto" href="#provision_templates">Provision Templates</a>
+                                    <ul class="nav doc-sub-menu">
+                                        <li><a class="scrollto" href="#1newprovision">1. New Provision</a></li>
+                                        <li><a class="scrollto" href="#2ifelseunless">2. If, Else and Unless</a></li>
+                                        <li><a class="scrollto" href="#3ifCond">3. ifCond</a></li>
+                                        <li><a class="scrollto" href="#4math">4. math</a></li>
+                                        <li><a class="scrollto" href="#5case">5. case</a></li>
+                                        <li><a class="scrollto" href="#6article">6. article</a></li>
+                                    </ul><!--//nav-->
+                                </li>
+                                <li><a class="scrollto" href="#document_templates">Document Templates</a>
+                                    <ul class="nav doc-sub-menu">
+                                        <li><a class="scrollto" href="#1newdocument">1. New Document</a></li>
+                                        <li><a class="scrollto" href="#2documenttype">2. Document Type</a></li>
+                                    </ul><!--//nav-->
+                                </li>
+                                <li><a class="scrollto" href="#project_templates">Project Templates</a>
+                                    <ul class="nav doc-sub-menu">
+                                        <li><a class="scrollto" href="#1whymultiple">1. Why Multiple Docs?</a></li>
+                                        <li><a class="scrollto" href="#2newproject">2. New Projects</a></li>
+                                    </ul><!--//nav-->
+                                </li>
                             </ul><!--//doc-menu-->
                         </nav>
                     </div><!--//doc-sidebar-->
@@ -343,32 +381,7 @@ javascript code:</p>
             </div><!--//container-->
         </div><!--//doc-wrapper-->
         
-        <div id="promo-block" class="promo-block promo-block-2">
-            <div class="container">
-                <div class="promo-block-inner">
-                    <h3 class="promo-title text-center"><i class="fa fa-heart"></i> <a href="https://wrapbootstrap.com/theme/appkit-admin-theme-angularjs-WB051SCJ1?ref=3wm" target="_blank">AppKit - Bootstrap Angular Admin Theme for Developers</a></h3>
-                    <div class="row">
-                        <div class="figure-holder col-md-5 col-sm-6 col-xs-12">
-                            <div class="figure-holder-inner">
-                                <a href="https://wrapbootstrap.com/theme/appkit-admin-theme-angularjs-WB051SCJ1?ref=3wm" target="_blank"><img class="img-responsive" src="assets/images/demo/appkit-dashboard-2-thumb.jpg" alt="AppKit Theme" /></a>
-                                <a class="mask" href="https://wrapbootstrap.com/theme/appkit-admin-theme-angularjs-WB051SCJ1?ref=3wm" target="_blank"><i class="icon fa fa-heart pink"></i></a>
-                            </div>
-                        </div><!--//figure-holder-->
-                        <div class="content-holder col-md-7 col-sm-6 col-xs-12">
-                            <div class="content-holder-inner">
-                                <div class="desc">
-                                    <h4 class="content-title"><strong>Love this free documentation theme?</strong></h4>
-                                    <p>Check out AppKit - an Angular admin theme I created with my developer friend <a href="https://twitter.com/tnajdek">Tom Najdek</a> for developers. AppKit uses modern front-end technologies and is packed with useful components and widgets to speed up your app development.</p>
-                                    <p><strong class="highlight">[Tip for developers]:</strong> If your project is Open Source, you can use this area to promote your other projects or hold third party adverts like Bootstrap and FontAwesome do!</p>
-                                    <a class="btn btn-cta" href="https://wrapbootstrap.com/theme/appkit-admin-theme-angularjs-WB051SCJ1?ref=3wm" target="_blank">View Demo</a>
-                                </div><!--//desc-->
-                                <div class="author"><a href="http://themes.3rdwavemedia.com">Xiaoying Riley</a></div>
-                            </div><!--//content-holder-inner-->
-                        </div><!--//content-holder-->
-                    </div><!--//row-->
-                </div><!--//promo-block-inner-->  
-            </div><!--//container-->
-        </div><!--//promo-block-->
+
         
     </div><!--//page-wrapper-->
     
