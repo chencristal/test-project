@@ -103,36 +103,61 @@
         .exp-if
           &.selected
             display: inline
-            color: black
-            font-weight: bold
             text-decoration: underline
+            font-weight: bold
+            color: black
             input
               color: black
-              font-weight: bold
               text-decoration: underline
+              font-weight: bold
             input::-moz-input-placeholder
-              font-weight: bold
               color: black
               text-decoration: underline
+              font-weight: bold
             input::-webkit-input-placeholder
-              font-weight: bold
               color: black
               text-decoration: underline
+              font-weight: bold
+            &.defaulted
+              color: black
+              font-weight: normal
+              text-decoration: none
+              input
+                color: black
+                font-weight: normal
+                text-decoration: none
+              input::-moz-input-placeholder
+                font-weight: normal
+                color: black
+                text-decoration: none
+              input::-webkit-input-placeholder
+                font-weight: normal
+                color: black
+                text-decoration: none
             &.highlighted
+              display: inline
+              text-decoration: underline
+              font-weight: bold
               color: blue
               input
                 color: blue
+                text-decoration: underline
+                font-weight: bold
               input::-moz-input-placeholder
                 color: blue
+                text-decoration: underline
+                font-weight: bold
               input::-webkit-input-placeholder
                 color: blue
+                text-decoration: underline
+                font-weight: bold
               &.defaulted
                 color: black
                 font-weight: normal
                 text-decoration: none
                 input
                   font-weight: normal
-                  color: black                  
+                  color: black
                   text-decoration: none
                 input::-moz-input-placeholder
                   font-weight: normal
@@ -145,52 +170,145 @@
 
           &.unselected
             display: inline
-            color: black
+            color: lightgrey
+            font-weight: normal
             text-decoration: line-through
             input
-              color: black
+              color: lightgrey
+              font-weight: normal
               text-decoration: line-through
             input::-moz-input-placeholder
               text-decoration: line-through
-              color: black
+              font-weight: normal
+              color: lightgrey
             input::-webkit-input-placeholder
               text-decoration: line-through
-              color: black
+              font-weight: normal
+              color: lightgrey
+            &.defaulted
+              display: none
             &.highlighted
               color: red
+              text-decoration: line-through
               input
                 color: red
+                font-weight: normal
+                text-decoration: line-through
               input::-moz-input-placeholder
                 color: red
+                font-weight: normal
+                text-decoration: line-through
               input::-webkit-input-placeholder
                 color: red
+                font-weight: normal
+                text-decoration: line-through
               &.defaulted
                 display: none
+
         .exp-unless
           &.unselected
             display: none
+            &.defaulted
+              display: inline
+              color: lightgrey
+              font-weight: normal
+              text-decoration: line-through
+              input
+                color: lightgrey
+                font-weight: normal
+                text-decoration: line-through
+              input::-moz-input-placeholder
+                text-decoration: line-through
+                font-weight: normal
+                color: lightgrey
+              input::-webkit-input-placeholder
+                text-decoration: line-through
+                font-weight: normal
+                color: lightgrey
+            &.highlighted
+              &.defaulted
+                color: red
+                font-weight: normal
+                text-decoration: line-through
+                input
+                  color: red
+                  font-weight: normal
+                  text-decoration: line-through
+                input::-moz-input-placeholder
+                  color: red
+                  font-weight: normal
+                  text-decoration: line-through
+                input::-webkit-input-placeholder
+                  color: red
+                  font-weight: normal
+                  text-decoration: line-through
+
           &.selected
             display: inline
             color: black
-            font-weight: bold
-            text-decoration: underline
+            font-weight: normal
+            text-decoration: none
             input
               color: black
-              font-weight: bold
-              text-decoration: underline
+              font-weight: normal
+              text-decoration: none
             input::-moz-input-placeholder
-              font-weight: bold
               color: black
-              text-decoration: underline
+              font-weight: normal
+              text-decoration: none
             input::-webkit-input-placeholder
+              color: black
+              font-weight: normal
+              text-decoration: none
+            &.defaulted
+              display: inline
+              text-decoration: underline
               font-weight: bold
               color: black
-              text-decoration: underline
-            &.highlighted
-              color: blue
               input
-                color: blue
+                color: black
+                text-decoration: underline
+                font-weight: bold
               input::-moz-input-placeholder
-                color: blue
+                color: black
+                text-decoration: underline
+                font-weight: bold
               input::-webkit-input-placeholder
+                color: black
+                text-decoration: underline
+                font-weight: bold
+            &.highlighted
+              display: inline
+              color: black
+              font-weight: normal
+              text-decoration: none
+              input
+                color: black
+                font-weight: normal
+                text-decoration: none
+              input::-moz-input-placeholder
+                color: black
+                font-weight: normal
+                text-decoration: none
+              input::-webkit-input-placeholder
+                color: black
+                font-weight: normal
+                text-decoration: none
+
+              &.defaulted
+                display: inline
                 color: blue
+                font-weight: bold
+                text-decoration: underline
+                input
+                  color: blue
+                  font-weight: bold
+                  text-decoration: underline
+                input::-moz-input-placeholder
+                  color: blue
+                  font-weight: bold
+                  text-decoration: underline
+                input::-webkit-input-placeholder
+                  color: blue
+                  font-weight: bold
+                  text-decoration: underline

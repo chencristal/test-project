@@ -26,8 +26,6 @@ exports.getUsedVariables = (tokensRoot, variables) => {
     .uniq()
     .filter(paramName => _.includes(variables, paramName))
     .value();
-
-    console.log(usedVariables);
   return usedVariables;
 };
 
@@ -35,7 +33,6 @@ function _hbParse(templ) {
   return new Promise((resolve, reject) => {
     try {
       var rootToken = handlebars.parse(templ);
-      // console.log(JSON.stringify(rootToken));
       resolve(rootToken);
     } catch (err) {
       reject(err);

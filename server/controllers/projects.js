@@ -233,7 +233,6 @@ function _getCompiledTemplate(data) {
           }
           return result;
         }, {});
-        console.log(data.values);
         data.expandables = _(data.termTempls)
                           .filter({termType: 'expandable_text'})
                           .map('variable')

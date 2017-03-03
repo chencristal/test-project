@@ -162,7 +162,6 @@ function _parseTemplate(provisionTemplData) {
       termTsSrvc.getActiveTermTemplates({})
     ])
     .spread((tokensRoot, termTempls) => {
-      console.log(JSON.stringify(tokensRoot));
       return Promise
         .resolve()
         .then(() => templProc.validate(tokensRoot, termTempls))
