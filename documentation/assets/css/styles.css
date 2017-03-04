@@ -34,6 +34,7 @@ body {
 }
 p {
   line-height: 1.5;
+  text-align: justify;
 }
 a {
   color: #3aa7aa;
