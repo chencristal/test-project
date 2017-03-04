@@ -64,12 +64,11 @@ angular.module('app').directive('projectEditor', function () {
       $scope.currentChange = null; // index of current position in changes array
 
       // chen_debug
-      $scope.viewedVars = []; // array of viewable variables
-      $scope.viewStatus = [];
-
+      // $scope.viewedVars = []; // array of viewable variables
+      $scope.viewStatus = {};
+      
       $scope.$watch('relatedData.currrentDocumentTemplate', function (newDocTempl) {
-        if (newDocTempl) {
-          _loadProvisionVariables(newDocTempl);   // chen_debug
+        if (newDocTempl) {          
           _loadRelatedData(newDocTempl);          
         }
 
@@ -182,10 +181,10 @@ angular.module('app').directive('projectEditor', function () {
                   var master = variable.variable.split('__')[0];
                   $scope.viewStatus[variable.variable] = $scope.viewStatus[master];
                 }
-                else {
+                /*else {
                   $scope.viewStatus[variable.variable] = 
                     (_.find($scope.viewedVars, {'variable': variable.variable}) !== undefined) ? true : false;
-                }
+                }*/
               });
             })
           });
@@ -340,6 +339,139 @@ angular.module('app').directive('projectEditor', function () {
         $window.open(url, '_blank');
       };
 
+      function _parseTokenWithValues(token, values) {   // chen_debug
+        var _variables = [];
+
+        function _parseBoolean(text) {
+          var _temp = _.find(values, {'variable': text});
+
+          if (_temp !== undefined) {
+            if (_temp.value == 'true' || _temp.value == true) {
+              return true;
+            }
+          }
+
+          return false;
+        }
+        function _parseIfCond(token) {
+          var op = token.params[0].text,
+              v1 = _parseBoolean(token.params[1].text),
+              v2 = _parseBoolean(token.params[2].text);
+
+          switch (op) {
+            case 'and':
+              return (v1 && v2);
+            case 'not-and':
+              return (!v1 && v2);
+            case 'and-not':
+              return (v1 && !v2);
+            case 'not-and-not':
+              return (!v1 && !v2);
+            case 'or':
+              return (v1 || v2);
+            case 'not-or':
+              return (!v1 || v2);
+            case 'or-not':
+              return (v1 || !v2);
+            case 'not-or-not':
+              return (!v1 || !v2);
+            default:
+              return false;
+          }
+        }
+
+        function _parseValues(token) {
+          if (!token) {
+            return '';
+          }
+
+          if (token.type === undefined) {     // chen_debug (if the token is array)
+            _.map(token, _parseValues);
+          }
+          else {
+            switch (token.type) {
+              case 'program':
+                _.map(token.tokens, _parseValues);
+                break;
+              case 'variable': {
+                var _temp = _.find(values, {'variable': token.text});
+                if (_.find(_variables, _temp) == undefined) {
+                  _variables = _.concat(_variables, _temp);
+                }
+                break;
+              }
+              case 'statement': {
+                if (token.text == 'if') {
+                  var _temp = _.find(values, {'variable': token.params[0].text});
+                  if (_.find(_variables, _temp) == undefined)
+                    _variables = _.concat(_variables, _temp);
+
+                  if (_parseBoolean(token.params[0].text) == true) {
+                    _.map(token.tokens,  _parseValues);
+                  }
+                }
+                else if (token.text == 'unless') {
+                  var _temp = _.find(values, {'variable': token.params[0].text});
+                  if (_.find(_variables, _temp) == undefined)
+                    _variables = _.concat(_variables, _temp);
+
+                  if (_parseBoolean(token.params[0].text) == false) {
+                    _.map(token.tokens,  _parseValues);
+                  }
+                }
+                else if (token.text == 'math') {
+                  _.forEach(token.params, function(param) {
+                    if (param.type == 'variable') {
+                      var _temp = _.find(values, {'variable': param.text});
+                      if (_.find(_variables, _temp) == undefined) {
+                        _variables = _.concat(_variables, _temp);
+                      }
+                    }
+                  });
+                }
+                else if (token.text == 'ifVariant') {
+                  _.forEach(token.params, function(param) {
+                    if (param.type == 'variable') {
+                      var _temp = _.find(values, {'variable': param.text});
+                      if (_.find(_variables, _temp) == undefined) {
+                        _variables = _.concat(_variables, _temp);
+                      }
+                    }
+                  });
+                }
+                else if (token.text == 'ifCond') {
+                  _.forEach(token.params, function(param) {
+                    if (param.type == 'variable') {
+                      var _temp = _.find(values, {'variable': param.text});
+                      if (_.find(_variables, _temp) == undefined) {
+                        _variables = _.concat(_variables, _temp);
+                      }
+                    }
+                  });
+
+                  if (_parseIfCond(token) == true) {
+                    _.map(token.tokens, _parseValues);
+                  }
+                }
+                break;
+              }
+            } // END of switch
+          }
+          
+        }
+
+        _parseValues(token);
+
+        var retVar = {};
+        _.forEach($scope.variables, function(variable) {
+          retVar[variable.variable] = 
+            (_.find(_variables, {'variable': variable.variable}) == undefined) ? false : true;
+        });
+
+        // return retVar;
+        $scope.viewStatus = angular.copy(retVar);
+      }
+
       function _loadData() {
         Project
           .get({
@@ -375,6 +507,8 @@ angular.module('app').directive('projectEditor', function () {
             // append loaded data to history array
             $scope.vars = angular.copy($scope.variables);
             $scope.history.push($scope.vars);
+
+            _loadProvisionVariables(newDocTempl);   // chen_debug
           })
           .finally(function () {
             $scope.isLoading = false;
@@ -396,13 +530,16 @@ angular.module('app').directive('projectEditor', function () {
 
       function _loadProvisionVariables(docTempl) {    // chen_debug
         return ProvisionVariable
-          .query({
-            'includes[]': docTempl.provisionTemplates,
-            'project': $scope.project._id
+          .get({
+            id: docTempl.provisionTemplates[0]
           })
           .$promise
-          .then(function (viewedVars) {
-            $scope.viewedVars = viewedVars;
+          .then(function(viewedToken) {            
+            $scope.isLoading = false;
+            return _parseTokenWithValues(viewedToken, $scope.variables);
+          })
+          .catch(function(err) {
+            Notifier.error(err, 'Unable to load record');
           });
       }
 
@@ -463,8 +600,8 @@ angular.module('app').directive('projectEditor', function () {
               termTempl.state = val ? val['state'] : 0;
               termTempl.sortIndex = _.indexOf($scope.relatedData.orderedVariables, termTempl.variable);
               $scope.variables[termTempl.variable] = termTempl;
-              $scope.viewStatus[termTempl.variable] = 
-                (_.find($scope.viewedVars, {'variable': termTempl.variable}) !== undefined) ? true : false;
+              /*$scope.viewStatus[termTempl.variable] = 
+                (_.find($scope.viewedVars, {'variable': termTempl.variable}) !== undefined) ? true : false;*/
             });
             _.each($scope.variables, function(v) {
               if(v.termType == 'expandable_text') {
@@ -480,7 +617,7 @@ angular.module('app').directive('projectEditor', function () {
                   newVar.state = sub.state;
                   newVar.value = sub.value;
                   $scope.variables[newVar.variable] = newVar;
-                  $scope.viewStatus[newVar.variable] = $scope.viewStatus[v.variable];
+                  /*$scope.viewStatus[newVar.variable] = $scope.viewStatus[v.variable];*/
                 });
               }
             });

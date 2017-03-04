@@ -32,6 +32,24 @@ angular.module('app')
   };
 })
 
+.directive('ngVisible', function() {
+  return {
+    restrict: 'A',
+    link: function(scope, element, attrs) {
+      scope.$watch(attrs.ngVisible, function(newVal) {        
+        if (newVal === true) {
+          jQuery(element).show(500);
+          console.log(element);
+        }
+        else if (newVal === false) {
+          jQuery(element).hide(500);
+          console.log(element);
+        }
+      });
+    }
+  }
+})
+
 .directive('ngOffset', function($filter) {
   return {
     restrict: 'A',

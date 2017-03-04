@@ -7,8 +7,7 @@ angular.module('app', [
   'ui.bootstrap',
   'ui.select',
   'textAngular',
-  'mwl.confirm',
-  'ngAnimate'
+  'mwl.confirm'
 ])
 .config(function($routeProvider, $locationProvider, $httpProvider) {
   $locationProvider.html5Mode(true);
