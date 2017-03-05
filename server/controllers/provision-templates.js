@@ -135,7 +135,7 @@ exports.updateProvisionTemplate = (req, res, next) => {
     .catch(next);
 };
 
-function _validateProvisionTemplateData(provisionTemplData) {
+function _validateProvisionTemplateData(provisionTemplData) {  
   if (!provisionTemplData.displayName) {
     return customErrors.rejectWithUnprocessableRequestError(
       { paramName: 'displayName', errMsg: 'is required' }
@@ -151,7 +151,6 @@ function _validateProvisionTemplateData(provisionTemplData) {
       { paramName: 'template', errMsg: 'is required' }
     );
   }
-
   return Promise.resolve(provisionTemplData);
 }
 

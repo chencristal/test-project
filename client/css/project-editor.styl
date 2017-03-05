@@ -88,6 +88,59 @@
             text-decoration: none
 
       .redline-mode
+        .exp-ifcond
+          &.selected
+            display: inline
+            text-decoration: underline
+            font-weight: bold
+            color: black
+            input
+              color: black
+              text-decoration: underline
+              font-weight: bold
+            input::-moz-input-placeholder
+              color: black
+              text-decoration: underline
+              font-weight: bold
+            input::-webkit-input-placeholder
+              color: black
+              text-decoration: underline
+              font-weight: bold
+            &.defaulted
+              display: inline
+              color: black
+              font-weight: normal
+              text-decoration: none
+              input
+                font-weight: normal
+                color: black
+                text-decoration: none
+              input::-moz-input-placeholder
+                font-weight: normal
+                color: black
+                text-decoration: none
+              input::-webkit-input-placeholder
+                font-weight: normal
+                color: black
+                text-decoration: none
+          &.unselected
+            display: inline
+            color: red
+            text-decoration: line-through
+            input
+              color: red
+              font-weight: normal
+              text-decoration: line-through
+            input::-moz-input-placeholder
+              color: red
+              font-weight: normal
+              text-decoration: line-through
+            input::-webkit-input-placeholder
+              color: red
+              font-weight: normal
+              text-decoration: line-through
+            &.defaulted
+              display: none
         .exp-if
           &.selected
             display: inline

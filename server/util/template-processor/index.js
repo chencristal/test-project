@@ -8,7 +8,7 @@ _.extend(module.exports, require('./generator'));
 _.extend(module.exports, require('./parser'));
 _.extend(module.exports, require('./validator'));
 
-handlebars.registerHelper('ifCond', (op, v1, v2, options) => {
+handlebars.registerHelper('ifCond', (v1, op, v2, options) => {
   /* jshint maxcomplexity: false */
   switch (op) {
     case 'and':

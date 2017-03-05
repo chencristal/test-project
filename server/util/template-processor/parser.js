@@ -73,18 +73,39 @@ function _parseToken(token) {
         };
       } else 
         return _parseToken(token.path);
-    case 'BlockStatement':
-      return [{       // chen_debug (for the `else` statement)
-        type: 'statement',
-        text: token.path.original,
-        params: _.map(token.params, _parseToken),
-        tokens: _.map(_.get(token, 'program.body'), _parseToken)
-      }, {
-        type: 'statement',
-        text: (token.path.original == 'if') ? 'unless' : 'if',
-        params: _.map(token.params, _parseToken),
-        tokens: _.map(_.get(token, 'inverse.body'), _parseToken)
-      }];
+    case 'BlockStatement': {
+      if (token.path.original == 'if' || token.path.original == 'unless') {
+        if (token.inverse == undefined) {
+          return {
+            type: 'statement',
+            text: token.path.original,
+            params: _.map(token.params, _parseToken),
+            tokens: _.map(_.get(token, 'program.body'), _parseToken)
+          };
+        }
+        else {
+          return [{       // chen_debug (for the `else` statement)
+            type: 'statement',
+            text: token.path.original,
+            params: _.map(token.params, _parseToken),
+            tokens: _.map(_.get(token, 'program.body'), _parseToken)
+          }, {
+            type: 'statement',
+            text: (token.path.original == 'if') ? 'unless' : 'if',
+            params: _.map(token.params, _parseToken),
+            tokens: _.map(_.get(token, 'inverse.body'), _parseToken)
+          }];
+        }
+      }
+      else {
+        return {       // chen_debug (for the `else` statement)
+          type: 'statement',
+          text: token.path.original,
+          params: _.map(token.params, _parseToken),
+          tokens: _.map(_.get(token, 'program.body'), _parseToken)
+        };
+      }
+    }
     case 'StringLiteral':
       return {
         type: 'operator',

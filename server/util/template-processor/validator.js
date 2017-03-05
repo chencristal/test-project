@@ -67,7 +67,7 @@ Validator.prototype.validateStatement = function(statement, params) {
     case 'unless':
       requiredParamsCount = 1;
       break;
-    case 'ifCond':
+    case 'ifCond':      
       requiredParamsCount = 3;
       break;
     case 'math':
@@ -95,8 +95,8 @@ Validator.prototype.validateStatement = function(statement, params) {
   }
 
   if (statement === 'ifCond') {
-    this.validateIfCondOperator.call(this, params[0].type, params[0].text);
-    params = _.tail(params);
+    this.validateIfCondOperator.call(this, params[1].type, params[1].text);
+    params = _.filter(params, _.iteratee(['type', 'variable']));
   } else if (statement === 'ifVariant') {
     params = _.take(params, 1);
   } else if (statement === 'math') {  // chen_debug

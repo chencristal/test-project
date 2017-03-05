@@ -324,7 +324,7 @@ var AvsAnSimple = (function (root) {
 })({});
 
 angular.module('app').run(function($rootScope) {
-  $rootScope.ifCond = function(op, v1, v2) {
+  $rootScope.ifCond = function(v1, op, v2) {
     switch (op) {
       case 'and':
         return (v1 && v2);
