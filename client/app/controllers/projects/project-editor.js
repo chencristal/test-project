@@ -599,6 +599,8 @@ angular.module('app').directive('projectEditor', function () {
                 termTempl.value = termTempl.variant.default;
               } else if (termTempl.termType === 'date') {
                 termTempl.value = termTempl.date ? new Date(termTempl.date.default) : new Date();
+              } else if (termTempl.termType === 'number') {
+                termTempl.value = parseFloat(termTempl.number.placeholder);
               }
               termTempl.state = val ? val['state'] : 0;
               termTempl.sortIndex = _.indexOf($scope.relatedData.orderedVariables, termTempl.variable);
