@@ -203,7 +203,7 @@ function _getCompiledTemplate(data) {
 
   function loadTermTemplates(data) {
     return termTsSrvc
-      .getTermTemplates({}, 'variable termType expandable_text')
+      .getTermTemplates({}, '')
       .then(termTempls => {
         data.termTempls = termTempls;
         return data;
@@ -223,6 +223,12 @@ function _getCompiledTemplate(data) {
           switch (termTempl.termType) {
             case 'boolean':
               result[variable.variable] = variable.value === 'true';
+              break;
+            case 'number':
+              if (variable.value === null)
+                result[variable.variable] = termTempl.number.placeholder;
+              else
+                result[variable.variable] = variable.value;
               break;
             case 'date':
               result[variable.variable] = variable.value ? moment(variable.value).format('MMMM D, YYYY') : '';

@@ -586,7 +586,10 @@ angular.module('app').directive('projectEditor', function () {
                 } else if (termTempl.termType === 'date') {
                   termTempl.value = new Date(val.value);
                 } else if (termTempl.termType === 'number') {
-                  termTempl.value = parseFloat(val.value);
+                  if (val.value === undefined)
+                    termTempl.value = parseFloat(termTempl.number.placeholder);
+                  else
+                    termTempl.value = parseFloat(val.value);
                 } else {
                   termTempl.value = val.value;
                 }
