@@ -82,6 +82,9 @@ Validator.prototype.validateStatement = function(statement, params) {
     case 'ifVariant':
       requiredParamsCount = 2;
       break;
+    case 'unlessVariant':
+      requiredParamsCount = 2;
+      break;
     case 'date':
       requiredParamsCount = 1;
       break;
@@ -99,7 +102,9 @@ Validator.prototype.validateStatement = function(statement, params) {
     params = _.filter(params, _.iteratee(['type', 'variable']));
   } else if (statement === 'ifVariant') {
     params = _.take(params, 1);
-  } else if (statement === 'math') {  // chen_debug
+  } else if (statement === 'unlessVariant') {
+    params = _.take(params, 1);
+  } else if (statement === 'math') {
     this.validateMathCondOperator.call(this, params[1].type, params[1].text);
     params = _.filter(params, _.iteratee(['type', 'variable']));
     // params = _.tail(params);

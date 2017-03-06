@@ -112,6 +112,21 @@ function _parseToken(token) {
           }];
         }
       }
+      else if (token.path.original == 'ifVariant' || token.path.original == 'unlessVariant') {
+        if (token.inverse !== undefined) {
+          return [{       // chen_debug (for the `else` statement)
+            type: 'statement',
+            text: token.path.original,
+            params: _.map(token.params, _parseToken),
+            tokens: _.map(_.get(token, 'program.body'), _parseToken)
+          }, {
+            type: 'statement',
+            text: (token.path.original == 'ifVariant') ? 'unlessVariant' : 'ifVariant',
+            params: _.map(token.params, _parseToken),
+            tokens: _.map(_.get(token, 'inverse.body'), _parseToken)
+          }];
+        }
+      }
       else if (token.path.original == 'ifCond') {
         if (token.inverse !== undefined) {
           var inverseTokenParams = [
@@ -136,6 +151,20 @@ function _parseToken(token) {
             tokens: _.map(_.get(token, 'inverse.body'), _parseToken)
           }];
         }
+
+        /*if (token.params[0].type == 'SubExpression') {
+          var firstParams = token.params[0].params;
+          firstParams[2] = firstParams[1]; firstParams[1] = firstParams[0];
+          firstParams[0] = {
+            'type' : token.params[0].path.type,
+            'data' : token.params[0].path.data,
+            'depth' : token.params[0].path.depth,
+            'parts' : token.params[0].path.parts,
+            'original' : token.params[0].path.original,
+            'loc' : token.params[0].path.loc
+          };
+          token.params[0].path.original = 'ifCond';
+        }*/
       }
 
       return {       // chen_debug (for the `else` statement)

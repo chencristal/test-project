@@ -190,12 +190,28 @@ Generator.prototype.generateExpressionHtml = function (token) {
 
     case 'ifVariant':
       html += `<span 
-        class="
+        class="exp-ifvariant
           {{ variables.${param1.text}.state == 2 && variables.${param1.text}.state == 2 ? 'uncertain-bracket' : null }}" 
-        ng-class="{ unselected: !$root.ifVariant(`;
-      html += `variables.${param1.text}.value`;
-      html += `, '${param2.text}'`;
-      html += `) }">`;
+        ng-class="{ 
+          default: $root.ifVariant(variables.${param1.text}.value, '${param2.text}') == 
+                      $root.ifVariant(variables.${param1.text}.variant.default, '${param2.text}'),
+          selected: $root.ifVariant(variables.${param1.text}.value, '${param2.text}'),
+          unselected: !$root.ifVariant(variables.${param1.text}.value, '${param2.text}'),
+          highlighted: selectedVariable === variables.${param1.text}
+        }">`;
+      break;
+
+    case 'unlessVariant':
+      html += `<span 
+        class="exp-unlessvariant
+          {{ variables.${param1.text}.state == 2 && variables.${param1.text}.state == 2 ? 'uncertain-bracket' : null }}" 
+        ng-class="{ 
+          default: $root.ifVariant(variables.${param1.text}.value, '${param2.text}') != 
+                      $root.ifVariant(variables.${param1.text}.variant.default, '${param2.text}'),
+          selected: !$root.ifVariant(variables.${param1.text}.value, '${param2.text}'),
+          unselected: $root.ifVariant(variables.${param1.text}.value, '${param2.text}'),
+          highlighted: selectedVariable === variables.${param1.text}
+        }">`;
       break;
 
     case 'math':  // chen_debug

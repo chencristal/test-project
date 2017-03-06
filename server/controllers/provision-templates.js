@@ -135,17 +135,17 @@ exports.updateProvisionTemplate = (req, res, next) => {
     .catch(next);
 };
 
-function _validateProvisionTemplateData(provisionTemplData) {  
+function _validateProvisionTemplateData(provisionTemplData) {
   if (!provisionTemplData.displayName) {
     return customErrors.rejectWithUnprocessableRequestError(
       { paramName: 'displayName', errMsg: 'is required' }
     );
-  }
+  }  
   if (!_.includes(consts.PROVISION_STYLES, provisionTemplData.style)) {
     return customErrors.rejectWithUnprocessableRequestError(
       { paramName: 'style', errMsg: 'must be defined and has a valid value' }
     );
-  }
+  }  
   if (!provisionTemplData.template) {
     return customErrors.rejectWithUnprocessableRequestError(
       { paramName: 'template', errMsg: 'is required' }
