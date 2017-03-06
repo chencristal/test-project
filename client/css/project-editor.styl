@@ -107,13 +107,12 @@
               text-decoration: underline
               font-weight: bold
             &.defaulted
-              display: inline
               color: black
               font-weight: normal
               text-decoration: none
               input
-                font-weight: normal
                 color: black
+                font-weight: normal
                 text-decoration: none
               input::-moz-input-placeholder
                 font-weight: normal
@@ -123,24 +122,77 @@
                 font-weight: normal
                 color: black
                 text-decoration: none
+            &.highlighted
+              display: inline
+              text-decoration: underline
+              font-weight: bold
+              color: blue
+              input
+                color: blue
+                text-decoration: underline
+                font-weight: bold
+              input::-moz-input-placeholder
+                color: blue
+                text-decoration: underline
+                font-weight: bold
+              input::-webkit-input-placeholder
+                color: blue
+                text-decoration: underline
+                font-weight: bold
+              &.defaulted
+                color: black
+                font-weight: normal
+                text-decoration: none
+                input
+                  font-weight: normal
+                  color: black
+                  text-decoration: none
+                input::-moz-input-placeholder
+                  font-weight: normal
+                  color: black
+                  text-decoration: none
+                input::-webkit-input-placeholder
+                  font-weight: normal
+                  color: black
+                  text-decoration: none
+
           &.unselected
             display: inline
-            color: red
+            color: lightgrey
+            font-weight: normal
             text-decoration: line-through
             input
-              color: red
+              color: lightgrey
               font-weight: normal
               text-decoration: line-through
             input::-moz-input-placeholder
-              color: red
-              font-weight: normal
               text-decoration: line-through
+              font-weight: normal
+              color: lightgrey
             input::-webkit-input-placeholder
-              color: red
-              font-weight: normal
               text-decoration: line-through
+              font-weight: normal
+              color: lightgrey
             &.defaulted
               display: none
+            &.highlighted
+              color: red
+              text-decoration: line-through
+              input
+                color: red
+                font-weight: normal
+                text-decoration: line-through
+              input::-moz-input-placeholder
+                color: red
+                font-weight: normal
+                text-decoration: line-through
+              input::-webkit-input-placeholder
+                color: red
+                font-weight: normal
+                text-decoration: line-through
+              &.defaulted
+                display: none
+
         .exp-if
           &.selected
             display: inline

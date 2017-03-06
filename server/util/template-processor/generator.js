@@ -180,9 +180,11 @@ Generator.prototype.generateExpressionHtml = function (token) {
         class="exp-ifcond
           {{ variables.${param1.text}.state == 2 && variables.${param2.text}.state == 2 && variables.${param3.text}.state == 2 ? 'uncertain-bracket' : null }}" 
         ng-class="{ 
-          unselected: !$root.ifCond(variables.${param1.text}.value, '${param2.text}', variables.${param3.text}.value), 
-          defaulted: !($root.ifCond(variables.${param1.text}.value, '${param2.text}', variables.${param3.text}.value) == 
-                      $root.ifCond(variables.${param1.text}.boolean.default, '${param2.text}', variables.${param3.text}.boolean.default))
+          defaulted: $root.ifCond(variables.${param1.text}.value, '${param2.text}', variables.${param3.text}.value) == 
+                      $root.ifCond(variables.${param1.text}.boolean.default, '${param2.text}', variables.${param3.text}.boolean.default),
+          selected: $root.ifCond(variables.${param1.text}.value, '${param2.text}', variables.${param3.text}.value),
+          unselected: !$root.ifCond(variables.${param1.text}.value, '${param2.text}', variables.${param3.text}.value),
+          highlighted: (selectedVariable === variables.${param1.text} || selectedVariable === variables.${param3.text})
         }">`;
       break;
 

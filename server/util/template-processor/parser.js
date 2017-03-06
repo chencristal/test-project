@@ -33,6 +33,29 @@ function _hbParse(templ) {
   });
 }
 
+function _getInverseOperator(op) {
+
+  switch (op) {
+    case 'and':
+      return 'not-or-not';
+    case 'not-and':
+      return 'or-not';
+    case 'and-not':
+      return 'not-or';
+    case 'not-and-not':
+      return 'or';
+    case 'or':
+      return 'not-and-not';
+    case 'not-or':
+      return 'and-not';
+    case 'or-not':
+      return 'not-and';
+    case 'not-or-not':
+      return 'and';
+  }
+
+}
+
 function _parseToken(token) {
   if (!token) {
     return null;
@@ -75,15 +98,7 @@ function _parseToken(token) {
         return _parseToken(token.path);
     case 'BlockStatement': {
       if (token.path.original == 'if' || token.path.original == 'unless') {
-        if (token.inverse == undefined) {
-          return {
-            type: 'statement',
-            text: token.path.original,
-            params: _.map(token.params, _parseToken),
-            tokens: _.map(_.get(token, 'program.body'), _parseToken)
-          };
-        }
-        else {
+        if (token.inverse !== undefined) {
           return [{       // chen_debug (for the `else` statement)
             type: 'statement',
             text: token.path.original,
@@ -97,14 +112,38 @@ function _parseToken(token) {
           }];
         }
       }
-      else {
-        return {       // chen_debug (for the `else` statement)
-          type: 'statement',
-          text: token.path.original,
-          params: _.map(token.params, _parseToken),
-          tokens: _.map(_.get(token, 'program.body'), _parseToken)
-        };
+      else if (token.path.original == 'ifCond') {
+        if (token.inverse !== undefined) {
+          var inverseTokenParams = [
+            token.params[0], 
+            {
+              'type': 'StringLiteral',
+              'value': _getInverseOperator(token.params[1].value),
+              'original': _getInverseOperator(token.params[1].original),
+            },
+            token.params[2]
+          ];
+
+          return [{       // chen_debug (for the `else` statement)
+            type: 'statement',
+            text: token.path.original,
+            params: _.map(token.params, _parseToken),
+            tokens: _.map(_.get(token, 'program.body'), _parseToken)
+          }, {
+            type: 'statement',
+            text: token.path.original,
+            params: _.map(inverseTokenParams, _parseToken),
+            tokens: _.map(_.get(token, 'inverse.body'), _parseToken)
+          }];
+        }
       }
+
+      return {       // chen_debug (for the `else` statement)
+        type: 'statement',
+        text: token.path.original,
+        params: _.map(token.params, _parseToken),
+        tokens: _.map(_.get(token, 'program.body'), _parseToken)
+      };
     }
     case 'StringLiteral':
       return {
