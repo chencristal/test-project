@@ -254,8 +254,8 @@ function _getCompiledTemplate(data) {
         var template = _.map(provTempls, provTempl => provTempl.template).join('\n');
         var variables = Object.keys(data.values);
         _.each(data.expandables, expandable => {
-          var newline = expandable.expandable_text.newline ? true : false;
-          var prettify = expandable.expandable_text.prettify ? true : false;
+          var newline = (expandable.expandable_text.newline !== undefined && expandable.expandable_text.newline) ? true : false;
+          var prettify = (expandable.expandable_text.prettify !== undefined && expandable.expandable_text.prettify) ? true : false;
           var subs = _.filter(variables, v => v.indexOf(expandable.variable + '__') === 0);
           subs = _.map(subs, sub => data.values[sub]);
 
