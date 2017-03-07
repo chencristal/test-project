@@ -21,7 +21,8 @@
     "SpinKit": "spinkit#^1.2.5",
     "textAngular": "^1.5.8",
     "toastr": "^2.1.3",
-    "angular-bootstrap-confirm": "^2.5.0"
+    "angular-bootstrap-confirm": "^2.5.0",
+    "bootstrap-select": "^1.12.2"
   },
   "resolutions": {
     "angular": "~1.5.x"

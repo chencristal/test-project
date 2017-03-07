@@ -39,7 +39,7 @@ angular.module('app').directive('projectEditor', function () {
           'span-class': 'fa fa-question'
         }
       ];
-      $scope.filter = [{
+      /*$scope.filter = [{
         value: 100,
         label: 'All states'
       }, {
@@ -55,7 +55,31 @@ angular.module('app').directive('projectEditor', function () {
         value: 3,
         label: 'Uncertain and Neutrals'
       }];
+      $scope.filterVal = $scope.filter[0];*/
+
+      $scope.filter = [{
+          value: 100,
+          label: 'All states',
+          class: 'fa-flag'
+        }, {
+          value: 1,
+          label: 'Confirmed states only',
+          class: 'fa-check-square'
+        }, {
+          value: 2,
+          label: 'Uncertain states only',
+          class: 'fa-question'
+        }, {
+          value: 0,
+          label: 'Neutrals only',
+          class: 'fa-square-o'
+        }, {
+          value: 3,
+          label: 'Uncertain and Neutrals',
+          class: 'fa-arrows'
+        }];
       $scope.filterVal = $scope.filter[0];
+      $scope.filterSelected = 100;
 
       $scope.history = []; // history for undo-redo
       $scope.currentPos = 0; // index of current position in history array
@@ -67,6 +91,19 @@ angular.module('app').directive('projectEditor', function () {
       // $scope.viewedVars = []; // array of viewable variables
       $scope.viewStatus = {};
       
+
+      setTimeout(function () {
+        jQuery('.form-control.status-select').selectpicker({
+          iconBase: 'fa',
+          tickIcon: 'fa-check'
+        });
+      }, 50);
+
+      $scope.$watch('filterSelected', function(newVal) {
+        if (newVal !== undefined) {
+          $scope.filterVal = _.find($scope.filter, {value: parseInt(newVal)});
+        }
+      });
       $scope.$watch('relatedData.currrentDocumentTemplate', function (newDocTempl) {
         if (newDocTempl) {          
           _loadRelatedData(newDocTempl);          

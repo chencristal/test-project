@@ -7,7 +7,8 @@ div.editor(ng-style="{ height: editorHeight }")
   .row.toolbar(ng-hide="isLoading")
     .col-sm-3.col.project-name
       h3(style="float:left;") {{ ::project.name }}
-      select.form-control(style="float:right;width:50%;" ng-model="filterVal" ng-options="item as item.label for item in filter track by item.value")
+      select.form-control.status-select(style="float:right;width:50%;" ng-model="filterSelected" data-show-subtext="true")
+        option(ng-repeat="item in filter" ng-value="item.value" data-icon="{{ item.class }}") {{ item.label }}
       div(style="clear:both;")
     .col-sm-3.col.document-templates
       select.form-control(ng-model="relatedData.currrentDocumentTemplate"
