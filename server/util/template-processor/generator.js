@@ -348,7 +348,7 @@ Generator.prototype.generateArticleHtml = function(token) {
   if(param1.type == 'variable') {
     html = `
           <span class="{{ variables.${param1.text}.state == 2 ? 'uncertain-bracket' : null }}">
-          <label ng-class="selectedVariable == variables.${param1.text} ? 'highlighted-for-scroll' : null"
+          <label ng-class="selectedVariable == variables.${param1.text} ? 'label-highlighted-for-scroll' : null"
                  ng-disabled="variables.${param1.text}.state == 1"
                  placeholder="{{ variables.${param1.text}.text.placeholder }}">
                  {{$root.article(variables.${param1.text}.value)}}

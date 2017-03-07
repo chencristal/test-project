@@ -87,17 +87,27 @@ angular.module('app').directive('projectEditor', function () {
       });
 
       $scope.highlight = function (variable, fromEditor, currentTarget) {
+        for (var i = 0; i < $scope.changes.length; i++) {
+          $scope.changes[i].style.backgroundColor = null;
+        }
+
+        var className = variable.termType == 'boolean' ? 'selected highlighted' : 'highlighted-for-scroll';
+
         fromEditor = typeof fromEditor !== 'undefined' ? fromEditor : false;
   	    currentTarget = typeof currentTarget !== 'undefined' ? currentTarget : false;
   	    $scope.selectedVariable = variable;
         $scope.changes = document.getElementsByClassName('selected');
 
         setTimeout(function () {
-          $scope.changes = document.getElementsByClassName('selected highlighted');
           $scope.currentChange = -1;
-          if (!$scope.changes.length) {
-            $scope.changes = document.getElementsByClassName('unselected highlighted');
+          if(variable.termType == 'boolean') {
+            $scope.changes = document.getElementsByClassName('selected highlighted');
+            if (!$scope.changes.length) {
+              $scope.changes = document.getElementsByClassName('unselected highlighted');
+            }
           }
+          else
+            $scope.changes = document.getElementsByClassName('highlighted-for-scroll');
 
         }, 50)
 
@@ -105,15 +115,19 @@ angular.module('app').directive('projectEditor', function () {
           setTimeout(function () {
             var containerEdit = document.getElementById('editor');
             var elementProp = document.getElementsByClassName('highlighted')[0];
-            var elementEditor = document.getElementsByClassName('selected highlighted');
             var containerProp = document.getElementById('properties');
 
-            if (!elementEditor.length) {
-              elementEditor = document.getElementsByClassName('unselected highlighted');
+            if(variable.termType == 'boolean') {
+              var elementEditor = document.getElementsByClassName('selected highlighted');
               if (!elementEditor.length) {
-                elementEditor = document.getElementsByClassName('highlighted-for-scroll');
+                elementEditor = document.getElementsByClassName('unselected highlighted');
+                if (!elementEditor.length) {
+                  elementEditor = document.getElementsByClassName('highlighted-for-scroll');
+                }
               }
             }
+            else
+              var elementEditor = document.getElementsByClassName('highlighted-for-scroll');
 
             if (elementEditor.length) {
               if (!fromEditor) {
@@ -127,7 +141,7 @@ angular.module('app').directive('projectEditor', function () {
 	              var containerPropRect = containerProp.getBoundingClientRect().top;
 	              var diff = elementEditorRect - containerPropRect;
 	              var scrollOffsetTop = elementProp.offsetTop - diff + 10;
-		          smooth_scroll_to(containerProp, scrollOffsetTop, 600);
+		            smooth_scroll_to(containerProp, scrollOffsetTop, 600);
               }
             }
 

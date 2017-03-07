@@ -10,8 +10,8 @@ require('./util/promisify');
 require('./util/errors');
 
 var app = express();
-
 app.use('/docs', express.static(path.join(__dirname, '../documentation')));
+
 
 require('./express')(app);
 require('./routes')(app);
