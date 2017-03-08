@@ -247,14 +247,11 @@ angular.module('app').directive('projectEditor', function () {
 
         }, 50)
 
-        console.log($scope.changes);
         if ($scope.linkedScreens) {
           setTimeout(function () {
             var containerEdit = document.getElementById('editor');
             var elementProp = $('#properties .highlighted')[0];
-            console.log(elementProp.getBoundingClientRect());
-            console.log(containerEdit.getBoundingClientRect());
-
+            
             var containerProp = document.getElementById('properties');
 
             if(variable.termType == 'boolean') {
