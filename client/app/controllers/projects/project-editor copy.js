@@ -88,7 +88,8 @@ angular.module('app').directive('projectEditor', function () {
 
       $scope.highlight = function (variable, fromEditor, currentTarget) {
         for (var i = 0; i < $scope.changes.length; i++) {
-          $scope.changes[i].style.backgroundColor = null;
+          $($scope.changes[i]).removeClass('highlighted-navigation');
+          // $scope.changes[i].style.backgroundColor = null;
         }
 
         var className = variable.termType == 'boolean' ? 'selected highlighted' : 'highlighted-for-scroll';
@@ -96,7 +97,7 @@ angular.module('app').directive('projectEditor', function () {
         fromEditor = typeof fromEditor !== 'undefined' ? fromEditor : false;
   	    currentTarget = typeof currentTarget !== 'undefined' ? currentTarget : false;
   	    $scope.selectedVariable = variable;
-        $scope.changes = document.getElementsByClassName('selected');
+        $scope.changes = document.getElementsByClassName(className);
 
         setTimeout(function () {
           $scope.currentChange = -1;
@@ -114,7 +115,10 @@ angular.module('app').directive('projectEditor', function () {
         if ($scope.linkedScreens) {
           setTimeout(function () {
             var containerEdit = document.getElementById('editor');
-            var elementProp = document.getElementsByClassName('highlighted')[0];
+            var elementProp = $('#properties .highlighted')[0];
+            console.log(elementProp.getBoundingClientRect());
+            console.log(containerEdit.getBoundingClientRect());
+
             var containerProp = document.getElementById('properties');
 
             if(variable.termType == 'boolean') {
@@ -134,6 +138,7 @@ angular.module('app').directive('projectEditor', function () {
 	              var elementPropRect = elementProp.getBoundingClientRect().top;
 	              var containerEditRect = containerEdit.getBoundingClientRect().top;
 	              var diff = elementPropRect - containerEditRect;
+                console.log(elementEditor[0].offsetTop);
 	              var scrollOffsetTop = elementEditor[0].offsetTop - diff - 10;
 	              smooth_scroll_to(containerEdit, scrollOffsetTop, 600);
               } else {
@@ -149,8 +154,9 @@ angular.module('app').directive('projectEditor', function () {
         }
         // reset styling
         for (var i = 0; i < $scope.changes.length; i++) {
-          $scope.changes[i].style.backgroundColor = null;
+          // $scope.changes[i].style.backgroundColor = null;
         }
+      
       };
 
       $scope.save = function (historyTransition) {
@@ -241,7 +247,8 @@ angular.module('app').directive('projectEditor', function () {
         var container = document.getElementById('editor');
         var element = $scope.changes[$scope.currentChange];
 
-        element.style.backgroundColor = '#FFEB3B';
+        $('.highlighted-navigation').removeClass('highlighted-navigation');
+        $(element).addClass('highlighted-navigation');
 
         smooth_scroll_to(container, element.offsetTop - 80, 600); // -80 makes some top padding
 
@@ -264,7 +271,9 @@ angular.module('app').directive('projectEditor', function () {
 
         var container = document.getElementById('editor');
         var element = $scope.changes[$scope.currentChange];
-        element.style.backgroundColor = '#FFEB3B';
+        
+        $('.highlighted-navigation').removeClass('highlighted-navigation');
+        $(element).addClass('highlighted-navigation');
 
         smooth_scroll_to(container, element.offsetTop - 80, 600); // -80 makes some top padding
 
