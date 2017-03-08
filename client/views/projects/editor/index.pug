@@ -5,10 +5,10 @@ div.editor(ng-style="{ height: editorHeight }")
         include ../../common/spinner.pug
 
   .row.toolbar(ng-hide="isLoading")
-    .col-sm-3.col.project-name
+    .col-sm-3.col.project-name(style="padding-right: 5px")
       h3(style="float:left;") {{ ::project.name }}
 
-      div(style="width: 50%; float:right;")
+      div.div-view-state
         button.btn.btn-view-state(
           ng-repeat="viewState in viewStates"
           type="button"

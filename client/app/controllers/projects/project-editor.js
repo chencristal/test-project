@@ -138,12 +138,12 @@ angular.module('app').directive('projectEditor', function () {
 
           if (this.viewState['btn-class'] == $scope.defaultViewStates[0]['btn-class']) {    // Hide the Confirmed
             var flag = $scope.filterVal.flag - 4;
-            if (flag == 0) flag = 7;
+            if (flag == 0) {
+              jQuery('.div-view-state').effect('shake');
+              return;
+            }
 
-            if (flag == 7)
-              angular.copy($scope.defaultViewStates, $scope.viewStates);
-            else
-              angular.copy($scope.inverseViewStates[0], $scope.viewStates[0]);
+            angular.copy($scope.inverseViewStates[0], $scope.viewStates[0]);
             $scope.filterVal = _.find($scope.filter, { 'flag': flag});
           }
           else {      // Show the Confirmed
@@ -160,12 +160,12 @@ angular.module('app').directive('projectEditor', function () {
 
           if (this.viewState['btn-class'] == $scope.defaultViewStates[1]['btn-class']) {    // Hide the Uncertain
             var flag = $scope.filterVal.flag - 2;
-            if (flag == 0) flag = 7;
+            if (flag == 0) {
+              jQuery('.div-view-state').effect('shake');
+              return;
+            }
 
-            if (flag == 7)
-              angular.copy($scope.defaultViewStates, $scope.viewStates);
-            else
-              angular.copy($scope.inverseViewStates[1], $scope.viewStates[1]);
+            angular.copy($scope.inverseViewStates[1], $scope.viewStates[1]);
             $scope.filterVal = _.find($scope.filter, { 'flag': flag});
           }
           else {      // Show the Uncertain
@@ -182,12 +182,12 @@ angular.module('app').directive('projectEditor', function () {
 
           if (this.viewState['btn-class'] == $scope.defaultViewStates[2]['btn-class']) {    // Hide the Neutrals
             var flag = $scope.filterVal.flag - 1;
-            if (flag == 0) flag = 7;
+            if (flag == 0) {
+              jQuery('.div-view-state').effect('shake');
+              return;
+            }
 
-            if (flag == 7)
-              angular.copy($scope.defaultViewStates, $scope.viewStates);
-            else
-              angular.copy($scope.inverseViewStates[2], $scope.viewStates[2]);
+            angular.copy($scope.inverseViewStates[2], $scope.viewStates[2]);
             $scope.filterVal = _.find($scope.filter, { 'flag': flag});
           }
           else {      // Show the Neutrals
