@@ -666,7 +666,7 @@ angular.module('app').directive('projectEditor', function () {
         if (duration < 0) {
           return Promise.reject("bad duration");
         }
-        duration = 0;
+        
         if (duration === 0) {
           element.scrollTop = target;
           return Promise.resolve();
