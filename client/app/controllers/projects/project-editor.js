@@ -39,22 +39,85 @@ angular.module('app').directive('projectEditor', function () {
           'span-class': 'fa fa-question'
         }
       ];
+
+      $scope.viewStates = [];
+      $scope.defaultViewStates = [
+        {
+          'name': 'Hide confirmed state',
+          'background': 'bg-success',
+          'btn-class': 'btn-success',
+          'span-class': 'fa fa-check',
+          'type': 'Confirmed'
+        },
+        {
+          'name': 'Hide uncertain state',
+          'background': 'bg-danger',
+          'btn-class': 'btn-pink',
+          'span-class': 'fa fa-question',
+          'type': 'Uncertain'
+        },
+        {
+          'name': 'Hide neutral state',
+          'background': '',
+          'btn-class': 'btn-default',
+          'span-class': '',
+          'type': 'Neutral'
+        }
+      ];
+
+      $scope.inverseViewStates = [
+        {
+          'name': 'Show confirmed state',
+          'background': 'bg-success',
+          'btn-class': 'btn-disabled',
+          'span-class': 'fa fa-check',
+          'type': 'Confirmed'
+        },
+        {
+          'name': 'Show uncertain state',
+          'background': 'bg-danger',
+          'btn-class': 'btn-disabled',
+          'span-class': 'fa fa-question',
+          'type': 'Uncertain'
+        },
+        {
+          'name': 'Show neutral state',
+          'background': '',
+          'btn-class': 'btn-disabled',
+          'span-class': '',
+          'type': 'Neutral'
+        }
+      ];
+      
       $scope.filter = [{
-        value: 100,
-        label: 'All states'
-      }, {
-        value: 1,
-        label: 'Confirmed states only'
-      }, {
-        value: 2,
-        label: 'Uncertain states only'
-      }, {
-        value: 0,
-        label: 'Neutrals only'
-      }, {
-        value: 3,
-        label: 'Uncertain and Neutrals'
-      }];
+          value: 100,
+          flag: 7,
+          label: 'All states'
+        }, {
+          value: 1,
+          flag: 4,
+          label: 'Confirmed states only'
+        }, {
+          value: 2,
+          flag: 2,
+          label: 'Uncertain states only'
+        }, {
+          value: 0,
+          flag: 1,
+          label: 'Neutrals only'
+        }, {
+          value: 3,
+          flag: 3,
+          label: 'Uncertain and Neutrals'
+        }, {
+          value: 4,
+          flag: 6,
+          label: 'Confirmed and Uncertain'
+        }, {
+          value: 5,
+          flag: 5,
+          label: 'Confirmed and Neutrals'
+        }];
       $scope.filterVal = $scope.filter[0];
 
       $scope.history = []; // history for undo-redo
@@ -63,10 +126,82 @@ angular.module('app').directive('projectEditor', function () {
       $scope.changes = []; // array of prev/next changes
       $scope.currentChange = null; // index of current position in changes array
 
-      // chen_debug
-      // $scope.viewedVars = []; // array of viewable variables
       $scope.viewStatus = {};
       
+
+      angular.copy($scope.defaultViewStates, $scope.viewStates);
+
+      $scope.changeViewState = function($event) {
+        $event.stopPropagation();
+
+        if (this.viewState.type == 'Confirmed') {
+
+          if (this.viewState['btn-class'] == $scope.defaultViewStates[0]['btn-class']) {    // Hide the Confirmed
+            var flag = $scope.filterVal.flag - 4;
+            if (flag == 0) {
+              jQuery('.div-view-state').effect('shake');
+              return;
+            }
+
+            angular.copy($scope.inverseViewStates[0], $scope.viewStates[0]);
+            $scope.filterVal = _.find($scope.filter, { 'flag': flag});
+          }
+          else {      // Show the Confirmed
+            var flag = $scope.filterVal.flag + 4;
+            
+            if (flag == 7)
+              angular.copy($scope.defaultViewStates, $scope.viewStates);
+            else
+              angular.copy($scope.defaultViewStates[0], $scope.viewStates[0]);
+            $scope.filterVal = _.find($scope.filter, { 'flag': flag});
+          }
+        }
+        else if (this.viewState.type == 'Uncertain') {
+
+          if (this.viewState['btn-class'] == $scope.defaultViewStates[1]['btn-class']) {    // Hide the Uncertain
+            var flag = $scope.filterVal.flag - 2;
+            if (flag == 0) {
+              jQuery('.div-view-state').effect('shake');
+              return;
+            }
+
+            angular.copy($scope.inverseViewStates[1], $scope.viewStates[1]);
+            $scope.filterVal = _.find($scope.filter, { 'flag': flag});
+          }
+          else {      // Show the Uncertain
+            var flag = $scope.filterVal.flag + 2;
+            
+            if (flag == 7)
+              angular.copy($scope.defaultViewStates, $scope.viewStates);
+            else
+              angular.copy($scope.defaultViewStates[1], $scope.viewStates[1]);
+            $scope.filterVal = _.find($scope.filter, { 'flag': flag});
+          }
+        }
+        else if (this.viewState['type'] == 'Neutral') {
+
+          if (this.viewState['btn-class'] == $scope.defaultViewStates[2]['btn-class']) {    // Hide the Neutrals
+            var flag = $scope.filterVal.flag - 1;
+            if (flag == 0) {
+              jQuery('.div-view-state').effect('shake');
+              return;
+            }
+
+            angular.copy($scope.inverseViewStates[2], $scope.viewStates[2]);
+            $scope.filterVal = _.find($scope.filter, { 'flag': flag});
+          }
+          else {      // Show the Neutrals
+            var flag = $scope.filterVal.flag + 1;
+            
+            if (flag == 7)
+              angular.copy($scope.defaultViewStates, $scope.viewStates);
+            else
+              angular.copy($scope.defaultViewStates[2], $scope.viewStates[2]);
+            $scope.filterVal = _.find($scope.filter, { 'flag': flag});
+          }
+        }
+      }
+
       $scope.$watch('relatedData.currrentDocumentTemplate', function (newDocTempl) {
         if (newDocTempl) {          
           _loadRelatedData(newDocTempl);          
