@@ -112,6 +112,7 @@ angular.module('app').directive('projectEditor', function () {
 
         }, 50)
 
+        console.log($scope.changes);
         if ($scope.linkedScreens) {
           setTimeout(function () {
             var containerEdit = document.getElementById('editor');
@@ -665,6 +666,7 @@ angular.module('app').directive('projectEditor', function () {
         if (duration < 0) {
           return Promise.reject("bad duration");
         }
+        duration = 0;
         if (duration === 0) {
           element.scrollTop = target;
           return Promise.resolve();
