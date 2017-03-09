@@ -379,6 +379,11 @@ angular.module('app').directive('projectEditor', function () {
         var container = document.getElementById('editor');
         var element = $scope.changes[$scope.currentChange];
 
+        var hiddenParents = $(element).parentsUntil('ul.ng-scope').filter(function() {return $(this).css('display') == 'none';}).first();
+        if(hiddenParents.length > 0) {
+          $scope.prevChange();
+          return;
+        }
         $('.highlighted-navigation').removeClass('highlighted-navigation');
         $(element).addClass('highlighted-navigation');
 
@@ -409,6 +414,12 @@ angular.module('app').directive('projectEditor', function () {
         var container = document.getElementById('editor');
         var element = $scope.changes[$scope.currentChange];
         
+        var hiddenParents = $(element).parentsUntil('ul.ng-scope').filter(function() {return $(this).css('display') == 'none';}).first();
+        if(hiddenParents.length > 0) {
+          $scope.nextChange();
+          return;
+        }
+
         $('.highlighted-navigation').removeClass('highlighted-navigation');
         $(element).addClass('highlighted-navigation');
 
