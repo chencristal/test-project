@@ -271,8 +271,7 @@ angular.module('app').directive('projectEditor', function () {
 	              var elementPropRect = elementProp.getBoundingClientRect().top;
 	              var containerEditRect = containerEdit.getBoundingClientRect().top;
 	              var diff = elementPropRect - containerEditRect;
-                console.log(elementEditor[0].offsetTop);
-	              var scrollOffsetTop = elementEditor[0].offsetTop - diff - 10;
+                var scrollOffsetTop = elementEditor[0].offsetTop - diff - 10;
 	              smooth_scroll_to(containerEdit, scrollOffsetTop, 600);
               } else {
 	              var elementEditorRect = currentTarget.getBoundingClientRect().top;
@@ -383,7 +382,12 @@ angular.module('app').directive('projectEditor', function () {
         $('.highlighted-navigation').removeClass('highlighted-navigation');
         $(element).addClass('highlighted-navigation');
 
-        smooth_scroll_to(container, element.offsetTop - 80, 600); // -80 makes some top padding
+        var elementProp = $('#properties .highlighted')[0];
+        var elementPropRect = elementProp.getBoundingClientRect().top;
+        var containerEditRect = container.getBoundingClientRect().top;
+        var diff = elementPropRect - containerEditRect;
+        var scrollOffsetTop = element.offsetTop - diff - 10;
+        smooth_scroll_to(container, scrollOffsetTop, 600);
 
       }
 
@@ -408,8 +412,12 @@ angular.module('app').directive('projectEditor', function () {
         $('.highlighted-navigation').removeClass('highlighted-navigation');
         $(element).addClass('highlighted-navigation');
 
-        smooth_scroll_to(container, element.offsetTop - 80, 600); // -80 makes some top padding
-
+        var elementProp = $('#properties .highlighted')[0];
+        var elementPropRect = elementProp.getBoundingClientRect().top;
+        var containerEditRect = container.getBoundingClientRect().top;
+        var diff = elementPropRect - containerEditRect;
+        var scrollOffsetTop = element.offsetTop - diff - 10;
+        smooth_scroll_to(container, scrollOffsetTop, 600);
       }
 
       $scope.addSubField = function (variable, $event) {
