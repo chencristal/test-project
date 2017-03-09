@@ -41,13 +41,13 @@ form.form-horizontal(name="termTemplateForm")
     .form-group
       label.col-md-3.control-label(for="newline") Add a new line
       .col-md-9
-        input.form-control(name="newline" type="checkbox" ng-model="termTemplate.expandable_text.newline" ng-disabled="isSaving")
-        small (Add a new line between sub fields, if not set a space is used as a delimiter)
+        input.form-inline(name="newline" type="checkbox" ng-model="termTemplate.expandable_text.newline" ng-disabled="isSaving")
+        small   Add a new line between sub fields (Please resave the Provision Template if editing this Term Template)
     .form-group
       label.col-md-3.control-label(for="prettify") Stylize sub fields
       .col-md-9
-        input.form-control(name="prettify" type="checkbox" ng-model="termTemplate.expandable_text.prettify" ng-disabled="isSaving")
-        small (Add comma and 'and' between sub fields.)
+        input.form-inline(name="prettify" type="checkbox" ng-model="termTemplate.expandable_text.prettify" ng-disabled="isSaving")
+        small   Add comma and 'and' between sub fields. (Please resave the Provision Template if editing this Term Template)
 
   // Date
   div(ng-if="termTemplate.termType === 'date'")
