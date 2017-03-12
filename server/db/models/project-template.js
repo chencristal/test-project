@@ -14,6 +14,14 @@ var projectTemplateSchema = new mongoose.Schema({
   documentTemplates: [{
     type: mongoose.Schema.ObjectId,
     ref: 'documentTemplate'
+  }],
+  users: [{
+    type: mongoose.Schema.ObjectId,
+    ref: 'user'
+  }],
+  userGroups: [{
+    type: mongoose.Schema.ObjectId,
+    ref: 'userGroup'
   }]
 });
 

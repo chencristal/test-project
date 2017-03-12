@@ -6,16 +6,83 @@ var customErrors   = require('n-custom-errors');
 var consts         = require('../consts');
 var usersSrvc      = require('../data-services/users');
 var validationUtil = require('../util/validations');
-// var acl            = require('../auth/acl');
 var roleUtil       = require('../util/roles');
 
 exports.getUsers = function(req, res, next) {
   var role = req.user.role;
 
-  usersSrvc
-    .getUsers({$or: roleUtil.getLowerRolesFilters(role)}, 
-      'email firstName lastName role status')
-    .then(users => res.send(users))
+  function parseParams(query) {
+    var data = {
+      params: _.pick(query, ['query', 'role', 'includes'])
+    };
+    data.fields = req.query.fields || [ 'email', 'firstName', 'lastName', 'role', 'status' ];
+    return Promise.resolve(data);
+  }
+
+  function validateParams(data) {
+    var allowedFields = [ 'email', 'firstName', 'lastName', 'role', 'status' ];
+
+    if (data.params.includes && !_.every(data.params.includes, validationUtil.isValidObjectId)) {
+      return customErrors.rejectWithUnprocessableRequestError({
+        paramName: 'includes',
+        errMsg: 'must be an array with valid ids'
+      });
+    }
+    if (!_.every(data.fields, field => _.includes(allowedFields, field))) {
+      return customErrors.rejectWithUnprocessableRequestError({
+        paramName: 'fields',
+        errMsg: 'must be an array with valid fields'
+      });
+    }
+    return data;
+  }
+
+  function buildFilter(data) {
+    data.filter = {};
+    if (data.params.role) {
+      var availRoles = roleUtil.getLowerRolesFilters(role);
+      if (_.find(availRoles, data.params.role))
+        data.filter.role = data.params.role;
+      else
+        data.filter.role = 'user';
+    }
+    else {
+      data.filter.role = {
+        $in: roleUtil.getLowerRolesFilters(role)
+      };
+    }
+    if (data.params.query) {
+      data.filter.firstName = {
+        $regex: new RegExp(data.params.query, 'i')
+      };
+    }
+    if (data.params.includes) {
+      data.filter._id = {
+        $in: data.params.includes
+      };
+    }
+
+    return data;
+  }
+
+  function resetOrder(users) {
+    var orderedUsers = [];
+    if(!req.query.includes) {
+      res.send(users);
+      return;
+    }
+    _.each(req.query.includes, function(id) {
+      var user = _.find(users, d => {return d._id == id});
+      orderedUsers.push(user);
+    });
+    res.send(orderedUsers);
+  }
+
+  parseParams(req.query)
+    .then(validateParams)
+    .then(buildFilter)
+    .then(data => usersSrvc.getUsers(data.filter, data.fields.join(' ')))
+    .then(resetOrder)
     .catch(next);
 };
 

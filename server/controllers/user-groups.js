@@ -11,10 +11,84 @@ var roleUtil       = require('../util/roles');
 exports.getUserGroups = function(req, res, next) {
   var role = req.user.role;
 
-  userGroupsSrvc
-    .getUserGroups({$or: roleUtil.getLowerRolesFilters(role)}, 'groupName role status')
-    .then(usergroups => res.send(usergroups))
+  function parseParams(query) {
+    var data = {
+      params: _.pick(query, ['query', 'role', 'includes'])
+    };
+    data.fields = req.query.fields || [ 'groupName', 'role', 'status' ];
+    return Promise.resolve(data);
+  }
+
+  function validateParams(data) {
+    var allowedFields = [ 'groupName', 'role', 'status' ];
+
+    if (data.params.includes && !_.every(data.params.includes, validationUtil.isValidObjectId)) {
+      return customErrors.rejectWithUnprocessableRequestError({
+        paramName: 'includes',
+        errMsg: 'must be an array with valid ids'
+      });
+    }
+    if (!_.every(data.fields, field => _.includes(allowedFields, field))) {
+      return customErrors.rejectWithUnprocessableRequestError({
+        paramName: 'fields',
+        errMsg: 'must be an array with valid fields'
+      });
+    }
+    return data;
+  }
+
+  function buildFilter(data) {
+    data.filter = {};
+    if (data.params.role) {
+      var availRoles = roleUtil.getLowerRolesFilters(role);
+      if (_.find(availRoles, data.params.role))
+        data.filter.role = data.params.role;
+      else
+        data.filter.role = 'user';
+    }
+    else {
+      data.filter.role = {
+        $in: roleUtil.getLowerRolesFilters(role)
+      };
+    }
+    if (data.params.query) {
+      data.filter.groupName = {
+        $regex: new RegExp(data.params.query, 'i')
+      };
+    }
+    if (data.params.includes) {
+      data.filter._id = {
+        $in: data.params.includes
+      };
+    }
+
+    return data;
+  }
+
+  function resetOrder(usergroups) {
+    var orderedUserGroups = [];
+    if(!req.query.includes) {
+      res.send(usergroups);
+      return;
+    }
+    _.each(req.query.includes, function(id) {
+      var usergroup = _.find(usergroups, d => {return d._id == id});
+      orderedUserGroups.push(usergroup);
+    });
+    res.send(orderedUserGroups);
+  }
+
+  parseParams(req.query)
+    .then(validateParams)
+    .then(buildFilter)
+    .then(data => userGroupsSrvc.getUserGroups(data.filter, data.fields.join(' ')))
+    .then(resetOrder)
     .catch(next);
+
+  /*userGroupsSrvc
+    .getUserGroups({ role: { $or: roleUtil.getLowerRolesFilters(role)}}, 'groupName role status')
+    .then(usergroups => res.send(usergroups))
+    .catch(next);*/
 };
 
 exports.getUserGroupById = function(req, res, next) {

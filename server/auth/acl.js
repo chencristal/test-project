@@ -19,43 +19,72 @@ exports.initialize = function(connection) {
   //
   // Now assign permissions to roles
   //
-  acl.allow('superadmin', 
-    [
-      'ManageAdmin',
-      'ManageAdminGroup', 
-      'ManageAuthor', 
-      'ManageAuthorGroup',
-      'ManageUser', 
-      'ManageUserGroup'
-    ],
-    [ 'read', 'create', 'update', 'delete' ]
-  );
-
-  acl.allow('admin', 
-    [
-      'ManageAuthor', 
-      'ManageAuthorGroup',
-      'ManageUser', 
-      'ManageUserGroup'
-    ],
-    [ 'read', 'create', 'update', 'delete' ]
-  );
-
-  acl.allow('author', 
-    [
-      'ManageUser', 
-      'ManageUserGroup'
-    ],
-    [ 'read', 'create', 'update', 'delete' ]
-  );
-
-  acl.allow('user', 
-    [
-      'ManageUser', 
-      'ManageUserGroup'
-    ],
-    [ 'read' ]
-  );
+  acl.allow([
+    {
+      roles: ['superadmin'],
+      allows: [
+        { 
+          resources: ['ManageUser', 'ManageUserGroup'], 
+          permissions: ['read', 'create', 'update', 'delete'] 
+        },
+        { 
+          resources: [
+            'ManageProjectTemplate',
+            'ManageDocumentTemplate',
+            'ManageDocumentTemplateType',
+            'ManageProvisionTemplate',
+            'ManageTermTemplate',
+          ],
+          permissions: [ 'read', 'create', 'update' ]
+        }
+      ]
+    },
+    {
+      roles: ['admin'],
+      allows: [
+        { 
+          resources: ['ManageUser', 'ManageUserGroup'], 
+          permissions: ['read', 'create', 'update', 'delete'] 
+        },
+        { 
+          resources: [
+            'ManageProjectTemplate',
+            'ManageDocumentTemplate',
+            'ManageDocumentTemplateType',
+            'ManageProvisionTemplate',
+            'ManageTermTemplate',
+          ],
+          permissions: [ 'read', 'create', 'update' ]
+        }
+      ]
+    },
+    {
+      roles: ['author'],
+      allows: [
+        { 
+          resources: ['ManageUser', 'ManageUserGroup'], 
+          permissions: ['read', 'create', 'update', 'delete'] 
+        }
+      ]
+    },
+    {
+      roles: ['user'],
+      allows: [
+        { 
+          resources: [
+            'ManageUser',
+            'ManageUserGroup', 
+            'ManageProjectTemplate',
+            'ManageDocumentTemplate',
+            'ManageDocumentTemplateType',
+            'ManageProvisionTemplate',
+            'ManageTermTemplate',
+          ], 
+          permissions: ['read'] 
+        }
+      ]
+    }
+  ]);
 
   /*acl.roleUsers('superadmin', function(err, users) {
     if (err) console.log(err);

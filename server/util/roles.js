@@ -11,23 +11,14 @@ var _roleNames = [
 
 module.exports = {
   getLowerRolesFilters: function(role) {
-    if (role == 'superadmin' || role == 'admin') {
-      return [
-        {role: 'admin'},
-        {role: 'author'},
-        {role: 'user'},
-      ];
+    if (role === 'superadmin' || role === 'admin') {
+      return [ 'admin', 'author', 'user' ];
     }
-    else if (role == 'author') {
-      return [
-        {role: 'author'},
-        {role: 'user'},
-      ];
+    else if (role === 'author') {
+      return [ 'author', 'user' ];
     }
-    else if (role == 'user') {
-      return [
-        {role: 'user'},
-      ];
+    else {
+      return [ 'user' ];
     }
   },
   getRoleInfo: function(role) {

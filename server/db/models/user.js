@@ -19,6 +19,11 @@ var userSchema = new mongoose.Schema({
     default: 'user'
   },
 
+  userGroups: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'userGroup'
+  }],
+
   provider: {
     type: String,
     default: 'local'
