@@ -3,6 +3,7 @@
 var mongoose   = require('mongoose');
 var Promise    = require('bluebird');
 var requireDir = require('require-dir');
+var acl        = require('../auth/acl');
 var config     = require('../../config/environment');
 var log        = require('../util/logger').logger;
 
@@ -20,6 +21,8 @@ if (process.env.NODE_ENV !== 'test') {
 
     connection.on('connected', () => {
         log.info('Connected to database: ' + config.get('db'));
+
+        acl.initialize(connection);     // ACL Initialization
     });
 
     connection.on('disconnected', () => {
