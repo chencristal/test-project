@@ -276,7 +276,7 @@ function _getCompiledTemplate(data) {
             else
               subs = subs.join(glue);
 
-            template = _.replace(template, `{{${expandable.variable}}}`, `{{${expandable.variable}}}${glue}${subs}`);            
+            template = _.replace(template, new RegExp(`{{${expandable.variable}}}`,'g'), `{{${expandable.variable}}}${glue}${subs}`);            
           }
         });
         data.template = template;

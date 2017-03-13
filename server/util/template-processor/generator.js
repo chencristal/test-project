@@ -71,8 +71,8 @@ Generator.prototype.generateVariableEditor = function (variable) {
                ng-disabled="${varName}.state == 1"
                placeholder="{{ ${varName}.text.placeholder }}" /></span>
         <span class="expanded {{ variable.state == 2 ? 'uncertain-bracket' : null }}" ng-repeat="variable in variables | objectToArray | orderBy: 'sortIndex'" ng-if="variable.variable.indexOf('${master}' + '__') === 0">
-               <br ng-if="${newline}" />
                <span class="prettify" ng-if="${prettify}"></span>
+               <br ng-if="${newline}" />
         <input type="text"
                ng-model="variable.value"
                ng-blur="onChange()"
