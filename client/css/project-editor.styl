@@ -2,7 +2,11 @@
   font-family: "Times New Roman", Georgia, Serif
   h1,h2,h3,h4,h5,h6
     margin-top: 0
-
+  .expanded .prettify:before
+    content: ', '
+  .expanded:last-child
+    .prettify:before
+      content: ' and '
   .toolbar
     height: 45px
     .status-select

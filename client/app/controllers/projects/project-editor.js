@@ -431,17 +431,16 @@ angular.module('app').directive('projectEditor', function () {
         smooth_scroll_to(container, scrollOffsetTop, 600);
       }
 
+      $scope.getSubFields = function (variable) {
+        var master = _.find($scope.variables, {'variable': variable});
+        var subs = _.filter($scope.variables, function(v) { return v.variable.indexOf(variable + '__') === 0;});
+        if(!subs || subs.length == 0)
+          subs = [master];
+        subs = _.orderBy(subs, ['sortIndex'],['asc']);
+        return subs;
+      }
       $scope.addSubField = function (variable, $event) {
-        function getSubFields() {
-          var master = variable.variable;
-          var subs = _.filter($scope.variables, function(v) { return v.variable.indexOf(master + '__') === 0;});
-          if(!subs || subs.length == 0)
-            subs = [variable];
-          subs = _.orderBy(subs, ['sortIndex'],['asc']);
-          
-          return subs;
-        }
-        var subs = getSubFields();
+        var subs = $scope.getSubFields(variable.variable);
         var temp = subs[0].variable.split('__');
         
         var order = temp.length > 1 ? parseInt(temp[1]) + 1 : 1;

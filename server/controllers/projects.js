@@ -239,10 +239,7 @@ function _getCompiledTemplate(data) {
           }
           return result;
         }, {});
-        data.expandables = _(data.termTempls)
-                          .filter({termType: 'expandable_text'})
-                          .map('variable')
-                          .value();
+        data.expandables = _.filter(data.termTempls,{termType: 'expandable_text'});
         return data;
       });
   }
@@ -253,12 +250,13 @@ function _getCompiledTemplate(data) {
       .then(provTempls => {
         var template = _.map(provTempls, provTempl => provTempl.template).join('\n');
         var variables = Object.keys(data.values);
+
         _.each(data.expandables, expandable => {
           var newline = (expandable.expandable_text !== undefined && expandable.expandable_text.newline) ? true : false;
           var prettify = (expandable.expandable_text !== undefined && expandable.expandable_text.prettify) ? true : false;
           var subs = _.filter(variables, v => v.indexOf(expandable.variable + '__') === 0);
           subs = _.map(subs, sub => data.values[sub]);
-
+          subs = _.reverse(subs);
           if(subs.length > 0) {
             var glue = ' ';
             if(newline && prettify)
