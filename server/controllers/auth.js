@@ -4,6 +4,7 @@ var _            = require('lodash');
 var passport     = require('passport');
 var customErrors = require('n-custom-errors');
 var jwtUtil      = require('../util/jwt');
+var acl          = require('../auth/acl');
 
 exports.login = (req, res, next) => {
   passport.authenticate('local', (err, user, info) => {
@@ -13,8 +14,11 @@ exports.login = (req, res, next) => {
       return next(err);
     }
     user = _.pick(user, ['firstName', 'lastName', 'email', 'role']);
-    jwtUtil
-      .signToken(user, user.role)
+    acl.userRoles(user.firstName)
+      .then(roles => {
+        user.role = roles[0];
+        return jwtUtil.signToken(user, user.role);
+      })
       .then(token => res.send({ user, token }))
       .catch(next);
   })(req, res, next);

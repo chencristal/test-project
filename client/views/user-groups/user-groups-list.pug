@@ -1,0 +1,43 @@
+extends ../layout/layout.pug
+
+block content
+  .row
+    .col-md-12
+      h1.page-header User Groups
+  .row(ng-show="isLoading")
+    .col-md-12
+      include ../common/spinner.pug
+  div(ng-hide="isLoading")
+    .row
+      .col-md-12
+        a.btn.btn-default.btn-primary(href="/user-groups/new") New User Group
+    .row
+      .col-md-12
+        table.table.table-striped.users
+          thead
+            tr
+              td.group-name
+                strong Group Name
+              td.role
+                strong Role
+              td.status
+                strong Status
+              td
+          tbody
+            tr(ng-repeat="userGroup in userGroups")
+              td {{ userGroup.groupName }}
+              td {{ roleName(userGroup.role) }}
+              td {{ userGroup.status }}
+              td.actions.text-right
+                button.btn.btn-info.btn-sm(title="Edit" ng-click="editUserGroup(userGroup)" ng-disabled="isSaving")
+                  span.glyphicon.glyphicon-pencil
+                button.btn.btn-warning.btn-sm(title="Activate"
+                                              ng-if="userGroup.status === 'inactive'"
+                                              ng-click="setUserGroupStatus(userGroup, 'active')"
+                                              ng-disabled="isSaving")
+                  span.glyphicon.glyphicon-refresh
+                button.btn.btn-warning.btn-sm(title="Suspend"
+                                              ng-if="userGroup.status === 'active'"
+                                              ng-click="setUserGroupStatus(userGroup, 'inactive')"
+                                              ng-disabled="isSaving")
+                  span.glyphicon.glyphicon-trash

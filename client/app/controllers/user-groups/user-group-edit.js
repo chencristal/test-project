@@ -1,42 +1,41 @@
 'use strict';
 
-angular.module('app').controller('UserEditCtrl',
-  function($scope, $routeParams, $location, Notifier, User, Identity) {
+angular.module('app').controller('UserGroupEditCtrl',
+  function($scope, $routeParams, $location, Notifier, UserGroup, Identity) {
 
   $scope.isLoading = true;
   $scope.isSaving = false;
-  $scope.isNew = false;
 
   $scope.roles = Identity.getLowerRoleNames();
   $scope.selectedRole = { 'selected' : $scope.roles[0] };
 
   (function loadData() {
-    User
+    UserGroup
       .get({
         id: $routeParams._id
       })
       .$promise
-      .then(function(user) {
-        $scope.user = user;
-        $scope.selectedRole.selected = Identity.getRoleName(user.role);
+      .then(function(usergroup) {
+        $scope.userGroup = usergroup;
+        $scope.selectedRole.selected = Identity.getRoleName(usergroup.role);
 
         $scope.isLoading = false;
       })
       .catch(function(err) {
         Notifier.error(err, 'Unable to load record');
-        $location.path('/users');
+        $location.path('/user-groups');
       });
   })();
 
-  $scope.saveUser = function() {
+  $scope.saveUserGroup = function() {
     $scope.isSaving = true;
-    $scope.user.role = $scope.selectedRole.selected.value;
+    $scope.userGroup.role = $scope.selectedRole.selected.value;
 
-    $scope.user
+    $scope.userGroup
       .$update()
       .then(function() {
-        Notifier.info('User updated successfully');
-        $location.path('/users');
+        Notifier.info('User group updated successfully');
+        $location.path('/user-groups');
       })
       .catch(function(err) {
         Notifier.error(err, 'Unable to save record');

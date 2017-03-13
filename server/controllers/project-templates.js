@@ -66,7 +66,7 @@ exports.getProjectTemplateById = (req, res, next) => {
 
 exports.createProjectTemplate = (req, res, next) => {
   function parseParams(body) {
-    var allowedFields = ['name', 'documentTemplates'];
+    var allowedFields = ['name', 'documentTemplates', 'userGroups', 'users'];
     var projTemplData = _.pick(body, allowedFields);
     return Promise.resolve(projTemplData);
   }
@@ -76,7 +76,7 @@ exports.createProjectTemplate = (req, res, next) => {
   }
 
   function doEdits(projTemplData) {
-    var projTempl = _.assign({}, projTemplData);
+    var projTempl = _.assign({}, projTemplData);    
     return projTempl;
   }
 
@@ -90,7 +90,7 @@ exports.createProjectTemplate = (req, res, next) => {
 
 exports.updateProjectTemplate = (req, res, next) => {
   function parseParams(body) {
-    var allowedFields = ['name', 'documentTemplates'];
+    var allowedFields = ['name', 'documentTemplates', 'userGroups', 'users'];
     var projTemplData = _.pick(body, allowedFields);
     projTemplData._id = req.params._id;
     return Promise.resolve(projTemplData);
@@ -134,6 +134,22 @@ function _validateProjectTemplateData(projTemplData) {
       !_.every(projTemplData.documentTemplates, validationUtil.isValidObjectId)) {
     return customErrors.rejectWithUnprocessableRequestError({
       paramName: 'documentTemplates',
+      errMsg: 'must be an array with valid ids'
+    });
+  }
+  if (!_.isArray(projTemplData.userGroups) ||
+      projTemplData.userGroups.length === 0 ||
+      !_.every(projTemplData.userGroups, validationUtil.isValidObjectId)) {
+    return customErrors.rejectWithUnprocessableRequestError({
+      paramName: 'userGroups',
+      errMsg: 'must be an array with valid ids'
+    });
+  }
+  if (!_.isArray(projTemplData.users) ||
+      projTemplData.users.length === 0 ||
+      !_.every(projTemplData.users, validationUtil.isValidObjectId)) {
+    return customErrors.rejectWithUnprocessableRequestError({
+      paramName: 'users',
       errMsg: 'must be an array with valid ids'
     });
   }

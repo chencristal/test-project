@@ -1,16 +1,16 @@
 'use strict';
 
-angular.module('app').controller('UsersListCtrl',
-  function($scope, $location, Notifier, User, Identity) {
+angular.module('app').controller('UserGroupsListCtrl',
+  function($scope, $location, Notifier, UserGroup, Identity) {
 
   $scope.isLoading = true;
 
   (function loadData() {
-    User
+    UserGroup
       .query()
       .$promise
-      .then(function(users) {
-        $scope.users = users;
+      .then(function(usergroups) {
+        $scope.userGroups = usergroups;
         $scope.isLoading = false;
       });
   })();
@@ -19,17 +19,17 @@ angular.module('app').controller('UsersListCtrl',
     return Identity.getRoleTitle(role);
   };
 
-  $scope.editUser = function(user) {
-    $location.path('/users/' + user._id + '/edit');
+  $scope.editUserGroup = function(usergroup) {
+    $location.path('/user-groups/' + usergroup._id + '/edit');
   };
 
-  $scope.setUserStatus = function(user, status) {
+  $scope.setUserGroupStatus = function(usergroup, status) {
     $scope.isSaving = true;
-    user.status = status;
-    user
+    usergroup.status = status;
+    usergroup
       .$update()
       .then(function() {
-        Notifier.info('User updated successfully');
+        Notifier.info('User Group updated successfully');
       })
       .catch(function(err) {
         Notifier.error(err, 'Unable to save record');

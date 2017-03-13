@@ -3,19 +3,19 @@ extends ../layout/layout.pug
 block content
   .row
     .col-md-12
-      h1.page-header Edit User {{ ::user.email }}
+      h1.page-header Edit User Group
   .row(ng-show="isLoading")
     .col-md-12
       include ../common/spinner.pug
   div(ng-hide="isLoading")
     .row
       .col-md-12
-        h2 Edit User {{ ::user.name }}
+        h2 {{ ::userGroup.groupName }}
     .row
       .col-md-12
-        include ./form-edit.pug
+        include ./form.pug
     .row
       .col-md-12
         .buttons.text-right
-          a.btn.btn-default(href="/users") Cancel
-          button.btn.btn-primary(ng-click="saveUser()" ng-disabled="userForm.$invalid || isSaving") Save
+          a.btn.btn-default(href="/user-groups") Cancel
+          button.btn.btn-primary(ng-click="saveUserGroup()" ng-disabled="userGroupForm.$invalid || isSaving") Save

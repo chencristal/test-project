@@ -2,11 +2,13 @@
 
 angular.module('app').controller('ProjectTemplateEditCtrl',
   function($scope, $routeParams, $location, Notifier,
-           ProjectTemplate, DocumentTemplate) {
+           ProjectTemplate, DocumentTemplate, User, UserGroup) {
 
   $scope.isLoading = true;
   $scope.isSaving = false;
   $scope.documentTemplates = [];
+  $scope.users = [];
+  $scope.userGroups = [];
 
   (function loadData() {
     ProjectTemplate
@@ -37,6 +39,24 @@ angular.module('app').controller('ProjectTemplateEditCtrl',
       .$promise
       .then(function(docTempls) {
         $scope.documentTemplates = docTempls;
+      });
+  };
+
+  $scope.refreshUserGroups = function(query) {
+    return UserGroup
+      .query({ query: query, role: 'user'})
+      .$promise
+      .then(function(usergroups) {
+        $scope.userGroups = usergroups;
+      });
+  };
+
+  $scope.refreshUsers = function(query) {
+    return User
+      .query({ query: query, role: 'user' })
+      .$promise
+      .then(function(users) {
+        $scope.users = users;
       });
   };
 

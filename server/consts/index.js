@@ -2,7 +2,7 @@
 
 module.exports = {
   USER: {
-    ROLES: ['admin', 'user'],
+    ROLES: ['superadmin', 'admin', 'author', 'user'],
     STATUSES: ['active', 'inactive']
   },
   TERM_TYPES: ['text','expandable_text', 'boolean', 'variant', 'date', 'number'],
