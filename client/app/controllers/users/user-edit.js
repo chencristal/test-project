@@ -5,6 +5,7 @@ angular.module('app').controller('UserEditCtrl',
 
   $scope.isLoading = true;
   $scope.isSaving = false;
+  $scope.isNew = false;
 
   $scope.roles = Identity.getLowerRoleNames();
   $scope.selectedRole = { 'selected' : $scope.roles[0] };

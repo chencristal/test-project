@@ -19,3 +19,14 @@ form.form-horizontal(name="userForm")
      label.col-md-3.control-label(for="role") User Role
      .col-md-9
        select.form-control(name="role" ng-model="selectedRole.selected" ng-disabled="isSaving" ng-options="role as role.label for role in roles track by role.value")
+
+
+  .form-group(ng-class="{ 'has-error': userForm.password.$invalid || userForm.password.$error.required }")
+    label.col-md-3.control-label(for="password") Password*
+    .col-md-9
+      input.form-control(name="password" type="password" placeholder="Password" ng-model="user.password" ng-disabled="isSaving")
+
+  .form-group(ng-class="{ 'has-error': userForm.confirmpass.$invalid || userForm.confirmpass.$error.required }")
+    label.col-md-3.control-label(for="confirmpass") Confirm Password*
+    .col-md-9
+      input.form-control(name="confirmpass" type="password" placeholder="Confirm Password" ng-model="user.confirmpass" ng-disabled="isSaving")

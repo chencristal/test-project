@@ -105,12 +105,24 @@ exports.getUserById = function(req, res, next) {
 
 exports.createUser = function(req, res, next) {
   function parseParams(body) {
-    var allowedFields = ['email', 'firstName', 'lastName', 'role'];
+    var allowedFields = ['email', 'firstName', 'lastName', 'role', 'password', 'confirmpass'];
     var userData = _.pick(body, allowedFields);
     return Promise.resolve(userData);
   }
 
   function validateParams(userData) {
+    if (userData.password && userData.confirmpass) {
+      if (userData.password !== userData.confirmpass) {
+        return customErrors.rejectWithUnprocessableRequestError({ paramName: 'Password', errMsg: 'must be confirmed'});
+      }
+
+      if (userData.password.length < 4) {
+        return customErrors.rejectWithUnprocessableRequestError({ paramName: 'Password', errMsg: 'must be 4 characters at least'});
+      }
+    }
+    else {
+      return customErrors.rejectWithUnprocessableRequestError({ paramName: 'Password', errMsg: 'field is required'});
+    }
     return _validateUserData(userData);
   }
 
@@ -131,13 +143,24 @@ exports.createUser = function(req, res, next) {
 
 exports.updateUser = function(req, res, next) {
   function parseParams(body) {
-    var allowedFields = ['email', 'firstName', 'lastName', 'role', 'status'];
+    var allowedFields = ['email', 'firstName', 'lastName', 'role', 'password', 'confirmpass', 'status'];
     var userData = _.pick(body, allowedFields);
     userData._id = req.params._id;
+
     return Promise.resolve(userData);
   }
 
   function validateParams(userData) {
+    if (userData.password && userData.confirmpass) {
+      if (userData.password !== userData.confirmpass) {
+        return customErrors.rejectWithUnprocessableRequestError({ paramName: 'Password', errMsg: 'must be confirmed'});
+      }
+
+      if (userData.password.length < 4) {
+        return customErrors.rejectWithUnprocessableRequestError({ paramName: 'Password', errMsg: 'must be 4 characters at least'});
+      }
+    }
+
     if (!validationUtil.isValidObjectId(userData._id)) {
       return customErrors.rejectWithUnprocessableRequestError({ paramName: 'id', errMsg: 'must be a valid id' });
     }

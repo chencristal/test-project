@@ -17,7 +17,6 @@ exports.login = (req, res, next) => {
     acl.userRoles(user.firstName)
       .then(roles => {
         user.role = roles[0];
-        console.log(user);
         return jwtUtil.signToken(user, user.role);
       })
       .then(token => res.send({ user, token }))

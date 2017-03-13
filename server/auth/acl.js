@@ -8,7 +8,7 @@ var consts         = require('../consts');
 
 var acl = null;
 
-exports.initialize = function(connection) {
+exports.initialize = function(connection) {  
 
   if (acl !== null) {
     return false;
@@ -62,8 +62,16 @@ exports.initialize = function(connection) {
       roles: ['author'],
       allows: [
         { 
-          resources: ['ManageUser', 'ManageUserGroup'], 
-          permissions: ['read', 'create', 'update', 'delete'] 
+          resources: [
+            'ManageUser', 
+            'ManageUserGroup', 
+            'ManageProjectTemplate',
+            'ManageDocumentTemplate',
+            'ManageDocumentTemplateType',
+            'ManageProvisionTemplate',
+            'ManageTermTemplate'
+          ], 
+          permissions: ['read'] 
         }
       ]
     },
@@ -91,12 +99,14 @@ exports.initialize = function(connection) {
     else console.log(users);
   });*/
 
+  initializeUserRoles();
+
   //
   // Now assign `superadmin` permission to `admin` (username)
   //
-  _addUserRoles('admin', 'superadmin')
+  /*_addUserRoles('admin', 'superadmin')
     .then(roles => true)
-    .catch(err => customErrors.rejectWithUnprocessableRequestError(err.message));
+    .catch(err => customErrors.rejectWithUnprocessableRequestError(err.message));*/
 };
 
 exports.userRoles = function(userId) {
@@ -122,6 +132,19 @@ function _isAllowed(userId, resource, action) {
       }
     });
   });
+}
+
+function initializeUserRoles() {
+  var usersSrvc = require('../data-services/users');
+  var allowedFields = [ 'email', 'firstName', 'lastName', 'role', 'status' ];
+
+  usersSrvc
+    .getUsers({}, allowedFields.join(' '))
+    .then(users => {
+      _.forEach(users, function(user) {
+        acl.addUserRoles(user.firstName, user.role);
+      });
+    });
 }
 
 function _addUserRoles(userId, roles) {
