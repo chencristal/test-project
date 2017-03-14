@@ -19,7 +19,7 @@ This is a document assembly program written in MEAN stack.
 ### How to use
 1. Clone this repository.
 2. Install gulp and bower globally: `npm i -g gulp bower`
-3. Install server and client dependencies: `npm i && bower i`
+3. Install server and client dependencies: `npm i && bower i` (if you are having issues installing PhantomJS, install bzip2)
 4. Configure database (`config/environment/development.json`, `db` field)
 5. Seed db: `npm run db:seed`
 6. Build frontend: `npm run build`
