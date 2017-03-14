@@ -1,18 +1,13 @@
 'use strict';
 
 angular.module('app').controller('UserNewCtrl',
-  function($scope, $location, Notifier, User, Identity) {
+  function($scope, $location, Notifier, User) {
 
   $scope.user = {};
   $scope.isSaving = false;
 
-  $scope.roles = Identity.getLowerRoleNames();
-  $scope.selectedRole = { 'selected' : $scope.roles[0] };
-
   $scope.createUser = function() {
     $scope.isSaving = true;
-    $scope.user.role = $scope.selectedRole.selected.value;
-
     var user = new User($scope.user);
     user
       .$save()

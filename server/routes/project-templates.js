@@ -9,26 +9,22 @@ var apiVer = config.get('api:version');
 module.exports = app => {
   app.get(
     `/api/${apiVer}/project-templates/:_id`,
-    // auth.requireRolesWrapper(['admin', 'user']),
-    auth.checkPermission('ManageProjectTemplate', 'read'),
+    auth.requireRolesWrapper(['admin', 'user']),
     projTempls.getProjectTemplateById
   );
   app.get(
     `/api/${apiVer}/project-templates`,
-    // auth.requireRolesWrapper(['admin', 'user']),
-    auth.checkPermission('ManageProjectTemplate', 'read'),
+    auth.requireRolesWrapper(['admin', 'user']),
     projTempls.getProjectTemplates
   );
   app.post(
     `/api/${apiVer}/project-templates`,
-    // auth.requireRolesWrapper('admin'),
-    auth.checkPermission('ManageProjectTemplate', 'create'),
+    auth.requireRolesWrapper('admin'),
     projTempls.createProjectTemplate
   );
   app.put(
     `/api/${apiVer}/project-templates/:_id`,
-    // auth.requireRolesWrapper('admin'),
-    auth.checkPermission('ManageProjectTemplate', ['update'/*, 'delete'*/]),
+    auth.requireRolesWrapper('admin'),
     projTempls.updateProjectTemplate
   );
 };

@@ -9,26 +9,22 @@ var apiVer = config.get('api:version');
 module.exports = app => {
   app.get(
     `/api/${apiVer}/document-template-types/:_id`,
-    // auth.requireRolesWrapper(['admin', 'user']),
-    auth.checkPermission('ManageDocumentTemplateType', 'read'),
+    auth.requireRolesWrapper(['admin', 'user']),
     docTemplTypes.getDocumentTemplateTypeById
   );
   app.get(
     `/api/${apiVer}/document-template-types`,
-    // auth.requireRolesWrapper(['admin', 'user']),
-    auth.checkPermission('ManageDocumentTemplateType', 'read'),
+    auth.requireRolesWrapper(['admin', 'user']),
     docTemplTypes.getDocumentTemplateTypes
   );
   app.post(
     `/api/${apiVer}/document-template-types`,
-    // auth.requireRolesWrapper('admin'),
-    auth.checkPermission('ManageDocumentTemplateType', 'create'),
+    auth.requireRolesWrapper('admin'),
     docTemplTypes.createDocumentTemplateType
   );
   app.put(
     `/api/${apiVer}/document-template-types/:_id`,
-    // auth.requireRolesWrapper('admin'),
-    auth.checkPermission('ManageDocumentTemplateType', 'update'),
+    auth.requireRolesWrapper('admin'),
     docTemplTypes.updateDocumentTemplateType
   );
 };

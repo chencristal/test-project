@@ -1,14 +1,10 @@
 'use strict';
 
 angular.module('app').controller('UserEditCtrl',
-  function($scope, $routeParams, $location, Notifier, User, Identity) {
+  function($scope, $routeParams, $location, Notifier, User) {
 
   $scope.isLoading = true;
   $scope.isSaving = false;
-  $scope.isNew = false;
-
-  $scope.roles = Identity.getLowerRoleNames();
-  $scope.selectedRole = { 'selected' : $scope.roles[0] };
 
   (function loadData() {
     User
@@ -18,8 +14,6 @@ angular.module('app').controller('UserEditCtrl',
       .$promise
       .then(function(user) {
         $scope.user = user;
-        $scope.selectedRole.selected = Identity.getRoleName(user.role);
-
         $scope.isLoading = false;
       })
       .catch(function(err) {
@@ -30,8 +24,6 @@ angular.module('app').controller('UserEditCtrl',
 
   $scope.saveUser = function() {
     $scope.isSaving = true;
-    $scope.user.role = $scope.selectedRole.selected.value;
-
     $scope.user
       .$update()
       .then(function() {

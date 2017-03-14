@@ -260,16 +260,16 @@ function _getCompiledTemplate(data) {
           if(subs.length > 0) {
             var glue = ' ';
             if(newline && prettify)
-              glue = ',\n<br/>';
+              glue = ',<br/>';
             else if(newline)
-              glue = '\n<br/>';
+              glue = '<br/>';
             else if(prettify)
               glue = ', ';
             if(prettify) {
               var temp = subs.slice(0,-1).join(glue);
               var last = subs[subs.length-1];
               if(newline)
-                subs = temp + ' and\n<br/>' + last;
+                subs = temp + '<br/>and ' + last;
               else
                 subs = temp + ' and ' + last;
             }

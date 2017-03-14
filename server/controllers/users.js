@@ -6,83 +6,11 @@ var customErrors   = require('n-custom-errors');
 var consts         = require('../consts');
 var usersSrvc      = require('../data-services/users');
 var validationUtil = require('../util/validations');
-var roleUtil       = require('../util/roles');
 
 exports.getUsers = function(req, res, next) {
-  var role = req.user.role;
-
-  function parseParams(query) {
-    var data = {
-      params: _.pick(query, ['query', 'role', 'includes'])
-    };
-    data.fields = req.query.fields || [ 'email', 'firstName', 'lastName', 'role', 'status' ];
-    return Promise.resolve(data);
-  }
-
-  function validateParams(data) {
-    var allowedFields = [ 'email', 'firstName', 'lastName', 'role', 'status' ];
-
-    if (data.params.includes && !_.every(data.params.includes, validationUtil.isValidObjectId)) {
-      return customErrors.rejectWithUnprocessableRequestError({
-        paramName: 'includes',
-        errMsg: 'must be an array with valid ids'
-      });
-    }
-    if (!_.every(data.fields, field => _.includes(allowedFields, field))) {
-      return customErrors.rejectWithUnprocessableRequestError({
-        paramName: 'fields',
-        errMsg: 'must be an array with valid fields'
-      });
-    }
-    return data;
-  }
-
-  function buildFilter(data) {
-    data.filter = {};
-    if (data.params.role) {
-      var availRoles = roleUtil.getLowerRolesFilters(role);
-      if (_.find(availRoles, data.params.role))
-        data.filter.role = data.params.role;
-      else
-        data.filter.role = 'user';
-    }
-    else {
-      data.filter.role = {
-        $in: roleUtil.getLowerRolesFilters(role)
-      };
-    }
-    if (data.params.query) {
-      data.filter.firstName = {
-        $regex: new RegExp(data.params.query, 'i')
-      };
-    }
-    if (data.params.includes) {
-      data.filter._id = {
-        $in: data.params.includes
-      };
-    }
-
-    return data;
-  }
-
-  function resetOrder(users) {
-    var orderedUsers = [];
-    if(!req.query.includes) {
-      res.send(users);
-      return;
-    }
-    _.each(req.query.includes, function(id) {
-      var user = _.find(users, d => {return d._id == id});
-      orderedUsers.push(user);
-    });
-    res.send(orderedUsers);
-  }
-
-  parseParams(req.query)
-    .then(validateParams)
-    .then(buildFilter)
-    .then(data => usersSrvc.getUsers(data.filter, data.fields.join(' ')))
-    .then(resetOrder)
+  usersSrvc
+    .getUsers({}, 'email firstName lastName role status')
+    .then(users => res.send(users))
     .catch(next);
 };
 
@@ -98,31 +26,18 @@ exports.getUserById = function(req, res, next) {
 
   validateParams()
     .then(() => usersSrvc.getUser({ _id: userId }, 'email firstName lastName role status'))
-    .then(user => _checkPermission(req.user.role, user))
     .then(user => res.send(user))
     .catch(next);
 };
 
 exports.createUser = function(req, res, next) {
   function parseParams(body) {
-    var allowedFields = ['email', 'firstName', 'lastName', 'role', 'password', 'confirmpass'];
+    var allowedFields = ['email', 'firstName', 'lastName', 'role'];
     var userData = _.pick(body, allowedFields);
     return Promise.resolve(userData);
   }
 
   function validateParams(userData) {
-    if (userData.password && userData.confirmpass) {
-      if (userData.password !== userData.confirmpass) {
-        return customErrors.rejectWithUnprocessableRequestError({ paramName: 'Password', errMsg: 'must be confirmed'});
-      }
-
-      if (userData.password.length < 4) {
-        return customErrors.rejectWithUnprocessableRequestError({ paramName: 'Password', errMsg: 'must be 4 characters at least'});
-      }
-    }
-    else {
-      return customErrors.rejectWithUnprocessableRequestError({ paramName: 'Password', errMsg: 'field is required'});
-    }
     return _validateUserData(userData);
   }
 
@@ -132,10 +47,9 @@ exports.createUser = function(req, res, next) {
     return user;
   }
 
-  parseParams(req.body)    
+  parseParams(req.body)
     .then(validateParams)
     .then(doEdits)
-    .then(user => _checkPermission(req.user.role, user))      // check permissions before create new user
     .then(user => usersSrvc.createUser(user))
     .then(user => res.send(user))
     .catch(next);
@@ -143,24 +57,13 @@ exports.createUser = function(req, res, next) {
 
 exports.updateUser = function(req, res, next) {
   function parseParams(body) {
-    var allowedFields = ['email', 'firstName', 'lastName', 'role', 'password', 'confirmpass', 'status'];
+    var allowedFields = ['email', 'firstName', 'lastName', 'role', 'status'];
     var userData = _.pick(body, allowedFields);
     userData._id = req.params._id;
-
     return Promise.resolve(userData);
   }
 
   function validateParams(userData) {
-    if (userData.password && userData.confirmpass) {
-      if (userData.password !== userData.confirmpass) {
-        return customErrors.rejectWithUnprocessableRequestError({ paramName: 'Password', errMsg: 'must be confirmed'});
-      }
-
-      if (userData.password.length < 4) {
-        return customErrors.rejectWithUnprocessableRequestError({ paramName: 'Password', errMsg: 'must be 4 characters at least'});
-      }
-    }
-
     if (!validationUtil.isValidObjectId(userData._id)) {
       return customErrors.rejectWithUnprocessableRequestError({ paramName: 'id', errMsg: 'must be a valid id' });
     }
@@ -183,22 +86,12 @@ exports.updateUser = function(req, res, next) {
       .then(user => {
         return { user, userData };
       })
-    )    
+    )
     .then(doEdits)
-    .then(user => _checkPermission(req.user.role, user))
     .then(user => usersSrvc.saveUser(user))
     .then(user => res.send(user))
     .catch(next);
 };
-
-function _checkPermission(reqRole, userData) {
-  var requestorRole = roleUtil.getRoleInfo(reqRole);
-  var newRole = roleUtil.getRoleInfo(userData.role);
-  if (requestorRole.flag <= newRole.flag) {
-    return customErrors.rejectWithAccessDeniedError();
-  }
-  return Promise.resolve(userData);
-}
 
 function _validateUserData(userData) {
   if (!validationUtil.isValidEmail(userData.email)) {

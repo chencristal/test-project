@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('app').controller('UsersListCtrl',
-  function($scope, $location, Notifier, User, Identity) {
+  function($scope, $location, Notifier, User) {
 
   $scope.isLoading = true;
 
@@ -14,10 +14,6 @@ angular.module('app').controller('UsersListCtrl',
         $scope.isLoading = false;
       });
   })();
-
-  $scope.roleName = function(role) {
-    return Identity.getRoleTitle(role);
-  };
 
   $scope.editUser = function(user) {
     $location.path('/users/' + user._id + '/edit');

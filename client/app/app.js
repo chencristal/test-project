@@ -51,19 +51,6 @@ angular.module('app', [
       controller: 'UserEditCtrl'
     })
 
-    .when('/user-groups', {
-      templateUrl: 'views/user-groups/user-groups-list.html',
-      controller: 'UserGroupsListCtrl'
-    })
-    .when('/user-groups/new', {
-      templateUrl: 'views/user-groups/user-group-new.html',
-      controller: 'UserGroupNewCtrl'
-    })
-    .when('/user-groups/:_id/edit', {
-      templateUrl: 'views/user-groups/user-group-edit.html',
-      controller: 'UserGroupEditCtrl'
-    })
-
     .when('/term-templates', {
       templateUrl: 'views/term-templates/term-templates-list.html',
       controller: 'TermTemplatesListCtrl'
