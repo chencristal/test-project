@@ -94,7 +94,14 @@ function _parseToken(token) {
           params: _.map(token.params, _parseToken),
           tokens: _.map(_.get(token, 'program.body'), _parseToken)
         };
-      } else 
+      } else if (token.path.original =='pagebreak' && _.size(token.params) == 0) {
+        return {
+          type: 'statement',
+          text: token.path.original,
+          params: [],
+          tokens: _.map(_.get(token, 'program.body'), _parseToken)
+        };
+      } else
         return _parseToken(token.path);
     case 'BlockStatement': {
       if (token.path.original == 'if' || token.path.original == 'unless') {

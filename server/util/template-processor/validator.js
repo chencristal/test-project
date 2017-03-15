@@ -114,8 +114,9 @@ Validator.prototype.validateStatement = function(statement, params) {
 
   } else if (statement === 'article') {
     params = _.filter(params, _.iteratee(['type', 'variable']));
+  } else if (statement === 'pagebreak') {
+    params = [];
   }
-
 
   this.validateParams.call(this, params);
 };

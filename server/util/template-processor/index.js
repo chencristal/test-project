@@ -149,7 +149,7 @@ handlebars.registerHelper('article', (v) => {
 });
 
 handlebars.registerHelper('pagebreak', () => {
-  return '<div style="page-break-after:always;"></div>';
+  return new handlebars.SafeString('<div style="page-break-after:always;"></div>');
 });
 
 handlebars.registerHelper('case', (op,v) => {
