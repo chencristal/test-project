@@ -8,6 +8,99 @@ var consts         = require('../consts');
 
 var acl = null;
 
+function initializeUserRoles() {
+  var usersSrvc = require('../data-services/users');
+  var allowedFields = [ 'email', 'firstName', 'lastName', 'role', 'status' ];
+
+  usersSrvc
+    .getUsers({}, allowedFields.join(' '))
+    .then(users => {
+      _.forEach(users, function(user) {
+        acl.addUserRoles(user.firstName, user.role);
+      });
+    })
+    .then(() => {
+      //
+      // Now assign permissions to roles
+      //
+      acl.allow([
+        {
+          roles: ['superadmin'],
+          allows: [
+            { 
+              resources: ['ManageUser', 'ManageUserGroup'], 
+              permissions: ['read', 'create', 'update', 'delete'] 
+            },
+            { 
+              resources: [
+                'ManageProjectTemplate',
+                'ManageDocumentTemplate',
+                'ManageDocumentTemplateType',
+                'ManageProvisionTemplate',
+                'ManageTermTemplate',
+              ],
+              permissions: [ 'read', 'create', 'update' ]
+            }
+          ]
+        },
+        {
+          roles: ['admin'],
+          allows: [
+            { 
+              resources: ['ManageUser', 'ManageUserGroup'], 
+              permissions: ['read', 'create', 'update', 'delete'] 
+            },
+            { 
+              resources: [
+                'ManageProjectTemplate',
+                'ManageDocumentTemplate',
+                'ManageDocumentTemplateType',
+                'ManageProvisionTemplate',
+                'ManageTermTemplate',
+              ],
+              permissions: [ 'read', 'create', 'update' ]
+            }
+          ]
+        },
+        {
+          roles: ['author'],
+          allows: [
+            { 
+              resources: [
+                'ManageUser', 
+                'ManageUserGroup', 
+                'ManageProjectTemplate',
+                'ManageDocumentTemplate',
+                'ManageDocumentTemplateType',
+                'ManageProvisionTemplate',
+                'ManageTermTemplate'
+              ], 
+              permissions: ['read'] 
+            }
+          ]
+        },
+        {
+          roles: ['user'],
+          allows: [
+            { 
+              resources: [
+                'ManageUser',
+                'ManageUserGroup', 
+                'ManageProjectTemplate',
+                'ManageDocumentTemplate',
+                'ManageDocumentTemplateType',
+                'ManageProvisionTemplate',
+                'ManageTermTemplate',
+              ], 
+              permissions: ['read'] 
+            }
+          ]
+        }
+      ]);
+    });
+}
+
+
 exports.initialize = function(connection) {  
 
   if (acl !== null) {
@@ -15,91 +108,13 @@ exports.initialize = function(connection) {
   }
 
   acl = new module_acl(new module_acl.mongodbBackend(connection.db, 'acl_'));
-
-  //
-  // Now assign permissions to roles
-  //
-  acl.allow([
-    {
-      roles: ['superadmin'],
-      allows: [
-        { 
-          resources: ['ManageUser', 'ManageUserGroup'], 
-          permissions: ['read', 'create', 'update', 'delete'] 
-        },
-        { 
-          resources: [
-            'ManageProjectTemplate',
-            'ManageDocumentTemplate',
-            'ManageDocumentTemplateType',
-            'ManageProvisionTemplate',
-            'ManageTermTemplate',
-          ],
-          permissions: [ 'read', 'create', 'update' ]
-        }
-      ]
-    },
-    {
-      roles: ['admin'],
-      allows: [
-        { 
-          resources: ['ManageUser', 'ManageUserGroup'], 
-          permissions: ['read', 'create', 'update', 'delete'] 
-        },
-        { 
-          resources: [
-            'ManageProjectTemplate',
-            'ManageDocumentTemplate',
-            'ManageDocumentTemplateType',
-            'ManageProvisionTemplate',
-            'ManageTermTemplate',
-          ],
-          permissions: [ 'read', 'create', 'update' ]
-        }
-      ]
-    },
-    {
-      roles: ['author'],
-      allows: [
-        { 
-          resources: [
-            'ManageUser', 
-            'ManageUserGroup', 
-            'ManageProjectTemplate',
-            'ManageDocumentTemplate',
-            'ManageDocumentTemplateType',
-            'ManageProvisionTemplate',
-            'ManageTermTemplate'
-          ], 
-          permissions: ['read'] 
-        }
-      ]
-    },
-    {
-      roles: ['user'],
-      allows: [
-        { 
-          resources: [
-            'ManageUser',
-            'ManageUserGroup', 
-            'ManageProjectTemplate',
-            'ManageDocumentTemplate',
-            'ManageDocumentTemplateType',
-            'ManageProvisionTemplate',
-            'ManageTermTemplate',
-          ], 
-          permissions: ['read'] 
-        }
-      ]
-    }
-  ]);
+  initializeUserRoles();
+  
 
   /*acl.roleUsers('superadmin', function(err, users) {
     if (err) console.log(err);
     else console.log(users);
   });*/
-
-  initializeUserRoles();
 
   //
   // Now assign `superadmin` permission to `admin` (username)
@@ -132,19 +147,6 @@ function _isAllowed(userId, resource, action) {
       }
     });
   });
-}
-
-function initializeUserRoles() {
-  var usersSrvc = require('../data-services/users');
-  var allowedFields = [ 'email', 'firstName', 'lastName', 'role', 'status' ];
-
-  usersSrvc
-    .getUsers({}, allowedFields.join(' '))
-    .then(users => {
-      _.forEach(users, function(user) {
-        acl.addUserRoles(user.firstName, user.role);
-      });
-    });
 }
 
 function _addUserRoles(userId, roles) {

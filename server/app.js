@@ -19,13 +19,11 @@ require('./routes')(app);
 require('./auth/strategies')();
 
 if (app.get('env') !== 'test') {
-  db.connect();
+  db.connect(() => acl.initialize(db.connection));     // ACL Initialization
 
   app.listen(app.get('port'), function() {
     log.info('Express server started', 'environment=' + config.get('env'), 'listening on port=' + config.get('port'));
   });
-
-  acl.initialize(db.connection);     // ACL Initialization
 }
 
 module.exports = app;
