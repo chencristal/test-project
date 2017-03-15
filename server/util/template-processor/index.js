@@ -148,6 +148,10 @@ handlebars.registerHelper('article', (v) => {
   return AvsAnSimple.query(v);
 });
 
+handlebars.registerHelper('pagebreak', () => {
+  return '<div style="page-break-after:always;"></div>';
+});
+
 handlebars.registerHelper('case', (op,v) => {
   if(v == undefined)
     return '';

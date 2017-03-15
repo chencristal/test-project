@@ -232,6 +232,9 @@ Generator.prototype.generateExpressionHtml = function (token) {
     case 'article':
       html = self.generateArticleHtml.call(self, token);
       break;
+    case 'pagebreak':
+      html = '';
+      break;
   }
   html += _.map(token.tokens, self.generateHtml.bind(self)).join('');
   html += `</span>`;
