@@ -379,7 +379,7 @@ angular.module('app').directive('projectEditor', function () {
         var container = document.getElementById('editor');
         var element = $scope.changes[$scope.currentChange];
 
-        var hiddenParents = $(element).parentsUntil('ul.ng-scope').filter(function() {return $(this).css('display') == 'none';}).first();
+        var hiddenParents = $(element).parentsUntil('#editor').filter(function() {return $(this).css('display') == 'none';}).first();
         if(hiddenParents.length > 0) {
           $scope.prevChange();
           return;
@@ -414,7 +414,7 @@ angular.module('app').directive('projectEditor', function () {
         var container = document.getElementById('editor');
         var element = $scope.changes[$scope.currentChange];
         
-        var hiddenParents = $(element).parentsUntil('ul.ng-scope').filter(function() {return $(this).css('display') == 'none';}).first();
+        var hiddenParents = $(element).parentsUntil('#editor').filter(function() {return $(this).css('display') == 'none';}).first();
         if(hiddenParents.length > 0) {
           $scope.nextChange();
           return;
