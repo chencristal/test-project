@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('app').controller('TermTemplatesListCtrl',
-  function($scope, $window, $http, $uibModal, $location, Notifier, TermTemplate) {
+  function($scope, $window, $http, $timeout, $uibModal, $location, Notifier, TermTemplate) {
 
   $scope.isLoading = true;
 
@@ -78,9 +78,11 @@ angular.module('app').controller('TermTemplatesListCtrl',
         }
       }
       $http.post('/api/v1/term-templates/import', data)
-      .success(function(res) {
-        Notifier.info(res);
-        $location.path('/term-templates/');
+      .then(function success(res) {
+        Notifier.success(res.data);
+        $timeout(() => $location.path('/term-templates/'), 1000);
+      }, function error(res) {
+          Notifier.error(new Error(res.data));
       });
     }
 
@@ -107,7 +109,8 @@ angular.module('app').controller('TermTemplatesListCtrl',
     
   };
   $scope.exportToCSV = function() {
-    var url = '/api/v1/term-templates/234kdjfi2l/export';
+    var randomID = (new Date()).valueOf()
+    var url = `/api/v1/term-templates/${randomID}/export`;
     $window.open(url, '_blank');
   };
 });

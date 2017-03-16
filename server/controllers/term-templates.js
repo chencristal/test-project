@@ -161,7 +161,7 @@ exports.enableTermTemplate = (req, res, next) => {
 exports.importFromCSV = (req, res, next) => {
   var records = req.body;
   if(!Array.isArray(records) || records.length < 2)
-    res.status(200).end();
+    res.send('No variables to import');
 
   for(var i = 1; i < records.length; i ++) {
     var record = records[i].split(/,(?=(?:[^"]*"[^"]*")*[^"]*$)/);
@@ -186,7 +186,7 @@ exports.importFromCSV = (req, res, next) => {
         var placeholder = record[4].toLowerCase() == 'true' ? true : false;
         var inclusion = record[5] ? record[5] : 'Include';
         inclusion = inclusion.replace(/\"/g,'');
-        var exclusion = record[5] ? record[5] : 'Include';
+        var exclusion = record[6] ? record[6] : 'Exclude';
         exclusion = exclusion.replace(/\"/g,'');
         data.boolean = { default: placeholder, inclusionText: inclusion, exclusionText: exclusion };
       break;
@@ -215,7 +215,7 @@ exports.importFromCSV = (req, res, next) => {
     termTsSrvc.createTermTemplateFromCSV(data);
   }
 
-  res.status(200).send('Import of ' + (records.length - 1) + ' records completed successfully');
+  res.send('Import of ' + (records.length - 1) + ' records completed successfully');
 };
 exports.generateCSV = (req, res, next) => {
   function convert(termTempls) {
