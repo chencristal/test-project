@@ -5,6 +5,7 @@ var path    = require('path');
 var config  = require('../config/environment');
 var db      = require('./db');
 var log     = require('./util/logger').logger;
+var acl     = require('./auth/acl');
 
 require('./util/promisify');
 require('./util/errors');
@@ -18,7 +19,7 @@ require('./routes')(app);
 require('./auth/strategies')();
 
 if (app.get('env') !== 'test') {
-  db.connect();
+  db.connect(() => acl.initialize(db.connection));     // ACL Initialization
 
   app.listen(app.get('port'), function() {
     log.info('Express server started', 'environment=' + config.get('env'), 'listening on port=' + config.get('port'));

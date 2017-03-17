@@ -2,6 +2,7 @@
 
 var customErrors = require('n-custom-errors');
 var User         = require('mongoose').model('user');
+var acl          = require('../auth/acl');
 
 exports.getUsers = (filter, keys) => {
   return User
@@ -35,9 +36,12 @@ exports.createUser = userData => {
         return customErrors.rejectWithDuplicateObjectError('This email is already in use');
       }
       return User.create(userData);
-    });
+    })
+    .then(acl.addUserToAcl);
 };
 
 exports.saveUser = user => {
-  return user.save();
+  return user
+    .save()
+    .then(acl.addUserToAcl);
 };

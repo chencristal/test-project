@@ -15,6 +15,20 @@ var projectSchema = new mongoose.Schema({
     type: mongoose.Schema.ObjectId,
     ref: 'projectTemplate'
   },
+  
+  owner: {
+    type: mongoose.Schema.ObjectId,
+    ref: 'user'
+  },
+  sharedUsers: [{
+    type: mongoose.Schema.ObjectId,
+    ref: 'user'
+  }],
+  sharedUserGroups: [{
+    type: mongoose.Schema.ObjectId,
+    ref: 'userGroup'
+  }],
+  
   values: [{
     _id: false,
     variable: {

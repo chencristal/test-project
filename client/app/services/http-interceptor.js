@@ -6,7 +6,7 @@ angular.module('app').factory('HttpInterceptor', function($q, $location, Identit
       var currentPath = $location.path();
 
       if ((rejection.status === 401 || rejection.status === 403) && (currentPath.indexOf('/login') === -1)) {
-        Notifier.warning('You need to login in');
+        Notifier.warning('You do not have permission.');
         $location.path('/login').search({
           redirect: currentPath
         });

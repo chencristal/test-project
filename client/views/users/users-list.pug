@@ -16,20 +16,20 @@ block content
         table.table.table-striped.users
           thead
             tr
-              td.first-name
-                strong First Name
-              td.last-name
-                strong Last Name
+              td.name
+                strong Name
               td
                 strong Email
+              td
+                strong Role
               td.status
                 strong Status
               td
           tbody
             tr(ng-repeat="user in users")
               td {{ user.firstName }}
-              td {{ user.lastName }}
               td {{ user.email }}
+              td {{ roleName(user.role) }}
               td {{ user.status }}
               td.actions.text-right
                 button.btn.btn-info.btn-sm(title="Edit" ng-click="editUser(user)" ng-disabled="isSaving")

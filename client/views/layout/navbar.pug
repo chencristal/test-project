@@ -16,7 +16,7 @@ nav.navbar.navbar-inverse.navbar-static-top(ng-controller="NavbarCtrl")
           a(href="/docs" target="_self") Documentation
       ul.nav.navbar-nav.navbar-right(ng-if="currentUser")
         li
-          a(href="#") {{ currentUser.email }}
+          a(href="/profile") {{ currentUser.email }}
         li
           a(href="#" ng-click="logout()" title="Log out")
             span.glyphicon.glyphicon-log-out

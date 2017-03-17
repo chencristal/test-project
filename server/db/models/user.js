@@ -11,13 +11,17 @@ var userSchema = new mongoose.Schema({
     required: true
   },
   firstName: String,
-  lastName: String,
   role: {
     type: String,
     required: true,
     enum: consts.USER.ROLES,
     default: 'user'
   },
+
+  userGroups: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'userGroup'
+  }],
 
   provider: {
     type: String,
