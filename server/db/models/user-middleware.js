@@ -24,7 +24,12 @@ module.exports = userSchema => {
         return '';
       }
       var salt = new Buffer(this.salt, 'base64');
-      return crypto.pbkdf2Sync(password, salt, 10000, 64).toString('base64');
+      return crypto.pbkdf2Sync(
+        password, 
+        salt, 
+        10000, 
+        64,
+        'sha1').toString('base64');
     },
 
     makeSalt: function() {

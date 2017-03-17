@@ -201,14 +201,14 @@ function _checkPermission(reqRole, userData) {
 }
 
 function _validateUserData(userData) {
-  if (!_.isArray(userData.userGroups) || userData.userGroups.length === 0 ||
+  if (!_.isArray(userData.userGroups) ||
       !_.every(userData.userGroups, validationUtil.isValidObjectId)) {
     return customErrors.rejectWithUnprocessableRequestError({
       paramName: 'userGroups',
       errMsg: 'must be an array with valid ids'
     });
   }
-  
+
   if (!validationUtil.isValidEmail(userData.email)) {
     return customErrors.rejectWithUnprocessableRequestError({
       paramName: 'email',

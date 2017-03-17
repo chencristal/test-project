@@ -17,8 +17,7 @@ form.form-horizontal(name="userForm")
           ng-change="updateRole()" 
           ng-options="role as role.label for role in roles track by role.value")
   
-  .form-group(ng-class="{ 'has-error': userForm.userGroups.$error.required }" 
-        ng-if="currentUser.role !== 'superadmin'")
+  .form-group(ng-class="{ 'has-error': userForm.userGroups.$error.required }" )
     label.col-md-3.control-label(for="userGroups") User Groups
     .col-md-9
       ui-select(name="userGroups" multiple="true" ng-model="user.userGroups" ng-disabled="isSaving")
