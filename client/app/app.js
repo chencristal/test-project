@@ -37,6 +37,10 @@ angular.module('app', [
       templateUrl: 'views/account/restore-password.html',
       controller: 'AccountRestorePasswordCtrl'
     })
+    .when('/profile', {
+      templateUrl: 'views/account/profile.html',
+      controller: 'AccountProfileCtrl'
+    })
 
     .when('/users', {
       templateUrl: 'views/users/users-list.html',
@@ -49,6 +53,19 @@ angular.module('app', [
     .when('/users/:_id/edit', {
       templateUrl: 'views/users/user-edit.html',
       controller: 'UserEditCtrl'
+    })
+
+    .when('/user-groups', {
+      templateUrl: 'views/user-groups/user-groups-list.html',
+      controller: 'UserGroupsListCtrl'
+    })
+    .when('/user-groups/new', {
+      templateUrl: 'views/user-groups/user-group-new.html',
+      controller: 'UserGroupNewCtrl'
+    })
+    .when('/user-groups/:_id/edit', {
+      templateUrl: 'views/user-groups/user-group-edit.html',
+      controller: 'UserGroupEditCtrl'
     })
 
     .when('/term-templates', {
