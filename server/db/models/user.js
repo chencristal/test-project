@@ -11,7 +11,6 @@ var userSchema = new mongoose.Schema({
     required: true
   },
   firstName: String,
-  lastName: String,
   role: {
     type: String,
     required: true,

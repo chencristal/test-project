@@ -39,9 +39,9 @@ exports.checkPermission = (resource, action) => {
         return next(err);
       }
       else {
-        acl.isAllowed(req.user.firstName, resource, action)
-          .then(allowed => {
-            if (allowed) {
+        acl.isAllowed(req.user, resource, action)
+          .then(user => {
+            if (user) {
               return next();
             }
             else {
@@ -62,7 +62,7 @@ exports.requireRolesWrapper = (roles) => {
 
 function checkForRoles(user, roles) {
   if (_.isString(roles)) {
-    roles = [roles];
+    roles = [ roles ];
   }
   return _.includes(roles, user.role);
 };

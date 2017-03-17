@@ -13,8 +13,8 @@ exports.login = (req, res, next) => {
       err = customErrors.getAccessDeniedError(err.message);
       return next(err);
     }
-    user = _.pick(user, ['firstName', 'lastName', 'email', 'role']);
-    acl.userRoles(user.firstName)
+    user = _.pick(user, ['firstName', 'email', 'role', 'userGroups']);
+    acl.userRoles(user)
       .then(roles => {
         user.role = roles[0];
         return jwtUtil.signToken(user, user.role);

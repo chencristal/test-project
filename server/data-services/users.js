@@ -37,17 +37,11 @@ exports.createUser = userData => {
       }
       return User.create(userData);
     })
-    .then(user => {
-      acl.addUserRoles(userData.firstName, userData.role);
-      return user;
-    });
+    .then(acl.addUserToAcl);
 };
 
 exports.saveUser = user => {
   return user
     .save()
-    .then(user => {
-      acl.addUserRoles(user.firstName, user.role);
-      return user;
-    });;
+    .then(acl.addUserToAcl);
 };

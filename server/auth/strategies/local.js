@@ -5,6 +5,7 @@ var passport      = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
 var customErrors  = require('n-custom-errors');
 var usersSrvc     = require('../../data-services/users');
+var userGroupSrvc = require('../../data-services/user-groups');
 
 module.exports = () => {
   passport.use(new LocalStrategy(

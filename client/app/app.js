@@ -37,6 +37,10 @@ angular.module('app', [
       templateUrl: 'views/account/restore-password.html',
       controller: 'AccountRestorePasswordCtrl'
     })
+    .when('/profile', {
+      templateUrl: 'views/account/profile.html',
+      controller: 'AccountProfileCtrl'
+    })
 
     .when('/users', {
       templateUrl: 'views/users/users-list.html',

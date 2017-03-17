@@ -5,6 +5,7 @@ var log = require('../util/logger').logger;
 module.exports = app => {
   require('./auth')(app);
   require('./users')(app);
+  require('./profile')(app);
   require('./user-groups')(app);
   require('./term-templates')(app);
   require('./provision-templates')(app);

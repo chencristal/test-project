@@ -8,99 +8,6 @@ var consts         = require('../consts');
 
 var acl = null;
 
-function initializeUserRoles() {
-  var usersSrvc = require('../data-services/users');
-  var allowedFields = [ 'email', 'firstName', 'lastName', 'role', 'status' ];
-
-  usersSrvc
-    .getUsers({}, allowedFields.join(' '))
-    .then(users => {
-      _.forEach(users, function(user) {
-        acl.addUserRoles(user.firstName, user.role);
-      });
-    })
-    .then(() => {
-      //
-      // Now assign permissions to roles
-      //
-      acl.allow([
-        {
-          roles: ['superadmin'],
-          allows: [
-            { 
-              resources: ['ManageUser', 'ManageUserGroup'], 
-              permissions: ['read', 'create', 'update', 'delete'] 
-            },
-            { 
-              resources: [
-                'ManageProjectTemplate',
-                'ManageDocumentTemplate',
-                'ManageDocumentTemplateType',
-                'ManageProvisionTemplate',
-                'ManageTermTemplate',
-              ],
-              permissions: [ 'read', 'create', 'update' ]
-            }
-          ]
-        },
-        {
-          roles: ['admin'],
-          allows: [
-            { 
-              resources: ['ManageUser', 'ManageUserGroup'], 
-              permissions: ['read', 'create', 'update', 'delete'] 
-            },
-            { 
-              resources: [
-                'ManageProjectTemplate',
-                'ManageDocumentTemplate',
-                'ManageDocumentTemplateType',
-                'ManageProvisionTemplate',
-                'ManageTermTemplate',
-              ],
-              permissions: [ 'read', 'create', 'update' ]
-            }
-          ]
-        },
-        {
-          roles: ['author'],
-          allows: [
-            { 
-              resources: [
-                'ManageUser', 
-                'ManageUserGroup', 
-                'ManageProjectTemplate',
-                'ManageDocumentTemplate',
-                'ManageDocumentTemplateType',
-                'ManageProvisionTemplate',
-                'ManageTermTemplate'
-              ], 
-              permissions: ['read'] 
-            }
-          ]
-        },
-        {
-          roles: ['user'],
-          allows: [
-            { 
-              resources: [
-                'ManageUser',
-                'ManageUserGroup', 
-                'ManageProjectTemplate',
-                'ManageDocumentTemplate',
-                'ManageDocumentTemplateType',
-                'ManageProvisionTemplate',
-                'ManageTermTemplate',
-              ], 
-              permissions: ['read'] 
-            }
-          ]
-        }
-      ]);
-    });
-}
-
-
 exports.initialize = function(connection) {  
 
   if (acl !== null) {
@@ -108,82 +15,33 @@ exports.initialize = function(connection) {
   }
 
   acl = new module_acl(new module_acl.mongodbBackend(connection.db, 'acl_'));
+  exports.acl = acl;
   initializeUserRoles();
-  
-
-  /*acl.roleUsers('superadmin', function(err, users) {
-    if (err) console.log(err);
-    else console.log(users);
-  });*/
-
-  //
-  // Now assign `superadmin` permission to `admin` (username)
-  //
-  /*_addUserRoles('admin', 'superadmin')
-    .then(roles => true)
-    .catch(err => customErrors.rejectWithUnprocessableRequestError(err.message));*/
 };
 
-exports.userRoles = function(userId) {
-  return _userRoles(userId);
-}
-
-exports.addUserRoles = function(userId, roles) {
-  return _addUserRoles(userId, roles);
-}
-
-exports.isAllowed = function(userId, resource, action) {
-  return _isAllowed(userId, resource, action);
-}
-
-function _isAllowed(userId, resource, action) {
+exports.removeUser = function(user) {
+  var roles = ['superadmin', 'admin', 'author', 'user'];
   return new Promise((resolve, reject) => {
-    acl.isAllowed(userId, resource, action, function(err, allowed) {
-      if (err) {
-        reject(err);
-      }
-      else {
-        resolve(allowed);
-      }
+    acl.removeUserRoles(user.email, roles, function(err) {
+      if (err) reject(err);
+      resolve(user);
     });
   });
 }
 
-function _addUserRoles(userId, roles) {
-  var usersSrvc = require('../data-services/users');
-  
+exports.userRoles = function(user) {
   return new Promise((resolve, reject) => {
-    acl.addUserRoles(userId, roles, function(err) {
-      if (err) {
-        reject(err);
-      }
-      else {
-        usersSrvc
-          .getUser({ firstName: userId })
-          .then(user => {
-            if (_.isString(roles))
-              roles = [roles];
-              
-            user.role = roles[0];
-            return usersSrvc.saveUser(user);
-          })
-          .then(user => resolve(roles));
-      }
-    });
-  });
-}
-
-function _userRoles(userId) {
-  return new Promise((resolve, reject) => {
-    acl.userRoles(userId, function(err, roles) {
+    acl.userRoles(user.email, function(err, roles) {
       if (err) {
         reject(err);
       } 
       else {
         if (_.isEmpty(roles)) {
-          _addUserRoles(userId, 'user')
-            .then(roles => resolve(roles))
-            .catch(err => customErrors.rejectWithUnprocessableRequestError(err.message));
+          exports.addUserToAcl(user)
+            .then(resolve([user.role]))
+            .catch(err => { 
+              reject(err); 
+            });
         }
         else {
           resolve(roles);
@@ -193,5 +51,143 @@ function _userRoles(userId) {
   });
 }
 
+exports.isAllowed = function(user, resource, action) {
+  return new Promise((resolve, reject) => {
+    acl.isAllowed(user.email, resource, action, function(err, allowed) {
+      if (err) reject(err);
+      
+      if (allowed === true) resolve(user);
+      else resolve(false);
+    });
+  });
+}
 
-exports.acl = acl;
+exports.addUserToAcl = function(user) {
+  function removeAllUserRoles(user) {
+    var roles = ['superadmin', 'admin', 'author', 'user'];
+    return new Promise((resolve, reject) => {
+      acl.removeUserRoles(user.email, roles, function(err) {
+        if (err) reject(err);
+        resolve(user);
+      });
+    });
+  }
+
+  function addUserRole(user) {
+    return new Promise((resolve, reject) => {
+      acl.addUserRoles(user.email, user.role, function(err) {
+        if (err) reject(err);
+        resolve(user);
+      });
+    });
+  }
+
+  return removeAllUserRoles(user)
+    .then(addUserRole)
+    .catch(err => {
+      err = customErrors.getAccessDeniedError('Access denied');
+      return err;
+    });
+}
+
+
+function initializeUserRoles() {
+  acl.allow([
+    {
+      roles: ['superadmin'],
+      allows: [
+        { 
+          resources: ['ManageUser', 'ManageUserGroup'], 
+          permissions: ['read', 'create', 'update', 'delete'] 
+        },
+        { 
+          resources: [
+            'ManageProjectTemplate',
+            'ManageDocumentTemplate',
+            'ManageDocumentTemplateType',
+            'ManageProvisionTemplate',
+            'ManageTermTemplate',
+          ],
+          permissions: [ 'read', 'create', 'update' ]
+        },
+        { 
+          resources: [
+            'ManageProfile'
+          ], 
+          permissions: ['read', 'update'] 
+        }
+      ]
+    },
+    {
+      roles: ['admin'],
+      allows: [
+        { 
+          resources: ['ManageUser', 'ManageUserGroup'], 
+          permissions: ['read', 'create', 'update', 'delete'] 
+        },
+        { 
+          resources: [
+            'ManageProjectTemplate',
+            'ManageDocumentTemplate',
+            'ManageDocumentTemplateType',
+            'ManageProvisionTemplate',
+            'ManageTermTemplate',
+          ],
+          permissions: [ 'read', 'create', 'update' ]
+        },
+        { 
+          resources: [
+            'ManageProfile'
+          ], 
+          permissions: ['read', 'update'] 
+        }
+      ]
+    },
+    {
+      roles: ['author'],
+      allows: [
+        { 
+          resources: [
+            'ManageUser', 
+            'ManageUserGroup', 
+            'ManageProjectTemplate',
+            'ManageDocumentTemplate',
+            'ManageDocumentTemplateType',
+            'ManageProvisionTemplate',
+            'ManageTermTemplate'
+          ], 
+          permissions: ['read'] 
+        },
+        { 
+          resources: [
+            'ManageProfile'
+          ], 
+          permissions: ['read', 'update'] 
+        }
+      ]
+    },
+    {
+      roles: ['user'],
+      allows: [
+        { 
+          resources: [
+            'ManageUser',
+            'ManageUserGroup', 
+            'ManageProjectTemplate',
+            'ManageDocumentTemplate',
+            'ManageDocumentTemplateType',
+            'ManageProvisionTemplate',
+            'ManageTermTemplate',
+          ], 
+          permissions: ['read'] 
+        },
+        { 
+          resources: [
+            'ManageProfile'
+          ], 
+          permissions: ['read', 'update'] 
+        }
+      ]
+    }
+  ]);
+}

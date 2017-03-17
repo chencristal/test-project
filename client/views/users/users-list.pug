@@ -16,10 +16,8 @@ block content
         table.table.table-striped.users
           thead
             tr
-              td.first-name
-                strong First Name
-              td.last-name
-                strong Last Name
+              td.name
+                strong Name
               td
                 strong Email
               td
@@ -30,7 +28,6 @@ block content
           tbody
             tr(ng-repeat="user in users")
               td {{ user.firstName }}
-              td {{ user.lastName }}
               td {{ user.email }}
               td {{ roleName(user.role) }}
               td {{ user.status }}

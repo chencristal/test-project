@@ -15,12 +15,12 @@ exports.getUsers = function(req, res, next) {
     var data = {
       params: _.pick(query, ['query', 'role', 'includes'])
     };
-    data.fields = req.query.fields || [ 'email', 'firstName', 'lastName', 'role', 'status' ];
+    data.fields = req.query.fields || [ 'email', 'firstName', 'role', 'status' ];
     return Promise.resolve(data);
   }
 
   function validateParams(data) {
-    var allowedFields = [ 'email', 'firstName', 'lastName', 'role', 'status' ];
+    var allowedFields = [ 'email', 'firstName', 'role', 'status' ];
 
     if (data.params.includes && !_.every(data.params.includes, validationUtil.isValidObjectId)) {
       return customErrors.rejectWithUnprocessableRequestError({
@@ -97,7 +97,7 @@ exports.getUserById = function(req, res, next) {
   }
 
   validateParams()
-    .then(() => usersSrvc.getUser({ _id: userId }, 'email firstName lastName role status'))
+    .then(() => usersSrvc.getUser({ _id: userId }, 'email firstName role status'))
     .then(user => _checkPermission(req.user.role, user))
     .then(user => res.send(user))
     .catch(next);
@@ -105,7 +105,7 @@ exports.getUserById = function(req, res, next) {
 
 exports.createUser = function(req, res, next) {
   function parseParams(body) {
-    var allowedFields = ['email', 'firstName', 'lastName', 'role', 'password', 'confirmpass'];
+    var allowedFields = ['email', 'firstName', 'role', 'password', 'confirmpass'];
     var userData = _.pick(body, allowedFields);
     return Promise.resolve(userData);
   }
@@ -143,7 +143,7 @@ exports.createUser = function(req, res, next) {
 
 exports.updateUser = function(req, res, next) {
   function parseParams(body) {
-    var allowedFields = ['email', 'firstName', 'lastName', 'role', 'password', 'confirmpass', 'status'];
+    var allowedFields = ['email', 'firstName', 'role', 'password', 'confirmpass', 'status'];
     var userData = _.pick(body, allowedFields);
     userData._id = req.params._id;
 
