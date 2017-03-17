@@ -204,7 +204,7 @@ angular.module('app').directive('projectEditor', function () {
 
       $scope.$watch('relatedData.currrentDocumentTemplate', function (newDocTempl) {
         if (newDocTempl) {          
-          _loadRelatedData(newDocTempl);          
+          _loadRelatedData(newDocTempl);
         }
 
         setTimeout(function () {
@@ -215,7 +215,7 @@ angular.module('app').directive('projectEditor', function () {
             $scope.changes = document.getElementsByClassName('unselected highlighted');
             $scope.currentChange = -1;
           }
-
+          autosize($('textarea.auto'));
         }, 50);
 
         $scope.history = []; // reset history
@@ -234,7 +234,18 @@ angular.module('app').directive('projectEditor', function () {
   	    $scope.selectedVariable = variable;
         $scope.changes = $(className);
 
-        
+        setTimeout(function () {
+          $scope.currentChange = -1;
+          if(variable.termType == 'boolean') {
+            $scope.changes = document.getElementsByClassName('selected highlighted');
+            if (!$scope.changes.length) {
+              $scope.changes = document.getElementsByClassName('unselected highlighted');
+            }
+          }
+          else
+            $scope.changes = document.getElementsByClassName('highlighted-for-scroll');
+
+        }, 50)
 
         if ($scope.linkedScreens) {
           setTimeout(function () {
@@ -656,7 +667,6 @@ angular.module('app').directive('projectEditor', function () {
           .finally(function () {
             $scope.isLoading = false;
           });
-
       }
 
       function _loadRelatedData(newDocTempl) {

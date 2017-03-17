@@ -5,7 +5,7 @@ module.exports = {
     ROLES: ['admin', 'user'],
     STATUSES: ['active', 'inactive']
   },
-  TERM_TYPES: ['text','expandable_text', 'boolean', 'variant', 'date', 'number'],
+  TERM_TYPES: ['text', 'expandable_text', 'textarea', 'boolean', 'variant', 'date', 'number'],
   PROVISION_STYLES: ['sheet', 'normal'],
   HANDLEBAR: {
     STATEMENTS: ['if', 'unless', 'ifCond', 'ifVariant', 'unlessVariant', 'math', 'case', 'article', 'pagebreak'],

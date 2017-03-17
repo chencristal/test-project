@@ -23,7 +23,9 @@ form.form-horizontal
           ng-model="variable.value"
           ng-blur="save()"
           placeholder="{{ variable.text.placeholder }}"
-          ng-disabled="variable.state == 1")      
+          ng-disabled="variable.state == 1")
+
+      div(ng-if="variable.termType === 'textarea'") 
 
       div(ng-if="variable.termType === 'boolean'")
         .radio

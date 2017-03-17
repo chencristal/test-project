@@ -83,6 +83,20 @@ Generator.prototype.generateVariableEditor = function (variable) {
         </span>
         `;
 
+    case 'textarea':
+      return `
+        <span class="{{ ${varName}.state == 2 ? 'uncertain-bracket' : null }}">
+        <textarea
+               ng-model="${varName}.value"
+               ng-blur="onChange()"
+               ng-click="onClick(${varName}, $event)"
+               ng-class="selectedVariable == ${varName} ? 'highlighted-for-scroll' : null"
+               class="{{${varName}.textarea.style}}"
+               ng-disabled="${varName}.state == 1"
+               rows={{${varName}.textarea.rows}}
+               style="width: 100%;"
+               ></textarea></span>`;
+
     case 'boolean':
       return `
         <span ng-click="onClick(${varName}, $event)"
