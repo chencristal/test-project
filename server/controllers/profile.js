@@ -11,14 +11,14 @@ var acl            = require('../auth/acl');
 
 exports.getProfile = function(req, res, next) {
   usersSrvc
-    .getUser({ email: req.user.email }, 'email firstName role status userGroups')
+    .getUser({ email: req.user.email }, 'email firstName role status')
     .then(user => res.send(user))
     .catch(next);
 };
 
 exports.updateProfile = function(req, res, next) {
   function parseParams(body) {
-    var allowedFields = ['_id', 'email', 'firstName', 'password', 'confirmpass', 'userGroups'];
+    var allowedFields = ['_id', 'email', 'firstName', 'password', 'confirmpass'];
     var userData = _.pick(body, allowedFields);
 
     return Promise.resolve(userData);
@@ -68,7 +68,7 @@ exports.updateProfile = function(req, res, next) {
     .then(doEdits)
     .then(user => usersSrvc.saveUser(user))
     .then(user => {
-      user = _.pick(user, ['firstName', 'email', 'role', 'userGroups']);
+      user = _.pick(user, ['firstName', 'email', 'role']);
       jwtUtil
         .signToken(user, user.role)
         .then(token => res.send({ user, token }));
