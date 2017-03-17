@@ -31,6 +31,7 @@ gulp.task('build-vendor-js', () => {
       'textAngular-rangy.min.js',
       'textAngularSetup.js',
       'textAngular-sanitize.js',
+      'autosize.min.js',
       '*'
     ]))
     .pipe(gif(args.isProduction, guglify({ mangle: false })))

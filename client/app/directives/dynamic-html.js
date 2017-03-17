@@ -21,7 +21,7 @@ angular.module('app')
         // but not from properties left-side block.
 	      $scope.$parent.$parent.highlight(variable, true, currentTarget);
       }
-        
+      
       $timeout(function() {
         $scope.$apply(function() {
           var content = $compile($scope.template)($scope);

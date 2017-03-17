@@ -20,10 +20,14 @@ var termTemplateSchema = new mongoose.Schema({
   text: {
     placeholder: String
   },
-  expandable_text : {
+  expandable_text: {
     placeholder: String,
     newline: Boolean,
     prettify: Boolean
+  },
+  textarea: {
+    rows: Number,
+    style: String
   },
   date: {
     default: Date

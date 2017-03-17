@@ -140,6 +140,7 @@ exports.generatePdf = (req, res, next) => {
   parseParams(req.params)
     .then(_getCompiledTemplate)
     .then(text => {
+      text = text.replace(/\n/g,'<br/>');
       res.setHeader('Content-disposition', 'attachment; filename=converted.pdf');
       res.setHeader('Content-type', 'application/pdf');
       return pdfConverter.write(text, res);
