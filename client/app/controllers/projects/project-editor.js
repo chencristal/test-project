@@ -227,25 +227,14 @@ angular.module('app').directive('projectEditor', function () {
           // $scope.changes[i].style.backgroundColor = null;
         }
 
-        var className = variable.termType == 'boolean' ? 'selected highlighted' : 'highlighted-for-scroll';
+        var className = variable.termType == 'boolean' ? '.selected.highlighted' : '.highlighted-for-scroll';
 
         fromEditor = typeof fromEditor !== 'undefined' ? fromEditor : false;
   	    currentTarget = typeof currentTarget !== 'undefined' ? currentTarget : false;
   	    $scope.selectedVariable = variable;
-        $scope.changes = document.getElementsByClassName(className);
+        $scope.changes = $(className);
 
-        setTimeout(function () {
-          $scope.currentChange = -1;
-          if(variable.termType == 'boolean') {
-            $scope.changes = document.getElementsByClassName('selected highlighted');
-            if (!$scope.changes.length) {
-              $scope.changes = document.getElementsByClassName('unselected highlighted');
-            }
-          }
-          else
-            $scope.changes = document.getElementsByClassName('highlighted-for-scroll');
-
-        }, 50)
+        
 
         if ($scope.linkedScreens) {
           setTimeout(function () {
@@ -386,6 +375,8 @@ angular.module('app').directive('projectEditor', function () {
         }
         $('.highlighted-navigation').removeClass('highlighted-navigation');
         $(element).addClass('highlighted-navigation');
+        if($(element).hasClass('selected') && $(element).hasClass('highlighted'))
+          $(element).prev('.unselected.highlighted').addClass('highlighted-navigation');
 
         var elementProp = $('#properties .highlighted')[0];
         var elementPropRect = elementProp.getBoundingClientRect().top;
@@ -422,6 +413,8 @@ angular.module('app').directive('projectEditor', function () {
 
         $('.highlighted-navigation').removeClass('highlighted-navigation');
         $(element).addClass('highlighted-navigation');
+        if($(element).hasClass('selected') && $(element).hasClass('highlighted'))
+          $(element).prev('.unselected.highlighted').addClass('highlighted-navigation');
 
         var elementProp = $('#properties .highlighted')[0];
         var elementPropRect = elementProp.getBoundingClientRect().top;
