@@ -53,15 +53,15 @@
             <div class="container">
                 <div id="doc-header" class="doc-header text-center">
                     <h1 class="doc-title"><span aria-hidden="true" class="icon fa fa-pencil"></span> Authors</h1>
-                    <div class="meta"><i class="fa fa-clock-o"></i> Last updated: March 1, 2017</div>
+                    <div class="meta"><i class="fa fa-clock-o"></i> Last updated: March 18, 2017</div>
                 </div><!--//doc-header-->
                 <div class="doc-body">
                     <div class="doc-content">
                         <div class="content-inner">
-                            <section id="overview" class="doc-section">
-                                <h2 class="section-title">Overview</h2>
+                            <section id="intro" class="doc-section">
+                                <h2 class="section-title">Introduction</h2>
                                 <div class="section-block">
-                                    <h3 class="block-title">Who are Authors?   </h3>
+                                    <h3 class="block-title">Who are the Authors?   </h3>
                                     <p>The Authors create smart templates that users use to create documents.  The best people to draft these templates are the knowledge workers in the organization, who are intimately involved in, and knowledgeable about, the business decisions and considerations involved in the drafting of the document. They may be professionals such as attorneys, or mid-to-senior level executives.</p>
 
                                 </div><!--//section-block-->
@@ -88,7 +88,8 @@
                                 <h6>When creating a new Term Template, there are 6 Term Template types to choose from:</h6>  
                                 <ol> 
                                     <li>Text</li>
-                                    <li>Expandable Text</li>
+                                    <li>Text Plus</li>
+                                    <li>Text Area</li>
                                     <li>Number</li>
                                     <li>Date</li>
                                     <li>Boolean (True/False)</li>
@@ -104,18 +105,24 @@
                                     <p>The Placeholder is the "Default" text.  It is required.  If you are not sure what to put into this field, you can also in brackets "[  ]".</p>
                                     <p>Help field is the text that the User will see on the right hand side of the screen when as Help text.  [You can also imbed videos, pictures or links.]</p>
                                 </div><!--//section-block-->
-                                <div id="2expandable" class="section-block">
-                                    <h3 class="block-title">2. Expandable Text</h3>
-                                    <p>Text is the field that hold text variable.  Under Term Type, choose Text. Then under Variable field, you name the variable.  Characters that are permitted are A-Z, a-z, 0-9, and underscore.  Special characters are NOT permitted, except for the underscore.  An example would be "company_name" (without quotes).</p>
-                                    <p>The Display Name field is what the User will see when prompted to input the field.  This can contain special characters including spaces, which should help in describing briefly the information the is requested from the User - for example, "Company Name". It can also be phrased as a question, as as: "What is the Company Name?"</p>
-                                    <p>The Placeholder is the "Default" text.  It is required.  If you are not sure what to put into this field, you can also in brackets "[  ]".</p>
-                                    <p>Expandable Text  is similar to the Text variable except that in addition, it  permits Users to create sub-fields, that is a separate text box that appears right after the current text box.  This is handy if the contract contemplates one or more parties.  There are two additional check-boxes: 1. Automatically insert commas/and will insert the commas and 'and' at appropriate places.  2.  Insert line break will insert a new line before the new text box; this is helpful for lists.  </p>
+                                <div id="2textplus" class="section-block">
+                                    <h3 class="block-title">2. Text Plus</h3>
+                                    <p>Text Plus  is similar to the Text variable except that in addition, it  permits Users to create sub-fields, that is a separate text box that appears right after the current text box.  This is handy if the contract contemplates one or more parties.  There are two additional check-boxes: 1. Automatically insert commas/and will insert the commas and 'and' at appropriate places.  2.  Insert line break will insert a new line before the new text box; this is helpful for lists.  </p>
                                     <p> Under Variable field, you name the variable.  Characters that are permitted are A-Z, a-z, 0-9, and underscore.  Special characters are NOT permitted, except for the underscore.  An example would be "company_name" (without quotes).</p>
                                     <p>The Display Name field is what the User will see when prompted to input the field.  This can contain special characters including spaces, which should help in describing briefly the information the is requested from the User - for example, "Company Name". It can also be phrased as a question, as as: "What is the Company Name?"</p>
                                     <p>The Placeholder is the "Default" text.  It is required.  If you are not sure what to put into this field, you can also in brackets "[  ]".  Each sub-field will start out with this Placeholder text.</p>
                                     <p>Help field is the text that the User will see on the right hand side of the screen when as Help text.  [You can also imbed videos, pictures or links.]</p>
                                 </div><!--//section-block-->
-                                <div id="3number" class="section-block">
+                                <div id="3textarea" class="section-block">
+                                    <h3 class="block-title">3. Text Area</h3>
+                                    <p>Text Area is similar to the Text variable except that it creates a larger text area in the middle panel.  This is handy if the contract contemplates an insertion of a large body of custom text.  However, one limitation of Text Area is that it will not permit redlining of the inside text.  The text area box will disappear if held within false boolean expressions, and appear if held within true boolean expressions.    </p>
+                                    <p> Under Variable field, you name the variable.  Characters that are permitted are A-Z, a-z, 0-9, and underscore.  Special characters are NOT permitted, except for the underscore.  An example would be "company_name" (without quotes).</p>
+                                    <p>The Display Name field is what the User will see when prompted to input the field.  This can contain special characters including spaces, which should help in describing briefly the information the is requested from the User - for example, "Company Name". It can also be phrased as a question, as as: "What is the Company Name?"</p>
+                                    <p>You can set the initial number of rows of the Text Area, and also whether that area will expand when filled, or remain fixed with appearance of a scoll bar.  There is no Placeholder for Text Area.  </p>
+                                    <p>Help field is the text that the User will see on the right hand side of the screen when as Help text.  [You can also imbed videos, pictures or links.]</p>
+                                </div><!--//section-block-->
+                                
+                                <div id="4number" class="section-block">
                                     <h3 class="block-title">3. Number</h3>
                                     <p>Number field allows the User to input numbers.  While it is true that you can put numbers into text boxes as well, Number field permits <b>math</b> function to work.  In short, it allows for simple arithmetic, such as additions and subtractions.  For example, in the Provision Template, you can do: <code>{{math number_variable_name 'add' 10}}</code> </p>
                                     <p>Under Variable field, you name the variable.  Characters that are permitted are A-Z, a-z, 0-9, and underscore.  Special characters are NOT permitted, except for the underscore.  An example would be "employee_number" (without quotes).</p>
@@ -125,7 +132,7 @@
                                     <p>Help field is the text that the User will see on the right hand side of the screen when as Help text.  [You can also imbed videos, pictures or links.]</p>
                                 </div><!--//section-block-->
                                 
-                                <div id="4date" class="section-block">
+                                <div id="5date" class="section-block">
                                     <h3 class="block-title">4. Date</h3>
                                     <p>Date field allows the User to input dates.  The Date Picker calendar will also appear for the User to make it easier to pick a date.  While it is true that you can put dates into text boxes as well, Date field permits <b>math</b> function to work.  In short, it allows for simple arithmetic, such as additions and subtractions.  For example, in the Provision Template, you can do:<code> {{math date_variable_name 'add-year' 7}}</code>  </p>
                                     <p>Under Variable field, you name the variable.  Characters that are permitted are A-Z, a-z, 0-9, and underscore.  Special characters are NOT permitted, except for the underscore.  An example would be "start_date" (without quotes).</p>
@@ -135,7 +142,7 @@
                                     <p>Help field is the text that the User will see on the right hand side of the screen when as Help text.  [You can also imbed videos, pictures or links.]</p>
 
                                 </div><!--//section-block-->
-                                <div id="5boolean" class="section-block">
+                                <div id="6boolean" class="section-block">
                                     <h3 class="block-title">5. Boolean</h3>
                                     <p>Boolean holds values TRUE or FALSE, and displays to the User as a Radio button.  They must choose one or the other, and null value is not permitted.  Because of its flexibility, you can also use it as a choice of two, such as Include/Exclude or Registered/Non-Registered. Although appearing simple, Booleans are probably the most frequently used variable types, as they are able to manipulate the document beyond the purview of the input field. For example, when used in conjunction with IF statement in the Provision Template, you can add or delete large portions of text using the following syntax:</p>
 <p><pre><code>{{#if boolean_name}}This text will appear if boolean is true.{{else}} Otherwise, this text will appear.{{/if}}</code></pre></p> 
@@ -147,7 +154,7 @@
                                     <p>Help field is the text that the User will see on the right hand side of the screen when as Help text.  [You can also imbed videos, pictures or links.]</p>
 
                                 </div><!--//section-block-->
-                                <div id="6variant" class="section-block">
+                                <div id="7variant" class="section-block">
                                     <h3 class="block-title">6. Variant</h3>
                                     <p>While Boolean is flexible and useful, especially in conjunction with the use of IF, it is limited to a choice of two: TRUE and FALSE values.  When more alternatives than two are required, Variant is the Term Template that can handle the task because it can have unlimited options.  
                                     <p>Under Variable field, you name the variable.  Characters that are permitted are A-Z, a-z, 0-9, and underscore.  Special characters are NOT permitted, except for the underscore.  An example would be "filing_type" (without quotes).</p>
@@ -266,6 +273,14 @@
                                     </div><!--//callout-->
 
                                 </div><!--//section-block-->
+                                <div id="7pagebreak" class="section-block">
+                                    <h3 class="block-title">7. Page Break</h3>
+                                    <p>The middle panel view is a continuous view with scrolls, and there is no demarcation for separate pages.  This is a common behavior with HTML documents.  However, when this document needs to be converted to PDF or MS Word, there will inevitably occasions in which a page break will be necessary.  In that case, the Author can use in the Provision Template, the page break function: <code>{{pagebreak}}</code> </p> 
+                                    <p>When used, it will not be visible in in the middle panel until it is converted to PDF or MS Word format.  [Currently this feature works for PDF, but does not work yet for MS Word.] </p>
+
+
+
+                                </div><!--//section-block-->
 
                             </section><!--//doc-section-->
                             
@@ -341,15 +356,16 @@
                     <div class="doc-sidebar">
                         <nav id="doc-nav">
                             <ul id="doc-menu" class="nav doc-menu hidden-xs" data-spy="affix">
-                                <li><a class="scrollto" href="#overview">Overview</a></li>
+                                <li><a class="scrollto" href="#intro">Introduction</a></li>
                                 <li><a class="scrollto" href="#term_templates">Term Templates</a>
                                     <ul class="nav doc-sub-menu">
                                         <li><a class="scrollto" href="#1text">1. Text</a></li>
-                                        <li><a class="scrollto" href="#2expandable">2. Expandable Text</a></li>
-                                        <li><a class="scrollto" href="#3number">3. Number</a></li>
-                                        <li><a class="scrollto" href="#4date">4. Date</a></li>
-                                        <li><a class="scrollto" href="#5boolean">5. Boolean</a></li>
-                                        <li><a class="scrollto" href="#6variant">6. Variant</a></li>
+                                        <li><a class="scrollto" href="#2textplus">2. Text Plus</a></li>
+                                        <li><a class="scrollto" href="#3textplus">3. Text Area</a></li>
+                                        <li><a class="scrollto" href="#4number">4. Number</a></li>
+                                        <li><a class="scrollto" href="#5date">5. Date</a></li>
+                                        <li><a class="scrollto" href="#6boolean">6. Boolean</a></li>
+                                        <li><a class="scrollto" href="#7variant">7. Variant</a></li>
                                     </ul><!--//nav-->
                                 </li>
                                 <li><a class="scrollto" href="#provision_templates">Provision Templates</a>
@@ -360,6 +376,7 @@
                                         <li><a class="scrollto" href="#4math">4. math</a></li>
                                         <li><a class="scrollto" href="#5case">5. case</a></li>
                                         <li><a class="scrollto" href="#6article">6. article</a></li>
+                                        <li><a class="scrollto" href="#7pagebreak">7. pagebreak</a></li>
                                     </ul><!--//nav-->
                                 </li>
                                 <li><a class="scrollto" href="#document_templates">Document Templates</a>
