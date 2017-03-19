@@ -25,7 +25,10 @@ form.form-horizontal
           placeholder="{{ variable.text.placeholder }}"
           ng-disabled="variable.state == 1")
 
-      div(ng-if="variable.termType === 'textarea'") 
+      div(ng-if="variable.termType === 'textarea'")
+        input.form-control(
+          type="text"
+          ng-disabled="true")
 
       div(ng-if="variable.termType === 'boolean'")
         .radio

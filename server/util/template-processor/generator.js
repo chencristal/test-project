@@ -91,7 +91,7 @@ Generator.prototype.generateVariableEditor = function (variable) {
                ng-blur="onChange()"
                ng-click="onClick(${varName}, $event)"
                ng-class="selectedVariable == ${varName} ? 'highlighted-for-scroll' : null"
-               class="{{${varName}.textarea.style}}"
+               scrollmode="{{${varName}.textarea.style}}"
                ng-disabled="${varName}.state == 1"
                rows={{${varName}.textarea.rows}}
                style="width: 100%;"
@@ -101,22 +101,10 @@ Generator.prototype.generateVariableEditor = function (variable) {
       return `
         <span ng-click="onClick(${varName}, $event)"
               ng-class="selectedVariable == ${varName} ? 'highlighted-for-scroll' : null">
-          <label>
-            <input type="radio" 
-                   ng-model="${varName}.value" 
-                   ng-value="true" 
-                   ng-change="onChange()" 
-                   ng-disabled="${varName}.state == 1"/>
-            <span>{{ ::${varName}.boolean.inclusionText }}</span>
-          </label>
-           <label>
-            <input type="radio" 
-                   ng-model="${varName}.value" 
-                   ng-value="false" 
-                   ng-change="onChange()"
-                   ng-disabled="${varName}.state == 1"/>
-            <span>{{ ::${varName}.boolean.exclusionText }}</span>
-          </label>
+          <select ng-model="${varName}.value">
+            <option ng-value="true">{{ ::${varName}.boolean.inclusionText }}</option>
+            <option ng-value="false">{{ ::${varName}.boolean.exclusionText }}</option>
+          </select>
         </span>`;
 
     case 'variant':

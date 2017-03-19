@@ -5,6 +5,9 @@ angular.module('app').controller('TermTemplateNewCtrl',
 
   $scope.termTemplate = {
     text: {},
+    textarea: {
+      style: 'auto'
+    },
     boolean: {
       default: true,
       inclusionText: 'Include',

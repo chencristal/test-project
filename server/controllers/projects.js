@@ -141,6 +141,7 @@ exports.generatePdf = (req, res, next) => {
     .then(_getCompiledTemplate)
     .then(text => {
       text = text.replace(/\n/g,'<br/>');
+
       res.setHeader('Content-disposition', 'attachment; filename=converted.pdf');
       res.setHeader('Content-type', 'application/pdf');
       return pdfConverter.write(text, res);
@@ -166,6 +167,7 @@ exports.generateWord = (req, res, next) => {
       docTemplTypesSrvc.getDocumentTemplateType({_id: req.params.docTypeId}, 'styles')
       .then(docTemplType => {
         var styles = docTemplType.styles ? JSON.parse(docTemplType.styles) : {};
+
         res.setHeader('Content-disposition', 'attachment; filename=converted.docx');
         res.setHeader('Content-type', 'application/docx');
         return wordConverter.write(text, styles, res);  
@@ -251,7 +253,6 @@ function _getCompiledTemplate(data) {
       .then(provTempls => {
         var template = _.map(provTempls, provTempl => provTempl.template).join('\n');
         var variables = Object.keys(data.values);
-
         _.each(data.expandables, expandable => {
           var newline = (expandable.expandable_text !== undefined && expandable.expandable_text.newline) ? true : false;
           var prettify = (expandable.expandable_text !== undefined && expandable.expandable_text.prettify) ? true : false;
@@ -280,6 +281,15 @@ function _getCompiledTemplate(data) {
             template = _.replace(template, new RegExp(`{{${expandable.variable}}}`,'g'), `{{${expandable.variable}}}${glue}${subs}`);            
           }
         });
+        for(var variable in data.values) {
+          if(typeof data.values[variable] == 'boolean') {
+            var v = _.find(data.termTempls, {variable: variable});
+            var value = data.values[variable];
+            var newVal = (value == true) ? v.boolean.inclusionText : v.boolean.exclusionText;
+            data.values[variable] = newVal;
+          }
+        }
+        console.log(data.values);
         data.template = template;
         return data;
     });

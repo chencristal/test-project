@@ -215,8 +215,9 @@ angular.module('app').directive('projectEditor', function () {
             $scope.changes = document.getElementsByClassName('unselected highlighted');
             $scope.currentChange = -1;
           }
-          autosize($('textarea.auto'));
-        }, 50);
+          autosize($('textarea[scrollmode="auto"]'));
+          $('span.unselected input').addClass('exp-hidden');
+        }, 300);
 
         $scope.history = []; // reset history
       });
@@ -226,7 +227,10 @@ angular.module('app').directive('projectEditor', function () {
           $($scope.changes[i]).removeClass('highlighted-navigation');
           // $scope.changes[i].style.backgroundColor = null;
         }
-
+        
+        $('input.exp-hidden').removeClass('exp-hidden');
+        $('span.unselected input').addClass('exp-hidden');
+        
         var className = variable.termType == 'boolean' ? '.selected.highlighted' : '.highlighted-for-scroll';
 
         fromEditor = typeof fromEditor !== 'undefined' ? fromEditor : false;
@@ -284,11 +288,8 @@ angular.module('app').directive('projectEditor', function () {
 
           }, 50);
         }
-        // reset styling
-        for (var i = 0; i < $scope.changes.length; i++) {
-          // $scope.changes[i].style.backgroundColor = null;
-        }
-      
+        
+        
       };
 
       $scope.save = function (historyTransition) {

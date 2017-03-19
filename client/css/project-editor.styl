@@ -1,5 +1,6 @@
 .editor
   font-family: "Times New Roman", Georgia, Serif
+  text-align: justify
   h1,h2,h3,h4,h5,h6
     margin-top: 0
   .expanded .prettify:before
@@ -557,6 +558,8 @@
                 text-decoration: line-through
                 font-weight: normal
                 color: lightgrey
+              textarea
+                display: none
             &.highlighted
               &.defaulted
                 color: red
@@ -574,6 +577,8 @@
                   color: red
                   font-weight: normal
                   text-decoration: line-through
+                textarea
+                  display: none
 
           &.selected
             display: inline
@@ -644,3 +649,6 @@
                   color: blue
                   font-weight: bold
                   text-decoration: underline
+        input.exp-hidden
+          pointer-events: none
+          background: #ebebe4
