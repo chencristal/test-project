@@ -9,6 +9,25 @@ exports.getProjects = (filter, fields) => {
     .exec();
 };
 
+exports.getUserProjects = (user) => {
+  return Project
+    .find({owner: user._id})
+    .populate('owner')
+    .populate('sharedUsers')
+    .populate('sharedUserGroups')
+    .exec();
+}
+
+exports.getSharedProjects = (user) => {
+  return Project
+    .find({owner: {$ne: user._id}})
+    .find({$or: [{sharedUsers: user._id}, {sharedUserGroups: { $in: user.userGroups }}]})
+    .populate('owner')
+    .populate('sharedUsers')
+    .populate('sharedUserGroups')
+    .exec();
+};
+
 exports.getProject = (filter, fields) => {
   return Project
     .findOne(filter)

@@ -62,6 +62,13 @@ exports.getUsers = function(req, res, next) {
       };
     }
 
+    //
+    // The user cannot get his own account information.
+    //
+    data.filter.email = {
+      $ne: req.user.email
+    };
+
     return data;
   }
 

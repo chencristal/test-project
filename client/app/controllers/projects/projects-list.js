@@ -11,11 +11,22 @@ angular.module('app').controller('ProjectsListCtrl',
         $scope.projects = projects;
         $scope.isLoading = false;
       });
+
+    Project
+      .query({type: 'shared'})
+      .$promise
+      .then(function(shared_projects) {
+        $scope.sharedProjects = shared_projects;
+        $scope.isLoading = false;
+      });
   }
   $scope.loadData();
 
   $scope.editProject = function(project) {
     $location.path('/projects/' + project._id + '/edit');
+  };
+  $scope.shareProject = function(project) {
+    $location.path('/projects/' + project._id + '/share');
   };
 
   $scope.openEditor = function(project) {

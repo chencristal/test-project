@@ -144,7 +144,12 @@ angular.module('app', [
     .when('/projects/:_id/edit', {
       templateUrl: 'views/projects/project-edit.html',
       controller: 'ProjectEditCtrl'
-    }).when('/projects/:_id/editor', {
+    })
+    .when('/projects/:_id/share', {
+      templateUrl: 'views/projects/project-share.html',
+      controller: 'ProjectShareCtrl'
+    })
+    .when('/projects/:_id/editor', {
       templateUrl: 'views/projects/project-editor.html'
     })
 

@@ -12,10 +12,24 @@ var validationUtil    = require('../util/validations');
 var templProc         = require('../util/template-processor');
 var pdfConverter      = require('../util/converters/pdf');
 var wordConverter     = require('../util/converters/word');
+var usersSrvc         = require('../data-services/users');
 
 exports.getProjects = (req, res, next) => {
   projectsSrvc
     .getProjects({}, 'name')
+    .then(projects => res.send(projects))
+    .catch(next);
+};
+
+exports.getUserProjects = (req, res, next) => {
+  usersSrvc
+    .getUser({email: req.user.email})
+    .then(user => {
+      if (req.query.type === 'shared')
+        return projectsSrvc.getSharedProjects(user);
+      else
+        return projectsSrvc.getUserProjects(user);
+    })
     .then(projects => res.send(projects))
     .catch(next);
 };
@@ -25,7 +39,8 @@ exports.getProjectById = (req, res, next) => {
 
   function validateParams() {
     if (!validationUtil.isValidObjectId(projId)) {
-      return customErrors.rejectWithUnprocessableRequestError({ paramName: 'id', errMsg: 'must be a valid id' });
+      return customErrors.rejectWithUnprocessableRequestError(
+        { paramName: 'id', errMsg: 'must be a valid id' });
     }
     return Promise.resolve();
   }
@@ -38,7 +53,7 @@ exports.getProjectById = (req, res, next) => {
 
 exports.createProject = (req, res, next) => {
   function parseParams(body) {
-    var allowedFields = ['name', 'projectTemplate'];
+    var allowedFields = ['name', 'projectTemplate', 'sharedUsers', 'sharedUserGroups'];
     var projData = _.pick(body, allowedFields);
     return Promise.resolve(projData);
   }
@@ -54,6 +69,17 @@ exports.createProject = (req, res, next) => {
 
   parseParams(req.body)
     .then(validateParams)
+    .then(proj => {
+      return usersSrvc
+        .getUser({email: req.user.email})
+        .then(user => {
+          if (user.role === 'user')
+            return _.assign(proj, {owner: user._id});
+          else
+            return customErrors.rejectWithUnprocessableRequestError(
+              { paramName: 'Only users', errMsg: 'can save the project' });
+        });
+    })
     .then(doEdits)
     .then(proj => projectsSrvc.createProject(proj))
     .then(proj => res.send(proj))
@@ -62,7 +88,7 @@ exports.createProject = (req, res, next) => {
 
 exports.updateProject = (req, res, next) => {
   function parseParams(body) {
-    var allowedFields = ['name', 'projectTemplate', 'values'];
+    var allowedFields = ['name', 'projectTemplate', 'values', 'sharedUsers', 'sharedUserGroups'];
     var projData = _.pick(body, allowedFields);
     projData._id = req.params._id;
     return Promise.resolve(projData);
@@ -186,6 +212,20 @@ function _validateProjectData(projData) {
     return customErrors.rejectWithUnprocessableRequestError({
       paramName: 'projectTemplate',
       errMsg: 'must be a valid id'
+    });
+  }
+  if (projData.sharedUserGroups && (!_.isArray(projData.sharedUserGroups) ||
+      !_.every(projData.sharedUserGroups, validationUtil.isValidObjectId))) {
+    return customErrors.rejectWithUnprocessableRequestError({
+      paramName: 'sharedUserGroups',
+      errMsg: 'must be an array with valid ids'
+    });
+  }
+  if (projData.sharedUsers && (!_.isArray(projData.sharedUsers) ||
+      !_.every(projData.sharedUsers, validationUtil.isValidObjectId))) {
+    return customErrors.rejectWithUnprocessableRequestError({
+      paramName: 'sharedUsers',
+      errMsg: 'must be an array with valid ids'
     });
   }
   return Promise.resolve(projData);

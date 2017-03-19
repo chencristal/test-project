@@ -13,6 +13,8 @@ block content
         a.btn.btn-default.btn-primary(href="/projects/new") New Project
     .row
       .col-md-12
+        .caption
+          span.caption-projects Owned Projects
         table.table.table-striped.projects
           thead
             tr
@@ -25,6 +27,8 @@ block content
               td.actions
                 button.btn.btn-info.btn-sm(title="Edit" ng-click="editProject(project)" ng-disabled="isSaving")
                   span.glyphicon.glyphicon-pencil
+                button.btn.btn-warning.btn-sm(title="Share" ng-click="shareProject(project)" ng-disabled="isSaving")
+                  span.glyphicon.glyphicon-share
                 button.btn.btn-primary.btn-sm(title="Editor" ng-click="openEditor(project)" ng-disabled="isSaving")
                   span.glyphicon.glyphicon-flash
                 button.btn.btn-danger.btn-sm(
@@ -38,3 +42,21 @@ block content
                   ng-disabled="isSaving"
                 )
                   span.glyphicon.glyphicon-trash
+
+      .col-md-12
+        .caption
+          span.caption-shared-projects Shared Projects
+        table.table.table-striped.shared-projects
+          thead
+            tr
+              td
+                strong Name
+              td
+          tbody
+            tr(ng-repeat="project in sharedProjects")
+              td {{ project.name }}
+              td.actions
+                button.btn.btn-info.btn-sm(title="Edit" ng-click="editProject(project)" ng-disabled="isSaving")
+                  span.glyphicon.glyphicon-pencil
+                button.btn.btn-primary.btn-sm(title="Editor" ng-click="openEditor(project)" ng-disabled="isSaving")
+                  span.glyphicon.glyphicon-flash
