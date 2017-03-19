@@ -216,7 +216,7 @@ angular.module('app').directive('projectEditor', function () {
             $scope.currentChange = -1;
           }
           autosize($('textarea[scrollmode="auto"]'));
-          $('span.unselected input').addClass('exp-hidden');
+          $('span.unselected input').addClass('exp-disabled');
         }, 300);
 
         $scope.history = []; // reset history
@@ -228,8 +228,8 @@ angular.module('app').directive('projectEditor', function () {
           // $scope.changes[i].style.backgroundColor = null;
         }
         
-        $('input.exp-hidden').removeClass('exp-hidden');
-        $('span.unselected input').addClass('exp-hidden');
+        $('input.exp-disabled').removeClass('exp-disabled');
+        $('span.unselected input').addClass('exp-disabled');
         
         var className = variable.termType == 'boolean' ? '.selected.highlighted' : '.highlighted-for-scroll';
 
