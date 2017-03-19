@@ -231,7 +231,7 @@ angular.module('app').directive('projectEditor', function () {
         $('input.exp-disabled').removeClass('exp-disabled');
         $('span.unselected input').addClass('exp-disabled');
         
-        var className = variable.termType == 'boolean' ? '.selected.highlighted' : '.highlighted-for-scroll';
+        var className = variable.termType == 'boolean' ? '#editor .highlighted' : '.highlighted-for-scroll';
 
         fromEditor = typeof fromEditor !== 'undefined' ? fromEditor : false;
   	    currentTarget = typeof currentTarget !== 'undefined' ? currentTarget : false;
@@ -241,13 +241,10 @@ angular.module('app').directive('projectEditor', function () {
         setTimeout(function () {
           $scope.currentChange = -1;
           if(variable.termType == 'boolean') {
-            $scope.changes = document.getElementsByClassName('selected highlighted');
-            if (!$scope.changes.length) {
-              $scope.changes = document.getElementsByClassName('unselected highlighted');
-            }
+            $scope.changes = $('#editor .highlighted');
           }
           else
-            $scope.changes = document.getElementsByClassName('highlighted-for-scroll');
+            $scope.changes = $('.highlighted-for-scroll');
 
         }, 50)
 
@@ -259,16 +256,10 @@ angular.module('app').directive('projectEditor', function () {
             var containerProp = document.getElementById('properties');
 
             if(variable.termType == 'boolean') {
-              var elementEditor = document.getElementsByClassName('selected highlighted');
-              if (!elementEditor.length) {
-                elementEditor = document.getElementsByClassName('unselected highlighted');
-                if (!elementEditor.length) {
-                  elementEditor = document.getElementsByClassName('highlighted-for-scroll');
-                }
-              }
+              var elementEditor = $('#editor .highlighted');
             }
             else
-              var elementEditor = document.getElementsByClassName('highlighted-for-scroll');
+              var elementEditor = $('.highlighted-for-scroll');
 
             if (elementEditor.length) {
               if (!fromEditor) {
@@ -387,8 +378,6 @@ angular.module('app').directive('projectEditor', function () {
         }
         $('.highlighted-navigation').removeClass('highlighted-navigation');
         $(element).addClass('highlighted-navigation');
-        if($(element).hasClass('selected') && $(element).hasClass('highlighted'))
-          $(element).prev('.unselected.highlighted').addClass('highlighted-navigation');
 
         var elementProp = $('#properties .highlighted')[0];
         var elementPropRect = elementProp.getBoundingClientRect().top;
@@ -425,8 +414,6 @@ angular.module('app').directive('projectEditor', function () {
 
         $('.highlighted-navigation').removeClass('highlighted-navigation');
         $(element).addClass('highlighted-navigation');
-        if($(element).hasClass('selected') && $(element).hasClass('highlighted'))
-          $(element).prev('.unselected.highlighted').addClass('highlighted-navigation');
 
         var elementProp = $('#properties .highlighted')[0];
         var elementPropRect = elementProp.getBoundingClientRect().top;

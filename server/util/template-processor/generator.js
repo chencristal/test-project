@@ -101,9 +101,9 @@ Generator.prototype.generateVariableEditor = function (variable) {
       return `
         <span ng-click="onClick(${varName}, $event)"
               ng-class="selectedVariable == ${varName} ? 'highlighted-for-scroll' : null">
-          <select ng-model="${varName}.value">
-            <option ng-value="true">{{ ::${varName}.boolean.inclusionText }}</option>
-            <option ng-value="false">{{ ::${varName}.boolean.exclusionText }}</option>
+          <select ng-model="${varName}.value" ng-options="opt.v as opt.n for opt in [{ n: '{{ ::${varName}.boolean.inclusionText }}', v: true }, { n: '{{ ::${  varName}.boolean.exclusionText }}', v: false }]"
+              ng-change="onChange()"
+              ng-disabled="${varName}.state == 1">
           </select>
         </span>`;
 
