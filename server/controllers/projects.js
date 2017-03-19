@@ -289,7 +289,7 @@ function _getCompiledTemplate(data) {
             data.values[variable] = newVal;
           }
         }
-        console.log(data.values);
+        
         data.template = template;
         return data;
     });
