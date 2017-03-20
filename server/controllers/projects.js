@@ -45,6 +45,14 @@ exports.getProjectById = (req, res, next) => {
     return Promise.resolve();
   }
 
+  function checkOwner(proj) {
+    return usersSrvc
+      .getUser({email: req.user.email, _id: proj.owner})
+      .then(user => {
+        return Promise.resolve(proj);
+      })
+  }
+
   validateParams()
     .then(() => projectsSrvc.getProject({ _id: projId }, '-__v'))
     .then(proj => res.send(proj))
@@ -91,6 +99,7 @@ exports.updateProject = (req, res, next) => {
     var allowedFields = ['name', 'projectTemplate', 'values', 'sharedUsers', 'sharedUserGroups'];
     var projData = _.pick(body, allowedFields);
     projData._id = req.params._id;
+    console.log(projData);
     return Promise.resolve(projData);
   }
 
@@ -121,6 +130,14 @@ exports.updateProject = (req, res, next) => {
   function doEdits(data) {
     _.extend(data.proj, data.projData);
     return data.proj;
+  }
+
+  function checkOwner(proj) {
+    return usersSrvc
+      .getUser({email: req.user.email, _id: proj.owner})
+      .then(user => {
+        return Promise.resolve(proj);
+      })
   }
 
   parseParams(req.body)

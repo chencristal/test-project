@@ -26,7 +26,7 @@ exports.getUserGroup = (filter, keys) => {
 
 exports.createUserGroup = userGroupData => {
   var filter = {
-    groupName: (userGroupData.groupName || '').toLowerCase()
+    groupName: userGroupData.groupName
   };
 
   return UserGroup

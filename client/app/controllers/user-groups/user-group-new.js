@@ -1,17 +1,34 @@
 'use strict';
 
 angular.module('app').controller('UserGroupNewCtrl',
-  function($scope, $location, Notifier, UserGroup, Identity) {
+  function($scope, $location, Notifier, User, UserGroup, Identity) {
 
   $scope.userGroup = {};
   $scope.isSaving = false;
+  $scope.users = [];
 
   $scope.roles = Identity.getLowerRoleNames();
   $scope.selectedRole = { 'selected' : $scope.roles[0] };
+  // $scope.selectedUsers = { 'selected' : [] };
+
+  $scope.updateRole = function() {
+    $scope.refreshUsers();
+  };
+
+  $scope.refreshUsers = function(query) {
+    return User
+      .query({ query: query, role: $scope.selectedRole.selected.value })
+      .$promise
+      .then(function(users) {
+        $scope.users = users;
+        $scope.userGroup.assigned = [];
+      });
+  };
 
   $scope.createUserGroup = function() {
     $scope.isSaving = true;
     $scope.userGroup.role = $scope.selectedRole.selected.value;
+    // $scope.userGroup = _.assign({'assigned': $scope.selectedUsers.selected}, $scope.userGroup);
 
     var userGroup = new UserGroup($scope.userGroup);
     userGroup

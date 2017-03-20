@@ -25,10 +25,6 @@ angular.module('app').controller('ProjectsListCtrl',
   $scope.editProject = function(project) {
     $location.path('/projects/' + project._id + '/edit');
   };
-  $scope.shareProject = function(project) {
-    $location.path('/projects/' + project._id + '/share');
-  };
-
   $scope.openEditor = function(project) {
     $location.path('/projects/' + project._id + '/editor');
   };

@@ -77,14 +77,14 @@ function insertDocumentTemplates() {
 
 function insertProjectTemplates() {
   var projectTemplates = [
-    { "_id" : ObjectId("57fa4b9d15d084efeef2ba59"), "name" : "examples", "documentTemplates" : [ ObjectId("57fa4b8215d084efeef2ba58"), ObjectId("57faa04c8b473d77f4d4be1a"), ObjectId("57faa17b11a377a8f437cd74"), ObjectId("57faa1b011a377a8f437cd75") ] }
+    { "_id" : ObjectId("57fa4b9d15d084efeef2ba59"), "name" : "examples", "documentTemplates" : [ ObjectId("57fa4b8215d084efeef2ba58"), ObjectId("57faa04c8b473d77f4d4be1a"), ObjectId("57faa17b11a377a8f437cd74"), ObjectId("57faa1b011a377a8f437cd75") ], "users": [ ObjectId("57fa20920cb5ff30ec857430"), ObjectId("57fa20920cb5ff30ec857431") ] }
   ];
   return ProjectTemplate.create(projectTemplates);
 }
 
 function insertProjects() {
   var projects = [
-    { "_id" : ObjectId("57fa4bab15d084efeef2ba5a"), "name" : "examples", "projectTemplate" : ObjectId("57fa4b9d15d084efeef2ba59"), "values" : [ { "variable" : "text1", "value" : "text12345" }, { "variable" : "bool1", "value" : "true" }, { "variable" : "variant1", "value" : "opt1" }, { "variable" : "date1", "value" : "2016-10-04T21:00:00.000Z" }, { "variable" : "variant2", "value" : "option2" }, { "variable" : "bool2", "value" : "true" } ] }
+    { "_id" : ObjectId("57fa4bab15d084efeef2ba5a"), "name" : "examples", "projectTemplate" : ObjectId("57fa4b9d15d084efeef2ba59"), "owner": ObjectId("57fa20920cb5ff30ec857430"), "values" : [ { "variable" : "text1", "value" : "text12345" }, { "variable" : "bool1", "value" : "true" }, { "variable" : "variant1", "value" : "opt1" }, { "variable" : "date1", "value" : "2016-10-04T21:00:00.000Z" }, { "variable" : "variant2", "value" : "option2" }, { "variable" : "bool2", "value" : "true" } ] }
   ];
   return Project.create(projects);
 }

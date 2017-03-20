@@ -1,10 +1,22 @@
 form.form-horizontal(name="userGroupForm")
   .form-group
-     label.col-md-3.control-label(for="groupName") Group Name
-     .col-md-9
-       input.form-control(name="groupName" ng-model="userGroup.groupName" placeholder="Group Name" ng-disabled="isSaving")
+    label.col-md-3.control-label(for="groupName") Group Name
+    .col-md-9
+      input.form-control(name="groupName" ng-model="userGroup.groupName" placeholder="Group Name" 
+            ng-disabled="isSaving")
 
   .form-group
-     label.col-md-3.control-label(for="role") User Group Role
-     .col-md-9
-       select.form-control(name="role" ng-model="selectedRole.selected" ng-disabled="isSaving" ng-options="role as role.label for role in roles track by role.value")
+    label.col-md-3.control-label(for="role") User Group Role
+    .col-md-9
+      select.form-control(name="role" ng-model="selectedRole.selected" ng-disabled="isSaving" 
+            ng-change="updateRole()" 
+            ng-options="role as role.label for role in roles track by role.value")
+
+  .form-group(ng-class="{ 'has-error': userGroupForm.users.$error.required }" )
+    label.col-md-3.control-label(for="users") Group Members
+    .col-md-9
+      ui-select(name="users" multiple="true" ng-model="userGroup.assigned" ng-disabled="isSaving")
+        ui-select-match(placeholder="Add User") {{ $item.firstName }}
+        ui-select-choices(refresh="refreshUsers($select.search)" refresh-delay="300" 
+              repeat="user._id as user in users")
+          span(ng-bind-html="user.firstName | highlight: $select.search")

@@ -25,12 +25,10 @@ block content
             tr(ng-repeat="project in projects")
               td {{ project.name }}
               td.actions
-                button.btn.btn-info.btn-sm(title="Edit" ng-click="editProject(project)" ng-disabled="isSaving")
-                  span.glyphicon.glyphicon-pencil
-                button.btn.btn-warning.btn-sm(title="Share" ng-click="shareProject(project)" ng-disabled="isSaving")
-                  span.glyphicon.glyphicon-share
                 button.btn.btn-primary.btn-sm(title="Editor" ng-click="openEditor(project)" ng-disabled="isSaving")
                   span.glyphicon.glyphicon-flash
+                button.btn.btn-info.btn-sm(title="Property" ng-click="editProject(project)" ng-disabled="isSaving")
+                  span.glyphicon.glyphicon-pencil
                 button.btn.btn-danger.btn-sm(
                   title="Delete"
                   mwl-confirm
@@ -52,11 +50,12 @@ block content
               td
                 strong Name
               td
+                strong Shared From
+              td
           tbody
             tr(ng-repeat="project in sharedProjects")
               td {{ project.name }}
+              td {{ project.owner.firstName }}
               td.actions
-                button.btn.btn-info.btn-sm(title="Edit" ng-click="editProject(project)" ng-disabled="isSaving")
-                  span.glyphicon.glyphicon-pencil
                 button.btn.btn-primary.btn-sm(title="Editor" ng-click="openEditor(project)" ng-disabled="isSaving")
                   span.glyphicon.glyphicon-flash
