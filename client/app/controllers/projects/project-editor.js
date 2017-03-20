@@ -237,7 +237,7 @@ angular.module('app').directive('projectEditor', function () {
   	    currentTarget = typeof currentTarget !== 'undefined' ? currentTarget : false;
   	    $scope.selectedVariable = variable;
         $scope.changes = $(className);
-
+console.log($scope.changes);
         setTimeout(function () {
           $scope.currentChange = -1;
           if(variable.termType == 'boolean') {
