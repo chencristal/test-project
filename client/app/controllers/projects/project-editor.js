@@ -237,7 +237,7 @@ angular.module('app').directive('projectEditor', function () {
   	    currentTarget = typeof currentTarget !== 'undefined' ? currentTarget : false;
   	    $scope.selectedVariable = variable;
         $scope.changes = $(className);
-console.log($scope.changes);
+
         setTimeout(function () {
           $scope.currentChange = -1;
           if(variable.termType == 'boolean') {
@@ -370,7 +370,10 @@ console.log($scope.changes);
 
         var container = document.getElementById('editor');
         var element = $scope.changes[$scope.currentChange];
-
+        if(!$(element).is(':visible')) {
+          $scope.prevChange();
+          return;
+        }
         var hiddenParents = $(element).parentsUntil('#editor').filter(function() {return $(this).css('display') == 'none';}).first();
         if(hiddenParents.length > 0) {
           $scope.prevChange();
@@ -405,7 +408,10 @@ console.log($scope.changes);
 
         var container = document.getElementById('editor');
         var element = $scope.changes[$scope.currentChange];
-        
+        if(!$(element).is(':visible')) {
+          $scope.nextChange();
+          return;
+        }
         var hiddenParents = $(element).parentsUntil('#editor').filter(function() {return $(this).css('display') == 'none';}).first();
         if(hiddenParents.length > 0) {
           $scope.nextChange();
