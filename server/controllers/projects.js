@@ -99,7 +99,6 @@ exports.updateProject = (req, res, next) => {
     var allowedFields = ['name', 'projectTemplate', 'values', 'sharedUsers', 'sharedUserGroups'];
     var projData = _.pick(body, allowedFields);
     projData._id = req.params._id;
-    console.log(projData);
     return Promise.resolve(projData);
   }
 

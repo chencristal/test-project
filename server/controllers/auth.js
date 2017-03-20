@@ -19,7 +19,9 @@ exports.login = (req, res, next) => {
         user.role = roles[0];
         return jwtUtil.signToken(user, user.role);
       })
-      .then(token => res.send({ user, token }))
+      .then(token => {
+        return res.send({ user, token });
+      })
       .catch(next);
   })(req, res, next);
 };
