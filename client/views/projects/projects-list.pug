@@ -21,9 +21,15 @@ block content
               td
                 strong Name
               td
+                strong Shared With Users
+              td
+                strong Shared With UserGroups
+              td
           tbody
             tr(ng-repeat="project in projects")
               td {{ project.name }}
+              td {{ makeSharedUserString(project) }}
+              td {{ makeSharedUserGroupString(project) }}
               td.actions
                 button.btn.btn-primary.btn-sm(title="Editor" ng-click="openEditor(project)" ng-disabled="isSaving")
                   span.glyphicon.glyphicon-flash

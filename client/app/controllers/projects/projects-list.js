@@ -22,6 +22,16 @@ angular.module('app').controller('ProjectsListCtrl',
   }
   $scope.loadData();
 
+  $scope.makeSharedUserString = function(project) {
+    var sharedUsers = _.map(project.sharedUsers, 'firstName');
+    return sharedUsers.join(",");
+  };
+
+  $scope.makeSharedUserGroupString = function(project) {
+    var sharedUserGroups = _.map(project.sharedUserGroups, 'groupName');
+    return sharedUserGroups.join(",");
+  };
+
   $scope.editProject = function(project) {
     $location.path('/projects/' + project._id + '/edit');
   };
