@@ -17,7 +17,8 @@ module.exports = app => {
     `/api/${apiVer}/project-templates`,
     // auth.requireRolesWrapper(['admin', 'user']),
     auth.checkPermission('ManageProjectTemplate', 'read'),
-    projTempls.getProjectTemplates
+    // projTempls.getProjectTemplates
+    projTempls.getUserProjectTemplates
   );
   app.post(
     `/api/${apiVer}/project-templates`,

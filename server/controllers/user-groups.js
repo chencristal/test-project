@@ -5,6 +5,7 @@ var Promise        = require('bluebird');
 var customErrors   = require('n-custom-errors');
 var consts         = require('../consts');
 var userGroupsSrvc = require('../data-services/user-groups');
+var usersSrvc      = require('../data-services/users');
 var validationUtil = require('../util/validations');
 var roleUtil       = require('../util/roles');
 
@@ -87,11 +88,6 @@ exports.getUserGroups = function(req, res, next) {
     .then(data => userGroupsSrvc.getUserGroups(data.filter, data.fields.join(' ')))
     .then(resetOrder)
     .catch(next);
-
-  /*userGroupsSrvc
-    .getUserGroups({ role: { $or: roleUtil.getLowerRolesFilters(role)}}, 'groupName role status')
-    .then(usergroups => res.send(usergroups))
-    .catch(next);*/
 };
 
 exports.getUserGroupById = function(req, res, next) {
@@ -106,15 +102,23 @@ exports.getUserGroupById = function(req, res, next) {
 
   validateParams()
     .then(() => userGroupsSrvc.getUserGroup({ _id: groupId }, 'groupName role status'))
+    .then(_concatMembers)
     .then(usergroup => _checkPermission(req.user.role, usergroup))
     .then(usergroup => res.send(usergroup))
     .catch(next);
 };
 
 exports.createUserGroup = function(req, res, next) {
+  var assignedUsers = null;
+  
   function parseParams(body) {
     var allowedFields = ['groupName', 'role'];
     var userGroupData = _.pick(body, allowedFields);
+
+    if (body.assigned) {
+      assignedUsers = body.assigned;      // for the assigned users
+    }
+
     return Promise.resolve(userGroupData);
   }
 
@@ -131,17 +135,25 @@ exports.createUserGroup = function(req, res, next) {
   parseParams(req.body)
     .then(validateParams)
     .then(doEdits)
-    .then(usergroup => _checkPermission(req.user.role, usergroup))      // check permissions before create new user
+    .then(usergroup => _checkPermission(req.user.role, usergroup))
     .then(usergroup => userGroupsSrvc.createUserGroup(usergroup))
+    .then(usergroup => _assignMembers(usergroup, assignedUsers))
     .then(usergroup => res.send(usergroup))
     .catch(next);
 };
 
 exports.updateUserGroup = function(req, res, next) {
+  var assignedUsers = null;
+
   function parseParams(body) {
     var allowedFields = ['groupName', 'role', 'status'];
     var userGroupData = _.pick(body, allowedFields);
     userGroupData._id = req.params._id;
+
+    if (body.assigned) {
+      assignedUsers = body.assigned;      // for the assigned users
+    }
+
     return Promise.resolve(userGroupData);
   }
 
@@ -165,22 +177,88 @@ exports.updateUserGroup = function(req, res, next) {
     .then(validateParams)
     .then(userGroupData => userGroupsSrvc
       .getUserGroup({ _id: userGroupData._id })
-      .then(userGroup => {
-        return { userGroup, userGroupData };
-      })
+      .then(usergroup => _getAssigned(usergroup)
+        .then(users => _removeMembers(usergroup, users))
+        .then(userGroup => {
+          return { userGroup, userGroupData };
+        })
+      )
     )    
     .then(doEdits)
+    .then(usergroup => _getAssigned(usergroup)
+      .then(users => _removeMembers(usergroup, users))
+    )
     .then(usergroup => _checkPermission(req.user.role, usergroup))
     .then(usergroup => userGroupsSrvc.saveUserGroup(usergroup))
+    .then(usergroup => _assignMembers(usergroup, assignedUsers))
     .then(usergroup => res.send(usergroup))
     .catch(next);
 };
 
 function _checkPermission(reqRole, userGroupData) {
   var requestorRole = roleUtil.getRoleInfo(reqRole);
-  var newRole = roleUtil.getRoleInfo(userGroupData.role);
+  var newRole = roleUtil.getRoleInfo(userGroupData.role);  
   if (requestorRole.flag <= newRole.flag) {
     return customErrors.rejectWithAccessDeniedError();
   }
   return Promise.resolve(userGroupData);
 }
+
+var _getAssigned = (userGroupData) => {
+  return usersSrvc
+    .getUsers({
+      'userGroups': userGroupData._id,
+      'role': userGroupData.role
+    })
+    .then(users => {
+      return Promise.resolve(users);
+    });
+};
+
+var _concatMembers = (userGroupData) => {
+  userGroupData = _.assign(userGroupData.toObject(), { assigned: [] });
+
+  return usersSrvc
+    .getUsers({
+      'userGroups': userGroupData._id,
+      'role': userGroupData.role
+    })
+    .then(users => {
+      userGroupData.assigned = _.concat(userGroupData.assigned, users);
+      return Promise.resolve(userGroupData);
+    });
+};
+
+var _assignMembers = (userGroupData, assignedUsers) => {
+  if (assignedUsers && !_.isEmpty(assignedUsers)) {
+    return usersSrvc
+      .updateUsers({
+        '_id': { $in: assignedUsers },
+        'role': userGroupData.role
+      }, {
+        $push: { 'userGroups': userGroupData._id }
+      })
+      .then(result => {
+        return Promise.resolve(userGroupData);
+      });
+  }
+  else
+    return Promise.resolve(userGroupData);
+};
+
+var _removeMembers = (userGroupData, assignedUsers) => {
+  if (assignedUsers && !_.isEmpty(assignedUsers)) {
+    return usersSrvc
+      .updateUsers({
+        '_id': { $in: assignedUsers },
+        'role': userGroupData.role
+      }, {
+        $pull: { 'userGroups': userGroupData._id }
+      })
+      .then(result => {
+        return Promise.resolve(userGroupData);
+      });
+  }
+  else
+    return Promise.resolve(userGroupData);
+};

@@ -1,11 +1,14 @@
 'use strict';
 
 angular.module('app').controller('ProjectEditCtrl',
-  function($scope, $routeParams, $location, Notifier, Project, ProjectTemplate) {
+  function($scope, $routeParams, $location, Notifier, Project, 
+          ProjectTemplate, User, UserGroup) {
 
   $scope.isLoading = true;
   $scope.isSaving = false;
   $scope.projectTemplates = [];
+  $scope.users = [];
+  $scope.userGroups = [];
 
   (function loadData() {
     Project
@@ -29,6 +32,24 @@ angular.module('app').controller('ProjectEditCtrl',
         $scope.isLoading = false;
       });
   })();
+
+  $scope.refreshUserGroups = function(query) {
+    return UserGroup
+      .query({ query: query, role: 'user'})
+      .$promise
+      .then(function(usergroups) {
+        $scope.userGroups = usergroups;
+      });
+  };
+
+  $scope.refreshUsers = function(query) {
+    return User
+      .query({ query: query, role: 'user' })
+      .$promise
+      .then(function(users) {
+        $scope.users = users;
+      });
+  };
 
   $scope.saveProject = function() {
     $scope.isSaving = true;

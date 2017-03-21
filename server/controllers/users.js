@@ -40,11 +40,14 @@ exports.getUsers = function(req, res, next) {
   function buildFilter(data) {
     data.filter = {};
     if (data.params.role) {
+      data.filter.role = 'user';
+
       var availRoles = roleUtil.getLowerRolesFilters(role);
-      if (_.find(availRoles, data.params.role))
-        data.filter.role = data.params.role;
-      else
-        data.filter.role = 'user';
+      _.find(availRoles, function(o) {
+        if (o === data.params.role) {
+          data.filter.role = data.params.role;
+        }
+      });
     }
     else {
       data.filter.role = {
@@ -61,6 +64,13 @@ exports.getUsers = function(req, res, next) {
         $in: data.params.includes
       };
     }
+
+    //
+    // The user cannot get his own account information.
+    //
+    data.filter.email = {
+      $ne: req.user.email
+    };
 
     return data;
   }

@@ -1,13 +1,17 @@
 'use strict';
 
 angular.module('app').controller('UserGroupEditCtrl',
-  function($scope, $routeParams, $location, Notifier, UserGroup, Identity) {
+  function($scope, $routeParams, $location, Notifier, User, UserGroup, Identity) {
 
   $scope.isLoading = true;
   $scope.isSaving = false;
+  $scope.users = [];
 
   $scope.roles = Identity.getLowerRoleNames();
   $scope.selectedRole = { 'selected' : $scope.roles[0] };
+  $scope.selectedUsers = { 'selected' : [] };
+
+  var origUserGroup = {};
 
   (function loadData() {
     UserGroup
@@ -18,6 +22,7 @@ angular.module('app').controller('UserGroupEditCtrl',
       .then(function(usergroup) {
         $scope.userGroup = usergroup;
         $scope.selectedRole.selected = Identity.getRoleName(usergroup.role);
+        origUserGroup = angular.copy($scope.userGroup);
 
         $scope.isLoading = false;
       })
@@ -26,6 +31,24 @@ angular.module('app').controller('UserGroupEditCtrl',
         $location.path('/user-groups');
       });
   })();
+
+  $scope.updateRole = function() {
+    if ($scope.userGroup.role === $scope.selectedRole.selected.value)
+      $scope.userGroup.assigned = origUserGroup.assigned;
+    else
+      $scope.userGroup.assigned = [];
+      
+    $scope.refreshUsers();
+  };
+
+  $scope.refreshUsers = function(query) {
+    return User
+      .query({ query: query, role: $scope.selectedRole.selected.value })
+      .$promise
+      .then(function(users) {
+        $scope.users = users;
+      });
+  };
 
   $scope.saveUserGroup = function() {
     $scope.isSaving = true;

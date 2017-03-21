@@ -13,20 +13,28 @@ block content
         a.btn.btn-default.btn-primary(href="/projects/new") New Project
     .row
       .col-md-12
+        .caption
+          span.caption-projects Owned Projects
         table.table.table-striped.projects
           thead
             tr
               td
                 strong Name
               td
+                strong Shared With Users
+              td
+                strong Shared With UserGroups
+              td
           tbody
             tr(ng-repeat="project in projects")
               td {{ project.name }}
+              td {{ makeSharedUserString(project) }}
+              td {{ makeSharedUserGroupString(project) }}
               td.actions
-                button.btn.btn-info.btn-sm(title="Edit" ng-click="editProject(project)" ng-disabled="isSaving")
-                  span.glyphicon.glyphicon-pencil
                 button.btn.btn-primary.btn-sm(title="Editor" ng-click="openEditor(project)" ng-disabled="isSaving")
                   span.glyphicon.glyphicon-flash
+                button.btn.btn-info.btn-sm(title="Property" ng-click="editProject(project)" ng-disabled="isSaving")
+                  span.glyphicon.glyphicon-pencil
                 button.btn.btn-danger.btn-sm(
                   title="Delete"
                   mwl-confirm
@@ -38,3 +46,22 @@ block content
                   ng-disabled="isSaving"
                 )
                   span.glyphicon.glyphicon-trash
+
+      .col-md-12
+        .caption
+          span.caption-shared-projects Shared Projects
+        table.table.table-striped.shared-projects
+          thead
+            tr
+              td
+                strong Name
+              td
+                strong Shared From
+              td
+          tbody
+            tr(ng-repeat="project in sharedProjects")
+              td {{ project.name }}
+              td {{ project.owner.firstName }}
+              td.actions
+                button.btn.btn-primary.btn-sm(title="Editor" ng-click="openEditor(project)" ng-disabled="isSaving")
+                  span.glyphicon.glyphicon-flash

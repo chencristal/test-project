@@ -39,7 +39,8 @@ exports.checkPermission = (resource, action) => {
         return next(err);
       }
       else {
-        acl.isAllowed(req.user, resource, action)
+        acl
+          .isAllowed(req.user, resource, action)
           .then(user => {
             if (user) {
               return next();

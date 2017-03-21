@@ -45,3 +45,9 @@ exports.saveUser = user => {
     .save()
     .then(acl.addUserToAcl);
 };
+
+exports.updateUsers = (query, doc) => {
+  return User
+    .updateMany(query, doc)
+    .exec();
+}

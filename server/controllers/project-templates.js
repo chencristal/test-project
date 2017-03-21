@@ -5,6 +5,7 @@ var Promise        = require('bluebird');
 var customErrors   = require('n-custom-errors');
 var projTemplsSrvc = require('../data-services/project-templates');
 var validationUtil = require('../util/validations');
+var usersSrvc      = require('../data-services/users');
 
 exports.getProjectTemplates = (req, res, next) => {
   function parseParams(query) {
@@ -44,6 +45,58 @@ exports.getProjectTemplates = (req, res, next) => {
     .then(validateParams)
     .then(buildFilter)
     .then(filter => projTemplsSrvc.getProjectTemplates(filter, 'name'))
+    .then(projTempls => res.send(projTempls))
+    .catch(next);
+};
+
+exports.getUserProjectTemplates = (req, res, next) => {
+  function parseParams(query) {
+    var params = {
+      query: query.query,
+      includes: query.includes
+    };
+    return Promise.resolve(params);
+  }
+
+  function validateParams(params) {
+    if (params.includes && !_.every(params.includes, validationUtil.isValidObjectId)) {
+      return customErrors.rejectWithUnprocessableRequestError({
+        paramName: 'includes',
+        errMsg: 'must be an array with valid ids'
+      });
+    }
+    return params;
+  }
+
+  function buildFilter(params) {
+    var filter = {};
+    if (params.query) {
+      filter.name = {
+        $regex: new RegExp(params.query, 'i')
+      };
+    }
+    if (params.includes) {
+      filter._id = {
+        $in: params.includes
+      };
+    }
+    return filter;
+  }
+
+  parseParams(req.query)
+    .then(validateParams)
+    .then(buildFilter)
+    .then(filter => {
+      return usersSrvc
+        .getUser({email: req.user.email})
+        .then(user => {
+          if (user.role === 'user') 
+            return _.assign(filter, {$or: [{users: user._id}, {userGroups: {$in: user.userGroups}}]});
+          else
+            return filter;
+        })
+        .then(filter => projTemplsSrvc.getProjectTemplates(filter));
+    })
     .then(projTempls => res.send(projTempls))
     .catch(next);
 };
@@ -137,17 +190,15 @@ function _validateProjectTemplateData(projTemplData) {
       errMsg: 'must be an array with valid ids'
     });
   }
-  if (!_.isArray(projTemplData.userGroups) ||
-      projTemplData.userGroups.length === 0 ||
-      !_.every(projTemplData.userGroups, validationUtil.isValidObjectId)) {
+  if (projTemplData.userGroups && (!_.isArray(projTemplData.userGroups) ||
+      !_.every(projTemplData.userGroups, validationUtil.isValidObjectId))) {
     return customErrors.rejectWithUnprocessableRequestError({
       paramName: 'userGroups',
       errMsg: 'must be an array with valid ids'
     });
   }
-  if (!_.isArray(projTemplData.users) ||
-      projTemplData.users.length === 0 ||
-      !_.every(projTemplData.users, validationUtil.isValidObjectId)) {
+  if (projTemplData.userGroups && (!_.isArray(projTemplData.users) ||
+      !_.every(projTemplData.users, validationUtil.isValidObjectId))) {
     return customErrors.rejectWithUnprocessableRequestError({
       paramName: 'users',
       errMsg: 'must be an array with valid ids'

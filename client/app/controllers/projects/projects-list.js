@@ -11,13 +11,30 @@ angular.module('app').controller('ProjectsListCtrl',
         $scope.projects = projects;
         $scope.isLoading = false;
       });
+
+    Project
+      .query({type: 'shared'})
+      .$promise
+      .then(function(shared_projects) {
+        $scope.sharedProjects = shared_projects;
+        $scope.isLoading = false;
+      });
   }
   $scope.loadData();
+
+  $scope.makeSharedUserString = function(project) {
+    var sharedUsers = _.map(project.sharedUsers, 'firstName');
+    return sharedUsers.join(",");
+  };
+
+  $scope.makeSharedUserGroupString = function(project) {
+    var sharedUserGroups = _.map(project.sharedUserGroups, 'groupName');
+    return sharedUserGroups.join(",");
+  };
 
   $scope.editProject = function(project) {
     $location.path('/projects/' + project._id + '/edit');
   };
-
   $scope.openEditor = function(project) {
     $location.path('/projects/' + project._id + '/editor');
   };

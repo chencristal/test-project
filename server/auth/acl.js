@@ -186,6 +186,12 @@ function initializeUserRoles() {
             'ManageProfile'
           ], 
           permissions: ['read', 'update'] 
+        },
+        { 
+          resources: [
+            'ManageProject'
+          ], 
+          permissions: ['read', 'create', 'update', 'delete'] 
         }
       ]
     }
