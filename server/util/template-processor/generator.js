@@ -98,10 +98,12 @@ Generator.prototype.generateVariableEditor = function (variable) {
                ></textarea></span>`;
 
     case 'boolean':
+      var inclusionText = variable.boolean.inclusionText;
+      var exclusionText = variable.boolean.exclusionText;
       return `
         <span ng-click="onClick(${varName}, $event)"
               ng-class="selectedVariable == ${varName} ? 'highlighted-for-scroll' : null">
-          <select ng-model="${varName}.value" ng-options="opt.v as opt.n for opt in [{ n: '{{ ::${varName}.boolean.inclusionText }}', v: true }, { n: '{{ ::${  varName}.boolean.exclusionText }}', v: false }]"
+          <select ng-model="${varName}.value" ng-options="opt.v as opt.n for opt in [{ n: '{{ ${varName}.boolean.inclusionText }}', v: true }, { n: '{{ ${varName}.boolean.exclusionText }}', v: false }]"
               ng-change="onChange()"
               ng-disabled="${varName}.state == 1">
           </select>
