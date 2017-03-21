@@ -98,8 +98,6 @@ Generator.prototype.generateVariableEditor = function (variable) {
                ></textarea></span>`;
 
     case 'boolean':
-      var inclusionText = variable.boolean.inclusionText;
-      var exclusionText = variable.boolean.exclusionText;
       return `
         <span ng-click="onClick(${varName}, $event)"
               ng-class="selectedVariable == ${varName} ? 'highlighted-for-scroll' : null">
