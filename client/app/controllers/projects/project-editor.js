@@ -465,23 +465,32 @@ angular.module('app').directive('projectEditor', function () {
           index += 1;
         }
         this.variable.state = index;
-        var termTypes = ['text', 'date', 'number', 'expandable_text', 'expandable_sub_text'];
+        var termTypes = ['text', 'date', 'number', 'expandable_text', 'expandable_sub_text'];       //for placeholder actions
+        var termTypesRe = ['text', 'expandable_text', 'expandable_sub_text'];                       //for actual value actions
         if(this.variable.value == undefined)
           this.variable.value = '';
         if(termTypes.indexOf(this.variable.termType) > -1 && this.variable.value.trim() == '') {
           var termType = this.variable.termType;
-          if(this.variable.state == 1) {    //Confirmed State
+          if(this.variable.state == 1 || this.variable.state == 2) {    //Confirmed, Uncertain State
             var placeholder = '';
             if(termType.indexOf('expandable') > -1)
               placeholder = this.variable['expandable_text'].placeholder;
             else
               placeholder = this.variable[termType].placeholder;
             if(/^\[.*\]$/.test(placeholder)) {
-              this.variable.placeholder = placeholder.substr(1, placeholder.length-2);    //Strip off brackets on the sides
+              this.variable.placeholder = placeholder.substr(1, placeholder.length-2);    //Strip off brackets on both sides
             }
           }
-          else {                            //Neutral or Uncertain State
+          else {                            //Neutral State
             this.variable.placeholder = this.variable.placeholder_original;
+          }
+        }
+        else if(termTypesRe.indexOf(this.variable.termType) > -1 && this.variable.value.trim() != '') {
+          if(this.variable.state == 1 || this.variable.state == 2) {    //Confirmed, Uncertain State
+            var value = this.variable.value;
+            if(/^\[.*\]$/.test(value)) {
+              this.variable.value = value.substr(1, value.length-2);            //Strip off brackets on both sides and leave it unchanged when Neutral
+            }
           }
         }
         $scope.save();

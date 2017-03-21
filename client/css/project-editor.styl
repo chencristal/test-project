@@ -3,6 +3,12 @@
   text-align: justify
   h1,h2,h3,h4,h5,h6
     margin-top: 0
+  input[disabled="disabled"]::-webkit-input-placeholder
+    color: black
+  input[disabled="disabled"]::-moz-placeholder
+    color: black
+  input[disabled="disabled"]:-ms-input-placeholder
+    color: black
   .expanded .prettify:before
     content: ', '
   .expanded:last-child
