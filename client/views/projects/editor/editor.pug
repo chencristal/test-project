@@ -1,4 +1,4 @@
 div(ng-class="{ 'edit-mode': mode === 'edit', 'redline-mode': mode === 'redline' }")
   div(ng-repeat="provTempl in relatedData.provisionTemplates")
     h4(ng-hide="true") {{ ::provTempl.displayName }}
-    dynamic-html(template="provTempl.templateHtml" selected-variable="selectedVariable" variables="variables" on-change="save()")
+    dynamic-html(template="provTempl.templateHtml" selected-variable="selectedVariable" ng-if="!isLoading" variables="variables" on-change="save()")

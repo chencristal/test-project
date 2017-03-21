@@ -27,7 +27,7 @@ angular.module('app')
           var content = $compile($scope.template)($scope);
           $element.append(content);
         });
-      }, 300);
+      });
     }
   };
 })
