@@ -204,7 +204,7 @@ exports.importFromCSV = (req, res, next) => {
       break;
       case 'date':
         placeholder = record[4] ? record[4] : '';
-        data.date = { default: placeholder };
+        data.date = { placeholder: placeholder };
       break;
       case 'number':
         var placeholder = parseFloat(record[4])? parseFloat(record[4]) : 0;
@@ -245,7 +245,7 @@ exports.generateCSV = (req, res, next) => {
         }
       }
       else if(termTempl.termType == 'date')
-        output += ',' + termTempl.date.default;
+        output += ',' + termTempl.date.placeholder;
       else if(termTempl.termType == 'number')
         output += ',' + termTempl.number.placeholder;
     }
