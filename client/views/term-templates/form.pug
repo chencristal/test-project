@@ -66,21 +66,16 @@ form.form-horizontal(name="termTemplateForm")
 
   // Date
   div(ng-if="termTemplate.termType === 'date'")
-    .form-group(ng-class="{ 'has-error': termTemplateForm.defaultDate.$error.required }")
-      label.col-md-3.control-label(for="defaultDate") Default value
+    .form-group(ng-class="{ 'has-error': termTemplateForm.placeholder.$error.required }")
+      label.col-md-3.control-label(for="placeholder") Placeholder
       .col-md-9
         input.form-control(
-            name="defaultDate"
+            name="placeholder"
             type="text"
-            ng-model="termTemplate.date.default"
+            ng-model="termTemplate.date.placeholder"
             ng-required="true"
             ng-disabled="isSaving"
-            ng-click="isOpened = true"
-            uib-datepicker-popup="MMMM d, yyyy"
-            is-open="isOpened"
-            datepicker-options="dateOptions"
-            close-text="Close"
-            datepicker-append-to-body="true"
+            placeholder="Placeholder"
         )
   // Boolean
   div(ng-if="termTemplate.termType === 'boolean'")
@@ -140,7 +135,7 @@ form.form-horizontal(name="termTemplateForm")
     .form-group(ng-class="{ 'has-error': termTemplateForm.placeholder.$error.required || termTemplateForm.placeholder.$error.number }")
       label.col-md-3.control-label(for="placeholder") Placeholder
       .col-md-9
-        input.form-control(name="placeholder" type="number" placeholder="Placeholder"
+        input.form-control(name="placeholder" type="text" placeholder="Placeholder"
                            ng-model="termTemplate.number.placeholder" ng-required="true" ng-disabled="isSaving")
 
   .form-group

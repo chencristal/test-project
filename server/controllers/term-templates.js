@@ -314,9 +314,9 @@ function validateTextTermType(termTemplData) {
 }
 
 function validateDateTermType(termTemplData) {
-  if (!_.get(termTemplData, 'date.default')) {
+  if (!_.get(termTemplData, 'date.placeholder')) {
     return customErrors.rejectWithUnprocessableRequestError(
-      { paramName: 'date.default', errMsg: 'is required' }
+      { paramName: 'date.placeholder', errMsg: 'is required' }
     );
   }
   return Promise.resolve(termTemplData);

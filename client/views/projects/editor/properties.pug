@@ -14,7 +14,7 @@ form.form-horizontal
           type="text"
           ng-model="variable.value"
           ng-blur="save()"
-          placeholder="{{ variable.text.placeholder }}"
+          placeholder="{{ variable.placeholder }}"
           ng-disabled="variable.state == 1")
 
       div(ng-if="variable.termType === 'expandable_text' || variable.termType === 'expandable_sub_text'")
@@ -22,7 +22,7 @@ form.form-horizontal
           type="text"
           ng-model="variable.value"
           ng-blur="save()"
-          placeholder="{{ variable.text.placeholder }}"
+          placeholder="{{ variable.placeholder }}"
           ng-disabled="variable.state == 1")
 
       div(ng-if="variable.termType === 'textarea'")
@@ -67,14 +67,15 @@ form.form-horizontal
                            is-open="variable.isOpened"
                            datepicker-options="dateOptions"
                            close-text="Close"
-                           datepicker-append-to-body="true")
+                           datepicker-append-to-body="true"
+                           placeholder="{{ variable.placeholder }}")
 
       div(ng-if="variable.termType === 'number'")
         input.form-control(
           type="number"
           ng-model="variable.value"
           ng-blur="save()"
-          placeholder="{{ variable.number.placeholder }}"
+          placeholder="{{ variable.placeholder }}"
           ng-disabled="variable.state == 1")
 
       button.btn.btn-variable-state(

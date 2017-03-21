@@ -39,6 +39,9 @@ var projectSchema = new mongoose.Schema({
     },
     state: {
       type: Number
+    },
+    placeholder: {
+      type: String
     }
   }]
 });

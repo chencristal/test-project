@@ -289,11 +289,12 @@ angular.module('app').directive('projectEditor', function () {
 
         var newProjValues = [];
         _.each($scope.variables, function (v) {
-          var variable = _.pick(v, ['variable', 'value', 'state']);
+          var variable = _.pick(v, ['variable', 'value', 'state', 'placeholder']);
           var projVal = _.find($scope.project.values, {variable: variable.variable});
           if (projVal) {
             projVal.value = variable.value;
             projVal.state = variable.state;
+            projVal.placeholder = variable.placeholder;
             newProjValues.push(projVal);
           } else {
             // $scope.project.values.push(variable);
@@ -457,7 +458,6 @@ angular.module('app').directive('projectEditor', function () {
       }
 
       $scope.changeState = function ($event) {
-        $event.stopPropagation();
         var index = this.variable.state ? this.variable.state : 0;
         if (index == $scope.variableStates.length - 1) {
           index = 0;
@@ -465,6 +465,25 @@ angular.module('app').directive('projectEditor', function () {
           index += 1;
         }
         this.variable.state = index;
+        var termTypes = ['text', 'date', 'number', 'expandable_text', 'expandable_sub_text'];
+        if(this.variable.value == undefined)
+          this.variable.value = '';
+        if(termTypes.indexOf(this.variable.termType) > -1 && this.variable.value.trim() == '') {
+          var termType = this.variable.termType;
+          if(this.variable.state == 1) {    //Confirmed State
+            var placeholder = '';
+            if(termType.indexOf('expandable') > -1)
+              placeholder = this.variable['expandable_text'].placeholder;
+            else
+              placeholder = this.variable[termType].placeholder;
+            if(/^\[.*\]$/.test(placeholder)) {
+              this.variable.placeholder = placeholder.substr(1, placeholder.length-2);    //Strip off brackets on the sides
+            }
+          }
+          else {                            //Neutral or Uncertain State
+            this.variable.placeholder = this.variable.placeholder_original;
+          }
+        }
         $scope.save();
       }
 
@@ -755,25 +774,30 @@ angular.module('app').directive('projectEditor', function () {
                 if (termTempl.termType === 'boolean') {
                   termTempl.value = val.value === 'true' || val.value === true;
                 } else if (termTempl.termType === 'date') {
-                  termTempl.value = new Date(val.value);
+                  termTempl.value = val.value ? new Date(val.value) : '';
                 } else if (termTempl.termType === 'number') {
-                  if (val.value === undefined)
-                    termTempl.value = parseFloat(termTempl.number.placeholder);
-                  else
-                    termTempl.value = parseFloat(val.value);
+                    termTempl.value = val.value ? parseFloat(val.value) : '';
                 } else {
                   termTempl.value = val.value;
                 }
-              } else if (termTempl.termType === 'boolean') {
-                termTempl.value = termTempl.boolean.default;
-              } else if (termTempl.termType === 'variant') {
-                termTempl.value = termTempl.variant.default;
-              } else if (termTempl.termType === 'date') {
-                termTempl.value = termTempl.date ? new Date(termTempl.date.default) : new Date();
-              } else if (termTempl.termType === 'number') {
-                termTempl.value = parseFloat(termTempl.number.placeholder);
+                termTempl.placeholder_original = termTempl[termTempl.termType].placeholder;
+                termTempl.placeholder = val['placeholder'];
+                if(!termTempl.placeholder)
+                  termTempl.placeholder = termTempl.placeholder_original;
+              } else {
+                if (termTempl.termType === 'boolean') {
+                  termTempl.value = termTempl.boolean.default;
+                } else if (termTempl.termType === 'variant') {
+                  termTempl.value = termTempl.variant.default;
+                } else if (termTempl.termType === 'date') {
+                  termTempl.value = '';
+                } else if (termTempl.termType === 'number') {
+                  termTempl.value = '';
+                }
+                termTempl.placeholder_original = termTempl[termTempl.termType].placeholder;
+                termTempl.placeholder = termTempl[termTempl.termType].placeholder;
               }
-              termTempl.state = val ? val['state'] : 0;
+              termTempl.state = val ? val['state'] : 0;             
               termTempl.sortIndex = _.indexOf($scope.relatedData.orderedVariables, termTempl.variable);
               $scope.variables[termTempl.variable] = termTempl;
               /*$scope.viewStatus[termTempl.variable] = 

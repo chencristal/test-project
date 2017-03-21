@@ -30,7 +30,7 @@ var termTemplateSchema = new mongoose.Schema({
     style: String
   },
   date: {
-    default: Date
+    placeholder: String
   },
   boolean: {
     inclusionText: {
@@ -71,7 +71,7 @@ var termTemplateSchema = new mongoose.Schema({
     }
   },
   number: {
-    placeholder: Number
+    placeholder: String
   },
   displayName: {
     type: String,

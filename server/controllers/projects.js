@@ -221,6 +221,8 @@ function _getCompiledTemplate(data) {
           var termTempl = _.find(data.termTempls, { variable: variable.variable });
           if (!termTempl) {
             result[variable.variable] = variable.value;
+            if((variable.value == undefined || variable.value == '') && (variable.placeholder != undefined && variable.placeholder != ''))  //placeholder infusion for sub expandable text fields
+                result[variable.variable] = variable.placeholder;
             return result;
           }
           switch (termTempl.termType) {
@@ -228,21 +230,22 @@ function _getCompiledTemplate(data) {
               result[variable.variable] = variable.value === 'true';
               break;
             case 'number':
-              if (variable.value === null)
-                result[variable.variable] = termTempl.number.placeholder;
-              else
-                result[variable.variable] = variable.value;
+              result[variable.variable] = variable.value;
               break;
             case 'date':
               result[variable.variable] = variable.value ? moment(variable.value).format('MMMM D, YYYY') : '';
               break;
             default:
-              result[variable.variable] = variable.value;
+              result[variable.variable] = variable.value;              
               break;
           }
+          var termTypes = ['text', 'date', 'number', 'expandable_text'];
+          if(termTypes.indexOf(termTempl.termType) > -1 && (variable.value == undefined || variable.value == ''))
+            result[variable.variable] = variable.placeholder;
           return result;
         }, {});
         data.expandables = _.filter(data.termTempls,{termType: 'expandable_text'});
+
         return data;
       });
   }
@@ -262,23 +265,22 @@ function _getCompiledTemplate(data) {
           if(subs.length > 0) {
             var glue = ' ';
             if(newline && prettify)
-              glue = ',<br/>';
+              glue = ',\n<br/>';
             else if(newline)
-              glue = '<br/>';
+              glue = '\n<br/>';
             else if(prettify)
               glue = ', ';
             if(prettify) {
               var temp = subs.slice(0,-1).join(glue);
               var last = subs[subs.length-1];
               if(newline)
-                subs = temp + '<br/>and ' + last;
+                subs = temp + '\n<br/>and ' + last;
               else
                 subs = temp + ' and ' + last;
             }
             else
               subs = subs.join(glue);
-
-            template = _.replace(template, new RegExp(`{{${expandable.variable}}}`,'g'), `{{${expandable.variable}}}${glue}${subs}`);            
+            template = _.replace(template, new RegExp(`{{\\s*${expandable.variable}\\s*}}`,'g'), `{{${expandable.variable}}}${glue}${subs}`);            
           }
         });
         for(var variable in data.values) {

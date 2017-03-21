@@ -363,6 +363,8 @@ angular.module('app').run(function($rootScope) {
   };
 
   $rootScope.math = function(v1, op, v2) {  // chen_debug
+    if(isNaN(v1)) v1 = 0;
+    if(isNaN(v2)) v2 = 0;
     switch (op) {
       case 'add':
       case 'plus':

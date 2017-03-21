@@ -55,7 +55,7 @@ Generator.prototype.generateVariableEditor = function (variable) {
                ng-click="onClick(${varName}, $event)"
                ng-class="selectedVariable == ${varName} ? 'highlighted-for-scroll' : null"
                ng-disabled="${varName}.state == 1"
-               placeholder="{{ ${varName}.text.placeholder }}" /></span>`;
+               placeholder="{{ ${varName}.placeholder }}" /></span>`;
 
     case 'expandable_text':
       var master = variable.variable;
@@ -69,7 +69,7 @@ Generator.prototype.generateVariableEditor = function (variable) {
                ng-click="onClick(${varName}, $event)"
                ng-class="selectedVariable == ${varName} ? 'highlighted-for-scroll' : null"
                ng-disabled="${varName}.state == 1"
-               placeholder="{{ ${varName}.text.placeholder }}" /></span>
+               placeholder="{{ ${varName}.placeholder }}" /></span>
         <span class="expanded {{ variable.state == 2 ? 'uncertain-bracket' : null }}" ng-repeat="variable in variables | objectToArray | orderBy: 'sortIndex'" ng-if="variable.variable.indexOf('${master}' + '__') === 0">
                <span class="prettify" ng-if="${prettify}"></span>
                <br ng-if="${newline}" />
@@ -79,7 +79,7 @@ Generator.prototype.generateVariableEditor = function (variable) {
                ng-click="onClick(variable, $event)"
                ng-class="selectedVariable == variable ? 'highlighted-for-scroll' : null"
                ng-disabled="variable.state == 1"
-               placeholder="{{ ${varName}.text.placeholder }}" />
+               placeholder="{{ variable.placeholder }}" />
         </span>
         `;
 
@@ -133,7 +133,8 @@ Generator.prototype.generateVariableEditor = function (variable) {
                close-text="Close"
                datepicker-append-to-body="true" 
                ng-class="selectedVariable == ${varName} ? 'highlighted-for-scroll' : null" 
-               ng-disabled="${varName}.state == 1"/></span>`;
+               ng-disabled="${varName}.state == 1"
+               placeholder="{{ ${varName}.placeholder }}" /></span>`;
 
     case 'number':
       return `
@@ -144,7 +145,7 @@ Generator.prototype.generateVariableEditor = function (variable) {
                ng-click="onClick(${varName}, $event)"
                ng-class="selectedVariable == ${varName} ? 'highlighted-for-scroll' : null"
                ng-disabled="${varName}.state == 1"
-               placeholder="{{ ${varName}.number.placeholder }}" /></span>`;
+               placeholder="{{ ${varName}.placeholder }}" /></span>`;
 
     case 'default':
       // TODO: what to do here?
