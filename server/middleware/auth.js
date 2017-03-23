@@ -4,6 +4,7 @@ var _            = require('lodash');
 var customErrors = require('n-custom-errors');
 var jwtUtil      = require('../util/jwt');
 var acl          = require('../auth/acl');
+var usersSrvc    = require('../data-services/users');
 
 exports.ensureAuthenticatedWrapper = (req, res, next) => {
   ensureAuthenticated(req, res, next);
@@ -39,15 +40,23 @@ exports.checkPermission = (resource, action) => {
         return next(err);
       }
       else {
-        acl
-          .isAllowed(req.user, resource, action)
+        usersSrvc
+          .getUser({ email: req.user.email }, 'status')
+          .then(user => {
+            if (user.status === 'active')
+              return acl.isAllowed(req.user, resource, action);
+            else {
+              err = customErrors.getAccessDeniedError('Access denied');
+              throw(err);
+            }
+          })
           .then(user => {
             if (user) {
               return next();
             }
             else {
               err = customErrors.getAccessDeniedError('Access denied');
-              return next(err);
+              throw(err);
             }
           })
           .catch(err => next(err));
