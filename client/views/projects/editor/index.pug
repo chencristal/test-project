@@ -21,7 +21,7 @@ div.editor(ng-style="{ height: editorHeight }")
       div(style="clear:both;") &nbsp;
       .col.properties#properties(style="margin: 0px;padding-right: 15px;" ng-style='{height:editorHeight - 125, overflow:"auto"}')
         include ./properties.pug
-    .section.col-sm-6.col.editor#editor(style="overflow:hidden")
+    .section.col-sm-7.col.editor#editor(style="overflow:hidden")
       .toolbar.col-sm-6
         select.form-control(ng-model="relatedData.currrentDocumentTemplate"
                           ng-options="docTempl as docTempl.name for docTempl in relatedData.documentTemplates"
@@ -48,7 +48,7 @@ div.editor(ng-style="{ height: editorHeight }")
           img(src="/images/word-icon.png")
       div(style="clear:both;") &nbsp;
       include ./editor.pug
-    .section.col-sm-3.col.help
+    .section.col-sm-2.col.help
       h3.page-header-left Help
       include ./help.pug
     .saving(ng-show="isSaving")
