@@ -216,6 +216,24 @@ angular.module('app').directive('projectEditor', function () {
             $scope.currentChange = -1;
           }
           autosize($('textarea[scrollmode="auto"]'));
+          $('textarea').on('keydown', function(e) {
+            var keyCode = e.keyCode || e.which;
+
+            if (keyCode == 9) {
+              e.preventDefault();
+              var start = $(this).get(0).selectionStart;
+              var end = $(this).get(0).selectionEnd;
+
+              // set textarea value to: text before caret + tab + text after caret
+              $(this).val($(this).val().substring(0, start)
+                          + "\t"
+                          + $(this).val().substring(end));
+
+              // put caret at right position again
+              $(this).get(0).selectionStart =
+              $(this).get(0).selectionEnd = start + 1;
+            }
+          });
           $('span.unselected input').addClass('exp-disabled');
         }, 300);
 
@@ -250,7 +268,7 @@ angular.module('app').directive('projectEditor', function () {
 
         if ($scope.linkedScreens) {
           setTimeout(function () {
-            var containerEdit = document.getElementById('editor');
+            var containerEdit = document.getElementById('innerEditor');
             var elementProp = $('#properties .highlighted')[0];
             
             var containerProp = document.getElementById('properties');
@@ -266,13 +284,13 @@ angular.module('app').directive('projectEditor', function () {
 	              var elementPropRect = elementProp.getBoundingClientRect().top;
 	              var containerEditRect = containerEdit.getBoundingClientRect().top;
 	              var diff = elementPropRect - containerEditRect;
-                var scrollOffsetTop = elementEditor[0].offsetTop - diff - 10;
+                var scrollOffsetTop = elementEditor[0].offsetTop - diff - 100;
 	              smooth_scroll_to(containerEdit, scrollOffsetTop, 600);
               } else {
 	              var elementEditorRect = currentTarget.getBoundingClientRect().top;
 	              var containerPropRect = containerProp.getBoundingClientRect().top;
 	              var diff = elementEditorRect - containerPropRect;
-	              var scrollOffsetTop = elementProp.offsetTop - diff + 10;
+	              var scrollOffsetTop = elementProp.offsetTop - diff - 90;
 		            smooth_scroll_to(containerProp, scrollOffsetTop, 600);
               }
             }
@@ -369,7 +387,7 @@ angular.module('app').directive('projectEditor', function () {
           $scope.changes[i].style.backgroundColor = null;
         }
 
-        var container = document.getElementById('editor');
+        var container = document.getElementById('#innerEditor');
         var element = $scope.changes[$scope.currentChange];
         if(!$(element).is(':visible')) {
           $scope.prevChange();
@@ -407,7 +425,7 @@ angular.module('app').directive('projectEditor', function () {
           $scope.changes[i].style.backgroundColor = null;
         }
 
-        var container = document.getElementById('editor');
+        var container = document.getElementById('innerEditor');
         var element = $scope.changes[$scope.currentChange];
         if(!$(element).is(':visible')) {
           $scope.nextChange();

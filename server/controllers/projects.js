@@ -183,7 +183,14 @@ exports.generatePdf = (req, res, next) => {
     .then(_getCompiledTemplate)
     .then(text => {
       text = text.replace(/\n/g,'<br/>');
-
+      var prestyle = `
+      <style type="text/css">
+        * {
+          white-space: pre;
+        }
+      </style>
+      `;
+      text = prestyle + text;
       res.setHeader('Content-disposition', 'attachment; filename=converted.pdf');
       res.setHeader('Content-type', 'application/pdf');
       return pdfConverter.write(text, res);

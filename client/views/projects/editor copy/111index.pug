@@ -1,0 +1,58 @@
+div.editor(ng-style="{ height: editorHeight }")
+  .row
+    .col-sm-12
+      div(ng-show="isLoading")
+        include ../../common/spinner.pug
+
+  .row.toolbar(ng-hide="isLoading")
+    .col-sm-3.col.project-name(style="padding-right: 5px")
+      h3(style="float:left;") {{ ::project.name }}
+
+      div.div-view-state
+        button.btn.btn-view-state(
+          ng-repeat="viewState in viewStates"
+          type="button"
+          class="{{ viewState['btn-class'] }}"
+          title="{{ viewState['name'] }}"
+          ng-click="changeViewState($event)")
+          span(class="{{ viewState['span-class'] }}")
+
+      div(style="clear:both;")
+    .col-sm-3.col.document-templates
+      select.form-control(ng-model="relatedData.currrentDocumentTemplate"
+                          ng-options="docTempl as docTempl.name for docTempl in relatedData.documentTemplates"
+                          ng-required="true")
+    .col-sm-3.col.buttons
+      include ./undo-redo.pug
+      button.btn.btn-default.btn-linked-screen(
+        type="button"
+        ng-class="{true: 'fa fa-link btn-linked-screen-on', false: 'fa fa-chain-broken btn-linked-screen-off'}[linkedScreens]"
+        ng-attr-title="{{{true: 'Click for disable linked screens mode', false: 'Click for linked screens mode'}[linkedScreens === true]}}"
+        ng-click="linkedScreens = !linkedScreens"
+      )
+
+      button.btn.btn-default(
+        type="button"
+        ng-class="{true: 'btn-edit', false: 'btn-redline'}[mode === 'edit']"
+        ng-attr-title="{{{true: 'Click for Redline Mode', false: 'Click for Clean Mode'}[mode === 'edit']}}"
+        ng-click="setMode(mode === 'edit' ? 'redline' : 'edit')"
+      )
+        span.glyphicon.glyphicon-font
+      button.btn.btn-default(title="Export to PDF" ng-click="exportToPdf()")
+        img(src="/images/pdf-icon.png")
+      button.btn.btn-default(title="Export to Word" ng-click="exportToWord()")
+        img(src="/images/word-icon.png")
+    .col-sm-3.col.help
+      h3.page-header-left Help
+
+  .row.content(ng-hide="isLoading" ng-style="{ height: editorHeight - 45 }")
+    .col-sm-3.col.properties#properties
+      include ./properties.pug
+    .col-sm-6.col.editor#editor
+      include ./editor.pug
+    .col-sm-3.col.help
+      include ./help.pug
+    .saving(ng-show="isSaving")
+      include ../../common/spinner.pug
+
+  include ./prev-next-change
