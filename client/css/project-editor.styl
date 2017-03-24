@@ -15,8 +15,7 @@
     .prettify:before
       content: ' and '
   .toolbar
-    height: 10%
-    min-height: 45px
+    height: 45px
     border-right: 2px solid #eee
     border-bottom: 2px solid #eee
     .status-select
@@ -47,6 +46,8 @@
   .toolbar:first-child, .toolbar:last-child
     border-right: none
   .content
+    @media screen and (max-width: 1492px)
+      height: auto !important
     .saving
       position: fixed;
       bottom: 10px;
@@ -57,7 +58,7 @@
       padding-top: 10px
       overflow-y: auto
       border-right: 2px solid #eee
-      @media screen and (max-width: 1500px)
+      @media screen and (max-width: 1492px)
         float: none
         width: 100%
         height: auto !important

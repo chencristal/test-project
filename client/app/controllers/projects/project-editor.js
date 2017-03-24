@@ -284,13 +284,13 @@ angular.module('app').directive('projectEditor', function () {
 	              var elementPropRect = elementProp.getBoundingClientRect().top;
 	              var containerEditRect = containerEdit.getBoundingClientRect().top;
 	              var diff = elementPropRect - containerEditRect;
-                var scrollOffsetTop = elementEditor[0].offsetTop - diff - 100;
+                var scrollOffsetTop = elementEditor[0].offsetTop - diff - 80;
 	              smooth_scroll_to(containerEdit, scrollOffsetTop, 600);
               } else {
 	              var elementEditorRect = currentTarget.getBoundingClientRect().top;
 	              var containerPropRect = containerProp.getBoundingClientRect().top;
 	              var diff = elementEditorRect - containerPropRect;
-	              var scrollOffsetTop = elementProp.offsetTop - diff - 90;
+	              var scrollOffsetTop = elementProp.offsetTop - diff - 70;
 		            smooth_scroll_to(containerProp, scrollOffsetTop, 600);
               }
             }
@@ -405,7 +405,7 @@ angular.module('app').directive('projectEditor', function () {
         var elementPropRect = elementProp.getBoundingClientRect().top;
         var containerEditRect = container.getBoundingClientRect().top;
         var diff = elementPropRect - containerEditRect;
-        var scrollOffsetTop = element.offsetTop - diff - 10;
+        var scrollOffsetTop = element.offsetTop - diff - 80;
         smooth_scroll_to(container, scrollOffsetTop, 600);
 
       }
@@ -444,7 +444,7 @@ angular.module('app').directive('projectEditor', function () {
         var elementPropRect = elementProp.getBoundingClientRect().top;
         var containerEditRect = container.getBoundingClientRect().top;
         var diff = elementPropRect - containerEditRect;
-        var scrollOffsetTop = element.offsetTop - diff - 10;
+        var scrollOffsetTop = element.offsetTop - diff - 80;
         smooth_scroll_to(container, scrollOffsetTop, 600);
       }
 
