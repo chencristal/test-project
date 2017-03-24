@@ -87,6 +87,7 @@ Generator.prototype.generateVariableEditor = function (variable) {
       return `
         <span class="{{ ${varName}.state == 2 ? 'uncertain-bracket' : null }}">
         <textarea
+               ng-trim="false"
                ng-model="${varName}.value"
                ng-blur="onChange()"
                ng-click="onClick(${varName}, $event)"

@@ -28,6 +28,7 @@ form.form-horizontal
       div(ng-if="variable.termType === 'textarea'")
         textarea.form-control(
           rows = "3"
+          ng-trim="false"
           ng-model="variable.value"
           ng-blur="save()"
           ng-disabled="variable.state == 1")

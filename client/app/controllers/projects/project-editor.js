@@ -232,6 +232,7 @@ angular.module('app').directive('projectEditor', function () {
               // put caret at right position again
               $(this).get(0).selectionStart =
               $(this).get(0).selectionEnd = start + 1;
+              $scope.$apply();
             }
           });
           $('span.unselected input').addClass('exp-disabled');
