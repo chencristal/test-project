@@ -5,6 +5,7 @@ var Promise           = require('bluebird');
 var customErrors      = require('n-custom-errors');
 var moment            = require('moment');
 var projectsSrvc      = require('../data-services/projects');
+var docTemplSrvc      = require('../data-services/document-templates');
 var docTemplTypesSrvc = require('../data-services/document-template-types');
 var provisionTsSrvc   = require('../data-services/provision-templates');
 var termTsSrvc        = require('../data-services/term-templates');
@@ -172,6 +173,9 @@ exports.deleteProject = (req, res, next) => {
 };
 
 exports.generatePdf = (req, res, next) => {
+  var projectId = req.params.projectId;
+  var docId = req.params.docId;
+  
   function parseParams(params) {
     return Promise.resolve({
       projId: params.projectId,
@@ -182,23 +186,37 @@ exports.generatePdf = (req, res, next) => {
   parseParams(req.params)
     .then(_getCompiledTemplate)
     .then(text => {
-      text = text.replace(/\n/g,'<br/>');
-      var prestyle = `
-      <style type="text/css">
-        * {
-          white-space: pre;
-        }
-      </style>
-      `;
-      text = prestyle + text;
-      res.setHeader('Content-disposition', 'attachment; filename=converted.pdf');
-      res.setHeader('Content-type', 'application/pdf');
-      return pdfConverter.write(text, res);
+      var project = projectsSrvc.getProject({ _id: projectId}, 'name');
+      var docTempl = docTemplSrvc.getDocumentTemplate({ _id: docId}, 'name');
+      Promise.all([project, docTempl])
+      .then(values => {
+        var projectName = values[0].name;
+        var docName = values[1].name;
+        var filename = projectName + '-' + docName + '.pdf';
+        
+        text = text.replace(/\n/g,'<br/>');
+        var prestyle = `
+        <style type="text/css">
+          * {
+            white-space: pre;
+          }
+        </style>
+        `;
+        text = prestyle + text;
+        res.setHeader('Content-disposition', 'attachment; filename=' + filename);
+        res.setHeader('Content-type', 'application/pdf');
+        return pdfConverter.write(text, res);
+      })
+      .catch(next);
     })
     .catch(next);
 };
 
 exports.generateWord = (req, res, next) => {
+  var projectId = req.params.projectId;
+  var docId = req.params.docId;
+  var docTypeId = req.params.docTypeId;
+
   function parseParams(params) {
     return Promise.resolve({
       projId: params.projectId,
@@ -210,18 +228,21 @@ exports.generateWord = (req, res, next) => {
   parseParams(req.params)
     .then(_getCompiledTemplate)
     .then(text => {
-      if (!validationUtil.isValidObjectId(req.params.docTypeId)) {
-        return customErrors.rejectWithUnprocessableRequestError({ paramName: 'docTypeId', errMsg: 'must be a valid id' });
-      }
-      docTemplTypesSrvc.getDocumentTemplateType({_id: req.params.docTypeId}, 'styles')
-      .then(docTemplType => {
-        var styles = docTemplType.styles ? JSON.parse(docTemplType.styles) : {};
+      var project = projectsSrvc.getProject({ _id: projectId}, 'name');
+      var docTempl = docTemplSrvc.getDocumentTemplate({ _id: docId}, 'name');
+      var docTemplType = docTemplTypesSrvc.getDocumentTemplateType({ _id: docTypeId}, 'styles');
+      Promise.all([project, docTempl, docTemplType])
+      .then(values => {
+        var projectName = values[0].name;
+        var docName = values[1].name;
+        var styles = values[2].styles ? JSON.parse(values[2].styles) : {};
+        var filename = projectName + '-' + docName + '.docx';
 
-        res.setHeader('Content-disposition', 'attachment; filename=converted.docx');
+        res.setHeader('Content-disposition', 'attachment; filename=' + filename);
         res.setHeader('Content-type', 'application/docx');
         return wordConverter.write(text, styles, res);  
       })
-      .catch(next);  
+      .catch(next); 
     })
     .catch(next);
 };
