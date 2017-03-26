@@ -232,7 +232,6 @@ angular.module('app').directive('projectEditor', function () {
               // put caret at right position again
               $(this).get(0).selectionStart =
               $(this).get(0).selectionEnd = start + 1;
-              $scope.$apply();
             }
           });
           $('span.unselected input').addClass('exp-disabled');
@@ -689,6 +688,12 @@ angular.module('app').directive('projectEditor', function () {
 
         // return retVar;
         $scope.viewStatus = angular.copy(retVar);
+        _.each($scope.variables, function (variable) {
+          if(variable.termType == 'expandable_sub_text') {
+            var master = variable.variable.split('__')[0];
+            $scope.viewStatus[variable.variable] = $scope.viewStatus[master];
+          }
+        });
       }
 
       function _loadData() {
@@ -828,6 +833,7 @@ angular.module('app').directive('projectEditor', function () {
               termTempl.state = val ? val['state'] : 0;             
               termTempl.sortIndex = _.indexOf($scope.relatedData.orderedVariables, termTempl.variable);
               $scope.variables[termTempl.variable] = termTempl;
+
               /*$scope.viewStatus[termTempl.variable] = 
                 (_.find($scope.viewedVars, {'variable': termTempl.variable}) !== undefined) ? true : false;*/
             });
@@ -845,7 +851,7 @@ angular.module('app').directive('projectEditor', function () {
                   newVar.state = sub.state;
                   newVar.value = sub.value;
                   $scope.variables[newVar.variable] = newVar;
-                  /*$scope.viewStatus[newVar.variable] = $scope.viewStatus[v.variable];*/
+                  // $scope.viewStatus[newVar.variable] = $scope.viewStatus[v.variable];
                 });
               }
             });

@@ -2,6 +2,7 @@
 
 var _          = require('lodash');
 var handlebars = require('handlebars');
+var projectsSrvc      = require('../../data-services/projects');
 
 _.extend(module.exports, require('./compiler'));
 _.extend(module.exports, require('./generator'));
