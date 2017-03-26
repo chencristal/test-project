@@ -161,7 +161,7 @@ function initializeUserRoles() {
             'ManageProvisionTemplate',
             'ManageTermTemplate'
           ], 
-          permissions: ['read', 'create', 'update', 'delete'] 
+          permissions: ['read', 'create', 'update'] 
         },
         { 
           resources: [
