@@ -305,7 +305,7 @@ function _getCompiledTemplate(data) {
           var termTempl = _.find(data.termTempls, { variable: variable.variable });
           if (!termTempl) {
             result[variable.variable] = variable.value;
-            if((variable.value == undefined || variable.value == '') && (variable.placeholder != undefined && variable.placeholder != ''))  //placeholder infusion for sub expandable text fields
+            if((variable.value == undefined || variable.value == '') && (variable.placeholder != undefined && variable.placeholder != ''))  //placeholder infusion for textplus sub fields
                 result[variable.variable] = variable.placeholder;
             return result;
           }
@@ -323,12 +323,12 @@ function _getCompiledTemplate(data) {
               result[variable.variable] = variable.value;              
               break;
           }
-          var termTypes = ['text', 'date', 'number', 'expandable_text'];
+          var termTypes = ['text', 'date', 'number', 'textplus'];
           if(termTypes.indexOf(termTempl.termType) > -1 && (variable.value == undefined || variable.value == ''))
             result[variable.variable] = variable.placeholder;
           return result;
         }, {});
-        data.expandables = _.filter(data.termTempls,{termType: 'expandable_text'});
+        data.expandables = _.filter(data.termTempls,{termType: 'textplus'});
 
         return data;
       });
@@ -341,8 +341,8 @@ function _getCompiledTemplate(data) {
         var template = _.map(provTempls, provTempl => provTempl.template).join('\n');
         var variables = Object.keys(data.values);
         _.each(data.expandables, expandable => {
-          var newline = (expandable.expandable_text !== undefined && expandable.expandable_text.newline) ? true : false;
-          var prettify = (expandable.expandable_text !== undefined && expandable.expandable_text.prettify) ? true : false;
+          var newline = (expandable.textplus !== undefined && expandable.textplus.newline) ? true : false;
+          var prettify = (expandable.textplus !== undefined && expandable.textplus.prettify) ? true : false;
           var subs = _.filter(variables, v => v.indexOf(expandable.variable + '__') === 0);
           subs = _.map(subs, sub => data.values[sub]);
           subs = _.reverse(subs);

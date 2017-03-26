@@ -20,7 +20,7 @@ var termTemplateSchema = new mongoose.Schema({
   text: {
     placeholder: String
   },
-  expandable_text: {
+  textplus: {
     placeholder: String,
     newline: Boolean,
     prettify: Boolean

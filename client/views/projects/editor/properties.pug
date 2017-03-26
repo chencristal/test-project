@@ -4,9 +4,9 @@ form.form-horizontal
     ng-class="selectedVariable == variable ? 'highlighted' : null"
     class="{{ variableStates[variable.state]['background'] }}")
     label.col-md-5.control-label {{ ::variable.displayName }} &nbsp;
-      a(ng-if="variable.termType === 'expandable_text'" ng-click="addSubField(variable,$event)" style="font-size:12px;cursor:pointer;")
+      a(ng-if="variable.termType === 'textplus'" ng-click="addSubField(variable,$event)" style="font-size:12px;cursor:pointer;")
         span.glyphicon.glyphicon-plus
-      a(ng-if="variable.termType === 'expandable_sub_text'" ng-click="removeSubField(variable,$event)" style="font-size:12px;cursor:pointer;")
+      a(ng-if="variable.termType === 'textplus_sub'" ng-click="removeSubField(variable,$event)" style="font-size:12px;cursor:pointer;")
         span.glyphicon.glyphicon-minus(style="color:deeppink")
     .col-md-7.variable
       div(ng-if="variable.termType === 'text'")
@@ -17,7 +17,7 @@ form.form-horizontal
           placeholder="{{ variable.placeholder }}"
           ng-disabled="variable.state == 1")
 
-      div(ng-if="variable.termType === 'expandable_text' || variable.termType === 'expandable_sub_text'")
+      div(ng-if="variable.termType === 'textplus' || variable.termType === 'textplus_sub'")
         input.form-control(
           type="text"
           ng-model="variable.value"

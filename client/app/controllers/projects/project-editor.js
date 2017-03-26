@@ -340,7 +340,7 @@ angular.module('app').directive('projectEditor', function () {
             })
             .then(function () {
               _.each($scope.variables, function (variable) {
-                if(variable.termType == 'expandable_sub_text') {
+                if(variable.termType == 'textplus_sub') {
                   var master = variable.variable.split('__')[0];
                   $scope.viewStatus[variable.variable] = $scope.viewStatus[master];
                 }
@@ -464,7 +464,7 @@ angular.module('app').directive('projectEditor', function () {
         var sub = angular.copy($scope.variables[variable.variable]);
         sub.sortIndex = sub.sortIndex + parseFloat(1/(1+order));
         sub.variable = sub.variable + '__' + order;
-        sub.termType = 'expandable_sub_text';
+        sub.termType = 'textplus_sub';
         sub.value = '';
         sub.displayName = '';
         sub.state = 0;
@@ -483,16 +483,16 @@ angular.module('app').directive('projectEditor', function () {
           index += 1;
         }
         this.variable.state = index;
-        var termTypes = ['text', 'date', 'number', 'expandable_text', 'expandable_sub_text'];       //for placeholder actions
-        var termTypesRe = ['text', 'expandable_text', 'expandable_sub_text'];                       //for actual value actions
+        var termTypes = ['text', 'date', 'number', 'textplus', 'textplus_sub'];       //for placeholder actions
+        var termTypesRe = ['text', 'textplus', 'textplus_sub'];                       //for actual value actions
         if(this.variable.value == undefined)
           this.variable.value = '';
         if(termTypes.indexOf(this.variable.termType) > -1 && this.variable.value.trim() == '') {
           var termType = this.variable.termType;
           if(this.variable.state == 1 || this.variable.state == 2) {    //Confirmed, Uncertain State
             var placeholder = '';
-            if(termType.indexOf('expandable') > -1)
-              placeholder = this.variable['expandable_text'].placeholder;
+            if(termType.indexOf('textplus') > -1)
+              placeholder = this.variable['textplus'].placeholder;
             else
               placeholder = this.variable[termType].placeholder;
             if(/^\[.*\]$/.test(placeholder)) {
@@ -689,7 +689,7 @@ angular.module('app').directive('projectEditor', function () {
         // return retVar;
         $scope.viewStatus = angular.copy(retVar);
         _.each($scope.variables, function (variable) {
-          if(variable.termType == 'expandable_sub_text') {
+          if(variable.termType == 'textplus_sub') {
             var master = variable.variable.split('__')[0];
             $scope.viewStatus[variable.variable] = $scope.viewStatus[master];
           }
@@ -838,12 +838,12 @@ angular.module('app').directive('projectEditor', function () {
                 (_.find($scope.viewedVars, {'variable': termTempl.variable}) !== undefined) ? true : false;*/
             });
             _.each($scope.variables, function(v) {
-              if(v.termType == 'expandable_text') {
+              if(v.termType == 'textplus') {
                 var subs = _.filter($scope.project.values, function(sub) { return sub.variable.indexOf(v.variable + '__') === 0; });
                 _.each(subs, function(sub) {
                   var newVar = angular.copy(v);
                   newVar.variable = sub.variable;
-                  newVar.termType = 'expandable_sub_text';
+                  newVar.termType = 'textplus_sub';
                   newVar.displayName = '';
                   var temp = newVar.variable.split('__');        
                   var order = parseInt(temp[1]);

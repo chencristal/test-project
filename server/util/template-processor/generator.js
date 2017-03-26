@@ -57,10 +57,10 @@ Generator.prototype.generateVariableEditor = function (variable) {
                ng-disabled="${varName}.state == 1"
                placeholder="{{ ${varName}.placeholder }}" /></span>`;
 
-    case 'expandable_text':
+    case 'textplus':
       var master = variable.variable;
-      var newline = variable.expandable_text.newline ? true : false;
-      var prettify = variable.expandable_text.prettify ? true : false;
+      var newline = variable.textplus.newline ? true : false;
+      var prettify = variable.textplus.prettify ? true : false;
       return `
         <span class="{{ ${varName}.state == 2 ? 'uncertain-bracket' : null }}">
         <input type="text"
