@@ -150,13 +150,18 @@ function initializeUserRoles() {
           resources: [
             'ManageUser', 
             'ManageUserGroup', 
+          ], 
+          permissions: ['read'] 
+        },
+        { 
+          resources: [
             'ManageProjectTemplate',
             'ManageDocumentTemplate',
             'ManageDocumentTemplateType',
             'ManageProvisionTemplate',
             'ManageTermTemplate'
           ], 
-          permissions: ['read'] 
+          permissions: ['read', 'create', 'update'] 
         },
         { 
           resources: [
