@@ -335,37 +335,82 @@ function _getCompiledTemplate(data) {
   }
 
   function loadTemplate(data) {
+    function getPrecompiledTextPlus(expandable, newline, prettify) {
+      var variables = Object.keys(data.values);
+      var subs = _.filter(variables, v => v.indexOf(expandable.variable + '__') === 0);
+      subs = _.map(subs, sub => data.values[sub]);
+      subs = _.reverse(subs);
+      if(subs.length > 0) {
+        var glue = ' ';
+        if(newline && prettify)
+          glue = ',\n<br/>';
+        else if(newline)
+          glue = '\n<br/>';
+        else if(prettify)
+          glue = ', ';
+        if(prettify) {
+          var temp = subs.slice(0,-1).join(glue);
+          var last = subs[subs.length-1];
+          if(newline)
+            subs = temp + '\n<br/>and ' + last;
+          else
+            subs = temp + ' and ' + last;
+        }
+        else
+          subs = subs.join(glue);
+      }
+      return {glue: glue, subs: subs};
+    }
     return provisionTsSrvc
       .getDocumentProvisionTemplates(data.docId, 'template')
       .then(provTempls => {
-        var template = _.map(provTempls, provTempl => provTempl.template).join('\n');
-        var variables = Object.keys(data.values);
+        var template = _.map(provTempls, provTempl => provTempl.template).join('\n');        
         _.each(data.expandables, expandable => {
           var newline = (expandable.textplus !== undefined && expandable.textplus.newline) ? true : false;
           var prettify = (expandable.textplus !== undefined && expandable.textplus.prettify) ? true : false;
-          var subs = _.filter(variables, v => v.indexOf(expandable.variable + '__') === 0);
-          subs = _.map(subs, sub => data.values[sub]);
-          subs = _.reverse(subs);
-          if(subs.length > 0) {
-            var glue = ' ';
-            if(newline && prettify)
-              glue = ',\n<br/>';
-            else if(newline)
-              glue = '\n<br/>';
-            else if(prettify)
-              glue = ', ';
-            if(prettify) {
-              var temp = subs.slice(0,-1).join(glue);
-              var last = subs[subs.length-1];
-              if(newline)
-                subs = temp + '\n<br/>and ' + last;
-              else
-                subs = temp + ' and ' + last;
-            }
-            else
-              subs = subs.join(glue);
-            template = _.replace(template, new RegExp(`{{\\s*${expandable.variable}\\s*}}`,'g'), `{{${expandable.variable}}}${glue}${subs}`);            
+          var params = getPrecompiledTextPlus(expandable, newline, prettify);
+          var glue = params.glue;
+          var subs = params.subs;
+          template = _.replace(template, new RegExp(`{{\\s*${expandable.variable}\\s*}}`,'g'), `{{${expandable.variable}}}${glue}${subs}`);
+        });
+        template = template.replace(/{{\s*expand\s+([^\s\{\}]+)\s+(\d)\s*}}/g, function() {
+          var match = arguments[0];
+          var textplus = arguments[1];
+          var mode = parseInt(arguments[2]);
+
+          var expandable = _.find(data.expandables, {variable: textplus});
+          if(!textplus)
+            return match;
+
+          var newline = false,
+              prettify = false;
+          switch(mode) {
+            case 0:
+              newline = false;
+              prettify = false;
+            break;
+            case 1:
+              newline = false;
+              prettify = true;
+            break;
+            case 2:
+              newline = true;
+              prettify = false;
+            break;
+            case 3:
+              newline = true;
+              prettify = true;
+            break;
+            default:
+              newline = false;
+              prettify = false;
+            break;
           }
+          var params = getPrecompiledTextPlus(expandable, newline, prettify);
+          var glue = params.glue;
+          var subs = params.subs;
+
+          return `{{${textplus}}}${glue}${subs}`;
         });
         for(var variable in data.values) {
           if(typeof data.values[variable] == 'boolean') {
@@ -378,7 +423,7 @@ function _getCompiledTemplate(data) {
         
         data.template = template;
         return data;
-    });
+      });
   }
 
   function compile(data) {

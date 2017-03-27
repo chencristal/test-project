@@ -79,6 +79,9 @@ Validator.prototype.validateStatement = function(statement, params) {
     case 'article':
       requiredParamsCount = 1;
       break;
+    case 'expand':
+      requiredParamsCount = 2;
+      break;
     case 'ifVariant':
       requiredParamsCount = 2;
       break;
@@ -116,6 +119,8 @@ Validator.prototype.validateStatement = function(statement, params) {
     params = _.filter(params, _.iteratee(['type', 'variable']));
   } else if (statement === 'pagebreak') {
     params = [];
+  } else if (statement === 'expand') {
+    params = _.filter(params, _.iteratee(['type', 'variable']));
   }
 
   this.validateParams.call(this, params);

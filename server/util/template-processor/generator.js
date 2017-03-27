@@ -241,6 +241,9 @@ Generator.prototype.generateExpressionHtml = function (token) {
     case 'pagebreak':
       html = '';
       break;
+    case 'expand':
+      html = self.generateExpandHtml.call(self, token);
+      break;
   }
   html += _.map(token.tokens, self.generateHtml.bind(self)).join('');
   html += `</span>`;
@@ -377,6 +380,69 @@ Generator.prototype.generateArticleHtml = function(token) {
                  {{$root.article('${param1.text}')}}
           </label>`;
   }
+
+  return html;
+}
+Generator.prototype.generateExpandHtml = function(token) {
+  var self = this;
+  var html = '';
+
+  var param = token.params[0];
+  var mode = parseInt(token.params[1].text);
+
+  if(param.type == 'variable') {
+    var master = param.text;
+    var varName = `variables.${master}`;
+    var newline = false,
+        prettify = false;
+    switch(mode) {
+      case 0:
+        newline = false;
+        prettify = false;
+      break;
+      case 1:
+        newline = false;
+        prettify = true;
+      break;
+      case 2:
+        newline = true;
+        prettify = false;
+      break;
+      case 3:
+        newline = true;
+        prettify = true;
+      break;
+      default:
+        newline = false;
+        prettify = false;
+      break;
+    }
+    html =  `
+        <span class="{{ ${varName}.state == 2 ? 'uncertain-bracket' : null }}">
+        <input type="text"
+               ng-model="${varName}.value"
+               ng-blur="onChange()"
+               ng-click="onClick(${varName}, $event)"
+               ng-class="selectedVariable == ${varName} ? 'highlighted-for-scroll' : null"
+               ng-disabled="${varName}.state == 1"
+               placeholder="{{ ${varName}.placeholder }}" /></span>
+        <span class="{{ variables[v.variable].state == 2 ? 'uncertain-bracket' : null }}" ng-repeat="v in textplus['${master}'] | objectToArray | orderBy: 'sortIndex'">
+               <span ng-if="!${newline} && !${prettify}"> </span>
+               <span class="prettify" ng-if="${prettify} && !$last">, </span>
+               <span class="prettify" ng-if="${prettify} && $last">and </span>
+               <br ng-if="${newline}" />
+        <input type="text"
+               ng-model="variables[v.variable].value"
+               ng-blur="onChange()"
+               ng-click="onClick(variables[v.variable], $event)"
+               ng-class="selectedVariable == variables[v.variable] ? 'highlighted-for-scroll' : null"
+               ng-disabled="variables[v.variable].state == 1"
+               placeholder="{{ variables[v.variable].placeholder }}" />
+        </span>
+    `;
+  }
+  else
+    html = '';
 
   return html;
 }
