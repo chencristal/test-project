@@ -11,7 +11,7 @@ angular.module('app').controller('ProjectNewCtrl',
 
   (function loadData() {
     ProjectTemplate
-      .query({})
+      .query({ status: 'active' })
       .$promise
       .then(function(projectTemplates) {
         $scope.projectTemplates = projectTemplates;
