@@ -15,6 +15,7 @@ angular.module('app').directive('projectEditor', function () {
       $scope.linkedScreens = true;
       $scope.relatedData = {};
       $scope.variables = {};
+      $scope.textplus = {};
       $scope.dateOptions = {
         formatYear: 'yy',
         startingDay: 1
@@ -469,10 +470,13 @@ angular.module('app').directive('projectEditor', function () {
         sub.displayName = '';
         sub.state = 0;
         $scope.variables[sub.variable] = sub;
+        $scope.textplus[variable.variable].push(sub);
         $scope.viewStatus[sub.variable] = $scope.viewStatus[variable.variable];
       }
       $scope.removeSubField = function (variable, $event) {
         delete $scope.variables[variable.variable];
+        var master = variable.variable.split('__')[0];
+        _.remove($scope.textplus[master], {variable: variable.variable});
       }
 
       $scope.changeState = function ($event) {
@@ -840,6 +844,7 @@ angular.module('app').directive('projectEditor', function () {
             _.each($scope.variables, function(v) {
               if(v.termType == 'textplus') {
                 var subs = _.filter($scope.project.values, function(sub) { return sub.variable.indexOf(v.variable + '__') === 0; });
+                $scope.textplus[v.variable] = [];
                 _.each(subs, function(sub) {
                   var newVar = angular.copy(v);
                   newVar.variable = sub.variable;
@@ -851,7 +856,7 @@ angular.module('app').directive('projectEditor', function () {
                   newVar.state = sub.state;
                   newVar.value = sub.value;
                   $scope.variables[newVar.variable] = newVar;
-                  // $scope.viewStatus[newVar.variable] = $scope.viewStatus[v.variable];
+                  $scope.textplus[v.variable].push(newVar);
                 });
               }
             });

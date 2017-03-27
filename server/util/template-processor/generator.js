@@ -70,16 +70,18 @@ Generator.prototype.generateVariableEditor = function (variable) {
                ng-class="selectedVariable == ${varName} ? 'highlighted-for-scroll' : null"
                ng-disabled="${varName}.state == 1"
                placeholder="{{ ${varName}.placeholder }}" /></span>
-        <span class="expanded {{ variable.state == 2 ? 'uncertain-bracket' : null }}" ng-repeat="variable in variables | objectToArray | orderBy: 'sortIndex'" ng-if="variable.variable.indexOf('${master}' + '__') === 0">
-               <span class="prettify" ng-if="${prettify}"></span>
+        <span class="{{ variables[v.variable].state == 2 ? 'uncertain-bracket' : null }}" ng-repeat="v in textplus['${master}'] | objectToArray | orderBy: 'sortIndex'">
+               <span ng-if="!${newline} && !${prettify}"> </span>
+               <span class="prettify" ng-if="${prettify} && !$last">, </span>
+               <span class="prettify" ng-if="${prettify} && $last">and </span>
                <br ng-if="${newline}" />
         <input type="text"
-               ng-model="variable.value"
+               ng-model="variables[v.variable].value"
                ng-blur="onChange()"
-               ng-click="onClick(variable, $event)"
-               ng-class="selectedVariable == variable ? 'highlighted-for-scroll' : null"
-               ng-disabled="variable.state == 1"
-               placeholder="{{ variable.placeholder }}" />
+               ng-click="onClick(variables[v.variable], $event)"
+               ng-class="selectedVariable == variables[v.variable] ? 'highlighted-for-scroll' : null"
+               ng-disabled="variables[v.variable].state == 1"
+               placeholder="{{ variables[v.variable].placeholder }}" />
         </span>
         `;
 

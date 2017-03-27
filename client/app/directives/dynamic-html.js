@@ -7,6 +7,7 @@ angular.module('app')
     scope: {
       template: '=',
       variables: '=',
+      textplus: '=',
       selectedVariable: '=',
       onChange: '&'
     },
