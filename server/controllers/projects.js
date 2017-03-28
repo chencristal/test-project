@@ -352,7 +352,7 @@ function _getCompiledTemplate(data) {
           var temp = subs.slice(0,-1).join(glue);
           var last = subs[subs.length-1];
           if(newline)
-            subs = temp + '\n<br/>and ' + last;
+            subs = temp + ' and\n<br/>' + last;
           else
             subs = temp + ' and ' + last;
         }
