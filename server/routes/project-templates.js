@@ -29,7 +29,12 @@ module.exports = app => {
   app.put(
     `/api/${apiVer}/project-templates/:_id`,
     // auth.requireRolesWrapper('admin'),
-    auth.checkPermission('ManageProjectTemplate', ['update'/*, 'delete'*/]),
+    auth.checkPermission('ManageProjectTemplate', 'update'),
     projTempls.updateProjectTemplate
+  );
+  app.delete(
+    `/api/${apiVer}/project-templates/:_id`,
+    auth.checkPermission('ManageProjectTemplate', 'delete'),
+    projTempls.deleteProjectTemplate
   );
 };

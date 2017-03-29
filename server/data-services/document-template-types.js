@@ -49,3 +49,7 @@ exports.saveDocumentTemplateType = docTemplType => {
     .isNameUnique(docTemplType.name, docTemplType._id)
     .then(()=> docTemplType.save());
 };
+
+exports.deleteDocumentTemplateType = docTemplType => {
+  return docTemplType.remove();
+};

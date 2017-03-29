@@ -55,3 +55,7 @@ exports.saveProjectTemplate = projTempl => {
     .isNameUnique(projTempl.name, projTempl._id)
     .then(()=> projTempl.save());
 };
+
+exports.deleteProjectTemplate = projTempl => {
+  return projTempl.remove();
+};

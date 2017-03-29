@@ -3,6 +3,7 @@
 var _              = require('lodash');
 var Promise        = require('bluebird');
 var customErrors   = require('n-custom-errors');
+var projectsSrvc   = require('../data-services/projects');
 var projTemplsSrvc = require('../data-services/project-templates');
 var validationUtil = require('../util/validations');
 var usersSrvc      = require('../data-services/users');
@@ -52,6 +53,7 @@ exports.getProjectTemplates = (req, res, next) => {
 exports.getUserProjectTemplates = (req, res, next) => {
   function parseParams(query) {
     var params = {
+      status: query.status,
       query: query.query,
       includes: query.includes
     };
@@ -73,6 +75,11 @@ exports.getUserProjectTemplates = (req, res, next) => {
     if (params.query) {
       filter.name = {
         $regex: new RegExp(params.query, 'i')
+      };
+    }
+    if (params.status) {
+      filter.status = {
+        $eq: params.status
       };
     }
     if (params.includes) {
@@ -129,7 +136,8 @@ exports.createProjectTemplate = (req, res, next) => {
   }
 
   function doEdits(projTemplData) {
-    var projTempl = _.assign({}, projTemplData);    
+    var projTempl = _.assign({}, projTemplData);
+    projTempl.status = 'active';
     return projTempl;
   }
 
@@ -141,9 +149,37 @@ exports.createProjectTemplate = (req, res, next) => {
     .catch(next);
 };
 
+exports.deleteProjectTemplate = (req, res, next) => {
+  var projTemplId = req.params._id;
+
+  function validateParams() {
+    if (!validationUtil.isValidObjectId(projTemplId)) {
+      return customErrors.rejectWithUnprocessableRequestError({ paramName: 'id', errMsg: 'must be a valid id' });
+    }
+    return Promise.resolve();
+  }
+
+  function checkTemplateUsed(projTempl) {
+    return projectsSrvc
+      .getProjects({ projectTemplate: projTemplId }, 'name')
+      .then(projects => {
+        if (!_.isEmpty(projects))
+          return customErrors.rejectWithUnprocessableRequestError({ paramName: 'Project template', errMsg: 'was already used by some projects' });
+        return Promise.resolve(projTempl);
+      });
+  }
+
+  validateParams()
+    .then(() => projTemplsSrvc.getProjectTemplate({ _id: projTemplId }, '-__v'))
+    .then(checkTemplateUsed)
+    .then(projTemplsSrvc.deleteProjectTemplate)
+    .then(projTempl => res.send(true))
+    .catch(next);
+};
+
 exports.updateProjectTemplate = (req, res, next) => {
   function parseParams(body) {
-    var allowedFields = ['name', 'documentTemplates', 'userGroups', 'users'];
+    var allowedFields = ['name', 'documentTemplates', 'userGroups', 'users', 'status'];
     var projTemplData = _.pick(body, allowedFields);
     projTemplData._id = req.params._id;
     return Promise.resolve(projTemplData);

@@ -27,7 +27,11 @@ var provisionTemplateSchema = new mongoose.Schema({
       index: true,
       ref: 'termTemplate'
     }],
-    orderedVariables: [String]
+    orderedVariables: [String],
+    status: {
+      type: String,
+      enum: consts.USER.STATUSES
+    },
 });
 
 provisionTemplateSchema.plugin(timestamps, { index: true });

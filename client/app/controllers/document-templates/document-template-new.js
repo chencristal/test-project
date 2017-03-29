@@ -16,7 +16,7 @@ angular.module('app').controller('DocumentTemplateNewCtrl',
     //   return [];
     // }
     return DocumentTemplateType
-      .query({ query: query })
+      .query({ query: query, status: 'active' })
       .$promise
       .then(function(docTypes) {
         $scope.documentTypes = docTypes;
@@ -28,7 +28,7 @@ angular.module('app').controller('DocumentTemplateNewCtrl',
     //   return [];
     // }
     return ProvisionTemplate
-      .query({ query: query })
+      .query({ query: query, status: 'active' })
       .$promise
       .then(function(provTempls) {
         $scope.provisionTemplates = provTempls;
