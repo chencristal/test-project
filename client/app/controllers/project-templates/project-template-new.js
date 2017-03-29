@@ -39,6 +39,13 @@ angular.module('app').controller('ProjectTemplateNewCtrl',
       .query({ query: query, role: 'user' })
       .$promise
       .then(function(users) {
+
+        // For 'All Users' item
+        /* users = _.concat({
+          _id: "0",
+          firstName: "All Users"
+        }, users); */
+
         $scope.users = users;
       });
   };

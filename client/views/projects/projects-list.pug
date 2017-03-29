@@ -8,60 +8,62 @@ block content
     .col-md-12
       include ../common/spinner.pug
   div(ng-hide="isLoading")
-    .row
-      .col-md-12
+    .container.text-justify.terms
+      .col-md-12(style="margin-bottom: 10px")
         a.btn.btn-default.btn-primary(href="/projects/new") New Project
-    .row
-      .col-md-12
-        .caption
-          span.caption-projects Owned Projects
-        table.table.table-striped.projects
-          thead
-            tr
-              td
-                strong Name
-              td
-                strong Shared With Users
-              td
-                strong Shared With UserGroups
-              td
-          tbody
-            tr(ng-repeat="project in projects")
-              td {{ project.name }}
-              td {{ makeSharedUserString(project) }}
-              td {{ makeSharedUserGroupString(project) }}
-              td.actions
-                button.btn.btn-primary.btn-sm(title="Editor" ng-click="openEditor(project)" ng-disabled="isSaving")
-                  span.glyphicon.glyphicon-flash
-                button.btn.btn-info.btn-sm(title="Property" ng-click="editProject(project)" ng-disabled="isSaving")
-                  span.glyphicon.glyphicon-pencil
-                button.btn.btn-danger.btn-sm(
-                  title="Delete"
-                  mwl-confirm
-                  on-confirm="deleteProject(project)"
-                  confirm-text="Delete"
-                  confirm-button-type="danger"
-                  placement="left"
-                  message="Are you sure you want to delete this project: <b>{{project.name}}</b>?"
-                  ng-disabled="isSaving"
-                )
-                  span.glyphicon.glyphicon-trash
 
-      .col-md-12
-        .caption
-          span.caption-shared-projects Shared Projects
-        table.table.table-striped.shared-projects
-          thead
-            tr
-              td
-                strong Name
-              td
-                strong Shared From
-              td
-          tbody
-            tr(ng-repeat="project in sharedProjects")
-              td {{ project.name }}
-              td {{ project.owner.firstName }}
-              td.actions
-                button.btn.btn-primary.btn-sm(title="Editor" ng-click="openEditor(project)" ng-disabled="isSaving")
-                  span.glyphicon.glyphicon-flash
+      uib-tabset(active="active" justified="true")
+        uib-tab(index="0" heading="Owned Projects")
+          .col-md-12
+            .caption
+              span.caption-projects Owned Projects
+            table.table.table-striped.projects
+              thead
+                tr
+                  td
+                    strong Name
+                  td
+                    strong Shared With Users
+                  td
+                    strong Shared With UserGroups
+                  td
+              tbody
+                tr(ng-repeat="project in projects")
+                  td {{ project.name }}
+                  td {{ makeSharedUserString(project) }}
+                  td {{ makeSharedUserGroupString(project) }}
+                  td.actions
+                    button.btn.btn-primary.btn-sm(title="Editor" ng-click="openEditor(project)" ng-disabled="isSaving")
+                      span.glyphicon.glyphicon-flash
+                    button.btn.btn-info.btn-sm(title="Property" ng-click="editProject(project)" ng-disabled="isSaving")
+                      span.glyphicon.glyphicon-pencil
+                    button.btn.btn-danger.btn-sm(
+                      title="Delete"
+                      mwl-confirm
+                      on-confirm="deleteProject(project)"
+                      confirm-text="Delete"
+                      confirm-button-type="danger"
+                      placement="left"
+                      message="Are you sure you want to delete this project: <b>{{project.name}}</b>?"
+                      ng-disabled="isSaving"
+                    )
+                      span.glyphicon.glyphicon-trash
+        uib-tab(index="1" heading="Shared Projects")
+          .col-md-12
+            .caption
+              span.caption-shared-projects Shared Projects
+            table.table.table-striped.shared-projects
+              thead
+                tr
+                  td
+                    strong Name
+                  td
+                    strong Shared From
+                  td
+              tbody
+                tr(ng-repeat="project in sharedProjects")
+                  td {{ project.name }}
+                  td {{ project.owner.firstName }}
+                  td.actions
+                    button.btn.btn-primary.btn-sm(title="Editor" ng-click="openEditor(project)" ng-disabled="isSaving")
+                      span.glyphicon.glyphicon-flash

@@ -9,9 +9,16 @@ exports.getProjectTemplates = (filter, fields) => {
     .exec();
 };
 
+// Not used yet
 exports.getUserProjectTemplates = (user) => {
   return ProjectTemplate
-    .find({$or: [{users: user._id}, {userGroups: {$in: user.userGroups}}]})
+    .find({
+      $or: [
+        { users: user._id }, 
+        { userGroups: { $in: user.userGroups } }, 
+        { allUsers: true }
+      ]
+    })
     .exec();
 };
 

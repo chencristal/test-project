@@ -98,7 +98,15 @@ exports.getUserProjectTemplates = (req, res, next) => {
         .getUser({email: req.user.email})
         .then(user => {
           if (user.role === 'user') 
-            return _.assign(filter, {$or: [{users: user._id}, {userGroups: {$in: user.userGroups}}]});
+            return _.assign(filter, 
+              {
+                $or: [
+                  { users: user._id }, 
+                  { userGroups: {$in: user.userGroups} },
+                  { allUsers: true }
+                ]
+              }
+            );
           else
             return filter;
         })
