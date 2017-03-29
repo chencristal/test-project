@@ -3,12 +3,14 @@
 var _                 = require('lodash');
 var Promise           = require('bluebird');
 var customErrors      = require('n-custom-errors');
+var docTemplsSrvc     = require('../data-services/document-templates');
 var docTemplTypesSrvc = require('../data-services/document-template-types');
 var validationUtil    = require('../util/validations');
 
 exports.getDocumentTemplateTypes = (req, res, next) => {
   function parseParams(query) {
     var params = {
+      status: query.status,
       query: query.query,
       includes: query.includes
     };
@@ -32,6 +34,11 @@ exports.getDocumentTemplateTypes = (req, res, next) => {
         $regex: new RegExp(params.query, 'i')
       };
     }
+    if (params.status) {
+      filter.status = {
+        $eq: params.status
+      };
+    }
     if (params.includes) {
       filter._id = {
         $in: params.includes
@@ -43,7 +50,7 @@ exports.getDocumentTemplateTypes = (req, res, next) => {
   parseParams(req.query)
     .then(validateParams)
     .then(buildFilter)
-    .then(filter => docTemplTypesSrvc.getDocumentTemplateTypes(filter, 'name'))
+    .then(filter => docTemplTypesSrvc.getDocumentTemplateTypes(filter, 'name status'))
     .then(docTemplTypes => res.send(docTemplTypes))
     .catch(next);
 };
@@ -77,6 +84,7 @@ exports.createDocumentTemplateType = (req, res, next) => {
 
   function doEdits(docTemplTypeData) {
     var docTemplType = _.assign({}, docTemplTypeData);
+    docTemplType.status = 'active';
     return docTemplType;
   }
 
@@ -88,9 +96,37 @@ exports.createDocumentTemplateType = (req, res, next) => {
     .catch(next);
 };
 
+exports.deleteDocumentTemplateType = (req, res, next) => {
+  var docTemplTypeId = req.params._id;
+
+  function validateParams() {
+    if (!validationUtil.isValidObjectId(docTemplTypeId)) {
+      return customErrors.rejectWithUnprocessableRequestError({ paramName: 'id', errMsg: 'must be a valid id' });
+    }
+    return Promise.resolve();
+  }
+
+  function checkTemplateTypeUsed(docTemplType) {
+    return docTemplsSrvc
+      .getDocumentTemplates({ documentType: docTemplTypeId }, 'name')
+      .then(docTempls => {
+        if (!_.isEmpty(docTempls))
+          return customErrors.rejectWithUnprocessableRequestError({ paramName: 'Document template type', errMsg: 'was already used by some document templates' });
+        return Promise.resolve(docTemplType);
+      });
+  }
+
+  validateParams()
+    .then(() => docTemplTypesSrvc.getDocumentTemplateType({ _id: docTemplTypeId }, '-__v'))
+    .then(checkTemplateTypeUsed)
+    .then(docTemplTypesSrvc.deleteDocumentTemplateType)
+    .then(docTemplType => res.send(true))
+    .catch(next);
+};
+
 exports.updateDocumentTemplateType = (req, res, next) => {
   function parseParams(body) {
-    var allowedFields = ['name', 'description', 'styles'];
+    var allowedFields = ['name', 'description', 'styles', 'status'];
     var docTemplTypeData = _.pick(body, allowedFields);
     docTemplTypeData._id = req.params._id;
     return Promise.resolve(docTemplTypeData);

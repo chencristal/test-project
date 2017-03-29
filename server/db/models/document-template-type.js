@@ -1,6 +1,7 @@
 'use strict';
 
 var mongoose     = require('mongoose');
+var consts       = require('../../consts');
 var timestamps   = require('./../plugins/timestamps');
 var contributors = require('./../plugins/contributors');
 
@@ -12,7 +13,11 @@ var documentTemplateTypeSchema = new mongoose.Schema({
     index: true
   },
   description: String,
-  styles: String
+  styles: String,
+  status: {
+    type: String,
+    enum: consts.USER.STATUSES
+  },
 });
 
 documentTemplateTypeSchema.plugin(timestamps, { index: true });

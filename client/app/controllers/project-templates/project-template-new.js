@@ -18,7 +18,7 @@ angular.module('app').controller('ProjectTemplateNewCtrl',
     //   return [];
     // }
     return DocumentTemplate
-      .query({ query: query })
+      .query({ query: query, status: 'active' })
       .$promise
       .then(function(docTempls) {
         $scope.documentTemplates = docTempls;

@@ -4,6 +4,7 @@ var _               = require('lodash');
 var Promise         = require('bluebird');
 var customErrors    = require('n-custom-errors');
 var consts          = require('../consts');
+var docTemplsSrvc   = require('../data-services/document-templates');
 var provisionTsSrvc = require('../data-services/provision-templates');
 var termTsSrvc      = require('../data-services/term-templates');
 var validationUtil  = require('../util/validations');
@@ -12,14 +13,14 @@ var templProc       = require('../util/template-processor');
 exports.getProvisionTemplates = (req, res, next) => {
   function parseParams(query) {
     var data = {
-      params: _.pick(query, ['query', 'includes'])
+      params: _.pick(query, ['query', 'includes', 'status'])
     };
-    data.fields = req.query.fields || ['displayName'];
+    data.fields = req.query.fields || ['displayName', 'style', 'template', 'status'];
     return Promise.resolve(data);
   }
 
   function validateParams(data) {
-    var allowedFields = ['displayName', 'style', 'template', 'templateHtml', 'termTemplates', 'orderedVariables'];
+    var allowedFields = ['displayName', 'style', 'template', 'templateHtml', 'termTemplates', 'orderedVariables', 'status'];
 
     if (data.params.includes && !_.every(data.params.includes, validationUtil.isValidObjectId)) {
       return customErrors.rejectWithUnprocessableRequestError({
@@ -41,6 +42,11 @@ exports.getProvisionTemplates = (req, res, next) => {
     if (data.params.query) {
       data.filter.displayName = {
         $regex: new RegExp(data.params.query, 'i')
+      };
+    }
+    if (data.params.status) {
+      data.filter.status = {
+        $eq: data.params.status
       };
     }
     if (data.params.includes) {
@@ -88,6 +94,7 @@ exports.createProvisionTemplate = (req, res, next) => {
 
   function doEdits(provisionTemplData) {
     var provisionTempl = _.assign({}, provisionTemplData);
+    provisionTempl.status = 'active';
     return provisionTempl;
   }
 
@@ -100,9 +107,37 @@ exports.createProvisionTemplate = (req, res, next) => {
     .catch(next);
 };
 
+exports.deleteProvisionTemplate = (req, res, next) => {
+  var provisionTemplId = req.params._id;
+
+  function validateParams() {
+    if (!validationUtil.isValidObjectId(provisionTemplId)) {
+      return customErrors.rejectWithUnprocessableRequestError({ paramName: 'id', errMsg: 'must be a valid id' });
+    }
+    return Promise.resolve();
+  }
+
+  function checkTemplateUsed(provisionTempl) {
+    return docTemplsSrvc
+      .getDocumentTemplates({ provisionTemplates: provisionTemplId }, 'name')
+      .then(docTempls => {
+        if (!_.isEmpty(docTempls))
+          return customErrors.rejectWithUnprocessableRequestError({ paramName: 'Provision template', errMsg: 'was already used by some document templates' });
+        return Promise.resolve(provisionTempl);
+      });
+  }
+
+  validateParams()
+    .then(() => provisionTsSrvc.getProvisionTemplate({ _id: provisionTemplId }, '-__v'))
+    .then(checkTemplateUsed)
+    .then(provisionTsSrvc.deleteProvisionTemplate)
+    .then(provisionTempl => res.send(true))
+    .catch(next);
+};
+
 exports.updateProvisionTemplate = (req, res, next) => {
   function parseParams(body) {
-    var allowedFields = ['displayName', 'style', 'template'];
+    var allowedFields = ['displayName', 'style', 'template', 'status'];
     var provisionTemplData = _.pick(body, allowedFields);
     provisionTemplData._id = req.params._id;
     return Promise.resolve(provisionTemplData);

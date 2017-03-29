@@ -31,4 +31,9 @@ module.exports = app => {
     auth.checkPermission('ManageDocumentTemplate', 'update'),
     docTempls.updateDocumentTemplate
   );
+  app.delete(
+    `/api/${apiVer}/document-templates/:_id`,
+    auth.checkPermission('ManageDocumentTemplate', 'delete'),
+    docTempls.deleteDocumentTemplate
+  );
 };

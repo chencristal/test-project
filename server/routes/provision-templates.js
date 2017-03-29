@@ -31,4 +31,9 @@ module.exports = app => {
     auth.checkPermission('ManageProvisionTemplate', 'update'),
     provisionTs.updateProvisionTemplate
   );
+  app.delete(
+    `/api/${apiVer}/provision-templates/:_id`,
+    auth.checkPermission('ManageProvisionTemplate', 'delete'),
+    provisionTs.deleteProvisionTemplate
+  );
 };

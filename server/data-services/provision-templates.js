@@ -43,3 +43,7 @@ exports.createProvisionTemplate = provisionTemplData => {
 exports.saveProvisionTemplate = provisionTempl => {
   return provisionTempl.save();
 };
+
+exports.deleteProvisionTemplate = provisionTempl => {
+  return provisionTempl.remove();
+};
