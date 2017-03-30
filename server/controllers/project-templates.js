@@ -146,6 +146,13 @@ exports.createProjectTemplate = (req, res, next) => {
   function doEdits(projTemplData) {
     var projTempl = _.assign({}, projTemplData);
     projTempl.status = 'active';
+
+    // Check for all users
+    if (_.includes(projTempl.users, '0')) {
+      projTempl.users = [];
+      projTempl.allUsers = true;
+    }
+
     return projTempl;
   }
 
@@ -202,6 +209,17 @@ exports.updateProjectTemplate = (req, res, next) => {
 
   function doEdits(data) {
     _.extend(data.projTempl, data.projTemplData);
+    console.log(data.projTemplData);
+
+    // Check for all users
+    if (_.includes(data.projTemplData.users, '0')) {
+      data.projTempl.users = [];
+      data.projTempl.allUsers = true;
+    }
+    else {
+      data.projTempl.allUsers = false;
+    }
+
     return data.projTempl;
   }
 
@@ -241,8 +259,9 @@ function _validateProjectTemplateData(projTemplData) {
       errMsg: 'must be an array with valid ids'
     });
   }
-  if (projTemplData.userGroups && (!_.isArray(projTemplData.users) ||
-      !_.every(projTemplData.users, validationUtil.isValidObjectId))) {
+  if (projTemplData.users && (!_.isArray(projTemplData.users) ||
+      (!_.every(projTemplData.users, validationUtil.isValidObjectId) && 
+      !_.includes(projTemplData.users, '0')))) {
     return customErrors.rejectWithUnprocessableRequestError({
       paramName: 'users',
       errMsg: 'must be an array with valid ids'
