@@ -13,6 +13,8 @@ angular.module('app').controller('ProjectTemplateNewCtrl',
   $scope.users = [];
   $scope.userGroups = [];
 
+  var _allUser = { _id: "0", firstName: "All Users" };
+
   $scope.refreshDocumentTemplates = function(query) {
     // if (!query) {
     //   return [];
@@ -41,13 +43,18 @@ angular.module('app').controller('ProjectTemplateNewCtrl',
       .then(function(users) {
 
         // For 'All Users' item
-        /* users = _.concat({
-          _id: "0",
-          firstName: "All Users"
-        }, users); */
-
+        users = _.concat(_allUser, users);
         $scope.users = users;
       });
+  };
+
+  $scope.onSelectUser = function(item, model) {
+    if (model === _allUser._id) {
+      $scope.projectTemplate.users = [ _allUser._id ];
+    }
+    else {
+      _.pull($scope.projectTemplate.users, _allUser._id);
+    }
   };
 
   $scope.createProjectTemplate = function() {
