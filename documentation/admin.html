@@ -52,74 +52,57 @@
             <div class="container">
                 <div id="doc-header" class="doc-header text-center">
                     <h1 class="doc-title"><i class="icon fa fa-unlock-alt" aria-hidden="true"></i> Admin</h1>
-                    <div class="meta"><i class="fa fa-clock-o" aria-hidden="true"></i> Last updated: February 23, 2017</div>
+                    <div class="meta"><i class="fa fa-clock-o" aria-hidden="true"></i> Last updated: March 25, 2017</div>
                 </div><!--//doc-header-->
                 <div class="doc-body">
                     <div class="doc-content">
                         <div class="content-inner">
                             <section id="download-section" class="doc-section">
-                                <h2 class="section-title">Does left change?</h2>
+                                <h2 class="section-title">Introduction</h2>
                                 <div class="section-block">
-                                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi nec imperdiet turpis. Curabitur aliquet pulvinar ultrices. Etiam at posuere leo. Proin ultrices ex et dapibus feugiat <a href="#">link example</a> aenean purus leo, faucibus at elit vel, aliquet scelerisque dui. Etiam quis elit euismod, imperdiet augue sit amet, imperdiet odio. Aenean sem erat, hendrerit  eu gravida id, dignissim ut ante. Nam consequat porttitor libero euismod congue. 
-                                    </p>
-                                    <a href="http://themes.3rdwavemedia.com" class="btn btn-green" target="_blank"><i class="fa fa-download"></i> Download PrettyDocs</a>
-                                </div>
+                                    <h3 class="block-title">Who are the Admins?</h3>
+                                    <p>The Admins create various classes of users, whether it be Authors, who create templates or end Users who create documents using the templates. They set various permissions individually or via groups so that sharing of the templates, projects or other resources are done in a secure and efficient manner.  Typically, an institution's IT personnel will be the Admin. </p>
+
+                                    <h3 class="block-title">Comparing Admin and Author</h3>
+                                    <p>The Admins, like the Athors, have the ability to create Templates and give access to such Templates to other groups or individual users.  Unlike Authors, however, Admin also have the power to create and disable Users, and they are also able to delete and disable Templates.  Authors do not manage Users and Authors do not have permission to delete Templates, even though they have authority to create them. </p>
+                                    
+                                    <h3 class="block-title">Disabling vs. Deleting Templates</h3>
+                                    <p>The main difference between Disabling a Template is that Disabling will permit existing projects to work, whereas deleting a Template will prevent the project from working.  The Disabling feature is useful when there is a new version of the Project Template available, when you want to encourage the Users to use the new version of the Project Template, while allowing older projects that still use older version of the Project Template to still function.    </p>
+                                    
+                                    
+                                </div><!--//section-block-->
                             </section><!--//doc-section-->
                             <section id="installation-section" class="doc-section">
-                                <h2 class="section-title">Installation</h2>
+                                <h2 class="section-title">Managing Users</h2>
                                 <div id="step1"  class="section-block">
-                                    <h3 class="block-title">Step One</h3>
-                                    <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis.
+                                    <h3 class="block-title">Creating Users</h3>
+                                    <p>To create a new User, click on the left hand-side of the dashboard and click on [Manage] Users --> New User.  Even though the term "User" is used, you can create either Author or User.  
                                     </p>
-                                    <div class="code-block">
-                                        <h6>Default code example:</h6>
-                                        <p><code>bower install &lt;package&gt;</code></p>
-                                        <p><code>npm install &lt;package&gt;</code></p>
-                                    </div><!--//code-block-->
+
                                 </div><!--//section-block-->
                                 <div id="step2"  class="section-block">
-                                    <h3 class="block-title">Step Two</h3>
-                                    <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.
-                                    </p>
+                                    <h3 class="block-title">Managing Groups</h3>
+                                    <p>Groups make assignment of privileges easy by allowing granting permissions to a larger group of individuals.  If there were no Groups, then the Admin would have to grant privileges and permissions one-by-one, which would be a time consuming process. </p>
                                     <div class="row">
                                         <div class="col-md-6 col-sm-6 col-xs-12">
-                                            <h6>Un-ordered list example</h6>
+                                            <h6>There are two types of Groups:</h6>
                                             <ul class="list">
-        										<li>Lorem ipsum dolor sit amet.</li>
-        										<li>Aliquam tincidunt mauris.</li>
-        										<li>Ultricies eget vel aliquam libero.
-        											<ul>
-        												<li>Turpis pulvinar</li>
-        												<li>Feugiat scelerisque</li>
-        												<li>Ut tincidunt</li>
-        											</ul>
-        										</li>
-        										<li>Pellentesque habitant morbi.</li>
-        										<li>Praesent dapibus, neque id.</li>
-        									</ul>
+                                                <li>Role Groups</li>
+                                                <li>Institution Groups</li>
+                                            </ul>
                                         </div>
-                                        <div class="col-md-6 col-sm-6 col-xs-12">
-                                            <h6>Ordered list example</h6>
-                                            <ol class="list">
-        										<li>Lorem ipsum dolor sit amet.</li>
-        										<li>Aliquam tincidunt mauris.</li>
-        										<li>Ultricies eget vel aliquam libero.
-        											<ul>
-        												<li>Turpis pulvinar</li>
-        												<li>Feugiat scelerisque</li>
-        												<li>Ut tincidunt</li>
-        											</ul>
-        										</li>
-        										<li>Pellentesque habitant morbi.</li>
-        										<li>Praesent dapibus, neque id.</li>
-        									</ol>
-                                        </div>
+
                                     </div><!--//row-->
+                                    <p>The difference is that if you assign a Role Group to a User or Admin, it will be given privileges associated with that group, namely the ability to modify a Project Template, in the case of an Author Group, and the ability to use a Project Template, in the case of a User Group.  Role groups are a convenient tool to organize groups of Authors and Users, and permits easy management of the accounts.  </p>
+                                    <p>Alternatively, if you assign an Institution Group (or be assigned to an Institution Group), your privileges of the Project Template would be limited within that domain.  Institution Groups follow the parent entity to its children entity.  If, for example, an Admin account was created with Institution Group of "Payroll Department", all of the Authors and Users created by that Admin would belong to Payroll Department, and all of that Admin, Author and Users will have access limited to assets and resources belonging to the Payroll Department.  This Institutional Group provides strong access controls by segregating information consistent with institutional policy.    </p>
                                 </div><!--//section-block-->
                                 <div id="step3"  class="section-block">
-                                    <h3 class="block-title">Step Three</h3>
-                                    <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis.
+                                    <h3 class="block-title">Managing Templates</h3>
+                                    <p>Although both Author and Admin can create various Templates that ultimately congregate into the Project Template, only Admin has the authority to delete or disable Templates.  
                                     </p>
+                                    <p>With great powers come great responsibilities.  Deleting templates that are being used can crash the app, as the expected information is suddenly not found.  Therefore, in order to delete a [Term Template], it must not be used in any Provision Template.  And to delete a Provision Template, it must not have been used in any Document Template. And to delete a Document Template, it must not have been used in any Project Template.  And to delete a Project Template, it must not have been used by any User to create a project.  Therefore, to thoroughly delete a Project Template, you must make sure that no User has created a document with it.</p>
+                                    <p>The above limitation may not settle with some, but it should be noted that the Template maybe modified in any way shape or form by both the Admin and Author.  If some sensitive information has been included, such information could be deleteed.  In addition, there is also the ability to Disable the template.  Disabling a Template (whether it be Project Template or Term Template, etc.) prevents it from being used for a new higher-tier template (so if a Document Template is disabled, it will not be available to create a Project Template) and if a Project Template is disabled, it will not be usable by Users to create a new document (but it will not affect existing documents created with that Project Template). </p>
+                                    <p>Disabling the Template is a good option if there are multiple revisions to the Template.  Admin can roll out a new version of the Project Template and disable the old Project Template; then all new user projects will be created using the latest version (which is a significant version control problem). </p>
                                 </div><!--//section-block-->
                             </section><!--//doc-section-->
                             
@@ -142,115 +125,9 @@
                                             <p>You can use this online <a href="https://mothereff.in/html-entities" target="_blank">HTML entity encoder/decoder</a> to generate your code examples.</p>
                                         </div><!--//content-->
                                     </div>
-                                    <div class="code-block">
-                                        <h6>HTML Code Example</h6>
-                                        <pre><code class="language-markup">&lt;!DOCTYPE html&gt; 
-&lt;html lang=&quot;en&quot;&gt; 
-    ...
-    &lt;div class=&quot;jumbotron&quot;&gt; 
-        &lt;h1&gt;Hello, world!&lt;/h1&gt; 
-        &lt;p&gt;...&lt;/p&gt; 
-        &lt;p&gt;&lt;a class=&quot;btn btn-primary btn-lg&quot; href=&quot;#&quot; role=&quot;button&quot;&gt;Learn more&lt;/a&gt;&lt;/p&gt; 
-    &lt;/div&gt;
-    &lt;div class=&quot;jumbotron&quot;&gt; 
-        &lt;h1&gt;Hello, world!&lt;/h1&gt; 
-        &lt;p&gt;...&lt;/p&gt; 
-        &lt;p&gt;&lt;a class=&quot;btn btn-primary btn-lg&quot; href=&quot;#&quot; role=&quot;button&quot;&gt;Learn more&lt;/a&gt;&lt;/p&gt; 
-    &lt;/div&gt;
-    ...
-&lt;/html&gt;</code></pre>
-                                    </div><!--//code-block-->
-                                </div><!--//section-block-->
-                                <div id="css" class="section-block">
-                                    <div class="code-block">
-                                        <h6>CSS Code Example</h6>
-                                        <pre><code class="language-css">/* ======= Base Styling ======= */
-body {
-    font-family: 'Open Sans', arial, sans-serif; 
-    color: #333; 
-    font-size: 16px; 
-    -webkit-font-smoothing: antialiased; 
-    -moz-osx-font-smoothing: grayscale; 
-}</code></pre>
-                                    </div><!--//code-block-->
-                                </div><!--//section-block-->
-                                <div id="less" class="section-block">
-                                    <div class="code-block">
-                                        <h6>LESS Code Example</h6>
-                                        <pre><code class="language-css">/*
-* Template Name: prettyDocs - Responsive Website Template for documentations 
-* Version: 1.0 
-* Author: Xiaoying Riley 
-* License: Creative Commons Attribution 3.0 License 
-* Twitter: @3rdwave_themes 
-* Website: http://themes.3rdwavemedia.com/ 
-*/ 
-@import &quot;mixins.less&quot;; 
-@import &quot;theme-default.less&quot;; 
-@import &quot;base.less&quot;; 
-@import &quot;doc.less&quot;; 
-@import &quot;landing.less&quot;; 
-@import &quot;responsive.less&quot;;</code></pre>
-                                    </div><!--//code-block-->
-                                </div><!--//section-block-->
-                                <div id="sass" class="section-block">
-                                    <div class="code-block">
-                                        <h6>Sass Code Example</h6>
-                                        <pre><code class="language-sass">#main {
-    $width: 5em; 
-    width: $width; 
-}
 
-#sidebar { 
-    width: $width; 
-}</code></pre>
-                                    </div><!--//code-block-->
                                 </div><!--//section-block-->
-                                <div id="javascript" class="section-block">
-                                    <div class="code-block">
-                                        <h6>JavaScript Code Example</h6>
-                                        <pre><code class="language-javascript">&lt;script&gt; 
-    function myFunction(a, b) { 
-        return a * b; 
-    } 
-    
-    document.getElementById(&quot;demo&quot;).innerHTML = myFunction(4, 3); 
-&lt;/script&gt;</code></pre>
-                                    </div><!--//code-block-->
-                                </div><!--//section-block-->
-                                <div id="python" class="section-block">
-                                    <div class="code-block">
-                                        <h6>Python Code Example</h6>
-                                        <pre><code class="language-python">&gt;&gt;&gt; x = int(input(&quot;
-Please enter an integer: &quot;)) Please enter an integer: 42 
-&gt;&gt;&gt; if x &lt; 0: 
-... x = 0 
-... print('Negative changed to zero') 
-... elif x == 0: 
-... print('Zero') 
-... elif x == 1: 
-... print('Single') 
-... else: 
-... print('More') 
-... More</code></pre>
-                                    </div><!--//code-block-->
-                                </div><!--//section-block-->
-                                <div id="php" class="section-block">
-                                    <div class="code-block">
-                                        <h6>PHP Code Example</h6>
-                                        <pre><code class="language-php">&lt;?php 
-$txt = &quot;Hello world!&quot;; 
-$x = 5; 
-$y = 10.5; 
 
-echo $txt; 
-echo &quot;&lt;br&gt;&quot;; 
-echo $x; 
-echo &quot;&lt;br&gt;&quot;; 
-echo $y; 
-?&gt;</code></pre>
-                                    </div><!--//code-block-->
-                                </div><!--//section-block-->
                                 <div id="handlebars" class="section-block">
                                     <div class="code-block">
                                         <h6>Handlebars Code Example</h6>
