@@ -20,7 +20,11 @@ angular.module('app').controller('AccountProfileCtrl',
 
   $scope.refreshUserGroups = function(query) {
     return UserGroup
-      .query({ query: query, role: Identity.getRole() })
+      .query({ 
+        query: query, 
+        role: Identity.getRole(),
+        prebuilt: false
+      })
       .$promise
       .then(function(usergroups) {
         $scope.userGroups = usergroups;

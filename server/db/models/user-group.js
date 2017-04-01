@@ -22,6 +22,11 @@ var userGroupSchema = new mongoose.Schema({
   status: {
     type: String,
     enum: consts.USER.STATUSES
+  },
+
+  allUsers: {
+    type: Boolean,
+    default: false
   }
 });
 

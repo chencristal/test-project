@@ -14,14 +14,14 @@ exports.getUserGroups = function(req, res, next) {
 
   function parseParams(query) {
     var data = {
-      params: _.pick(query, ['query', 'role', 'includes'])
+      params: _.pick(query, ['query', 'role', 'includes', 'prebuilt'])
     };
-    data.fields = req.query.fields || [ 'groupName', 'role', 'status' ];
+    data.fields = req.query.fields || [ 'groupName', 'role', 'status', 'allUsers' ];
     return Promise.resolve(data);
   }
 
   function validateParams(data) {
-    var allowedFields = [ 'groupName', 'role', 'status' ];
+    var allowedFields = [ 'groupName', 'role', 'status', 'allUsers' ];
 
     if (data.params.includes && !_.every(data.params.includes, validationUtil.isValidObjectId)) {
       return customErrors.rejectWithUnprocessableRequestError({
@@ -53,6 +53,11 @@ exports.getUserGroups = function(req, res, next) {
     else {
       data.filter.role = {
         $in: roleUtil.getLowerRolesFilters(role)
+      };
+    }
+    if (data.params.prebuilt) {
+      data.filter.allUsers = {
+        $eq: data.params.prebuilt
       };
     }
     if (data.params.query) {
@@ -101,7 +106,7 @@ exports.getUserGroupById = function(req, res, next) {
   }
 
   validateParams()
-    .then(() => userGroupsSrvc.getUserGroup({ _id: groupId }, 'groupName role status'))
+    .then(() => userGroupsSrvc.getUserGroup({ _id: groupId }, 'groupName role status allUsers'))
     .then(_concatMembers)
     .then(usergroup => _checkPermission(req.user.role, usergroup))
     .then(usergroup => res.send(usergroup))
@@ -129,6 +134,7 @@ exports.createUserGroup = function(req, res, next) {
   function doEdits(userGroupData) {
     var usergroup = _.assign({}, userGroupData);
     usergroup.status = 'active';
+    usergroup.allUsers = false;
     return usergroup;
   }
 
@@ -168,8 +174,16 @@ exports.updateUserGroup = function(req, res, next) {
     return Promise.resolve(userGroupData);
   }
 
+  function validateAllUserGroup(usergroup) {
+    if (usergroup.allUsers === true) {
+      return customErrors.rejectWithUnprocessableRequestError({ paramName: 'This group', errMsg: 'cannot be modified'});
+    }
+    return Promise.resolve(usergroup);
+  }
+
   function doEdits(data) {
     _.extend(data.userGroup, data.userGroupData);
+    data.userGroup.allUsers = false;
     return data.userGroup;
   }
 
@@ -177,6 +191,7 @@ exports.updateUserGroup = function(req, res, next) {
     .then(validateParams)
     .then(userGroupData => userGroupsSrvc
       .getUserGroup({ _id: userGroupData._id })
+      .then(validateAllUserGroup)
       .then(usergroup => _getAssigned(usergroup)
         .then(users => _removeMembers(usergroup, users))
         .then(userGroup => {
