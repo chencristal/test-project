@@ -330,7 +330,7 @@ Generator.prototype.generateMathHtml = function(token) {    // chen_debug
                ${offsetAttr}
                ng-required="true"
                ng-class="selectedVariable == ${varName} ? 'highlighted-for-scroll' : null" 
-               ng-disabled="${varName}.state == 1"></label></span>`;
+               ng-disabled="${varName}.state == 1"></label>`;
   }
   
 
