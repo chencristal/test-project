@@ -576,8 +576,8 @@ angular.module('app').directive('projectEditor', function () {
           return false;
         }
         function _parseIfCond(token) {
-          var op = token.params[0].text,
-              v1 = _parseBoolean(token.params[1].text),
+          var v1 = _parseBoolean(token.params[0].text),
+              op = token.params[1].text,
               v2 = _parseBoolean(token.params[2].text);
 
           switch (op) {
@@ -600,6 +600,19 @@ angular.module('app').directive('projectEditor', function () {
             default:
               return false;
           }
+        }
+
+        function _parseIfVariant(token) {
+          var text = token.params[0].text,
+              op = token.params[1].text;
+
+          var _temp = _.find(values, {'variable': text});
+
+          if (_temp !== undefined && _temp.value == op) {
+            return true;
+          }
+
+          return false;
         }
 
         function _parseValues(token) {
@@ -660,6 +673,10 @@ angular.module('app').directive('projectEditor', function () {
                       }
                     }
                   });
+
+                  if (_parseIfVariant(token) == true) {
+                    _.map(token.tokens, _parseValues);
+                  }
                 }
                 else if (token.text == 'ifCond') {
                   _.forEach(token.params, function(param) {

@@ -251,7 +251,7 @@ Generator.prototype.generateExpressionHtml = function (token) {
   return html;
 };
 
-Generator.prototype.generateMathHtml = function(token) {    // chen_debug
+Generator.prototype.generateMathHtml = function(token) {
   var self = this;
   var html = '';
   var param1 = token.params[0];
