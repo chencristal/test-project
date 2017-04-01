@@ -4,6 +4,7 @@ var gulp        = require('gulp');
 var gplumber    = require('gulp-plumber');
 var gif         = require('gulp-if');
 var gsize       = require('gulp-size');
+var gbabel      = require('gulp-babel');
 var gchanged    = require('gulp-changed');
 var gcached     = require('gulp-cached');
 var gconcat     = require('gulp-concat');
@@ -24,6 +25,7 @@ gulp.task('build-app-js', () => {
   return gulp
     .src(paths.clientJs + filters.jsDeep)
     .pipe(gplumber())
+    .pipe(gbabel({presets: ['es2015']}))
     .pipe(gif(args.isNotProduction, gcached('scripts')))
     .pipe(gsourcemaps.init())
     .pipe(gorder([
