@@ -15,8 +15,7 @@ exports.getUserProjectTemplates = (user) => {
     .find({
       $or: [
         { users: user._id }, 
-        { userGroups: { $in: user.userGroups } }, 
-        { allUsers: true }
+        { userGroups: { $in: user.userGroups } }
       ]
     })
     .exec();

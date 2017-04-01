@@ -7,6 +7,7 @@ var projectsSrvc   = require('../data-services/projects');
 var projTemplsSrvc = require('../data-services/project-templates');
 var validationUtil = require('../util/validations');
 var usersSrvc      = require('../data-services/users');
+var userGroupsSrvc = require('../data-services/user-groups');
 
 exports.getProjectTemplates = (req, res, next) => {
   function parseParams(query) {
@@ -87,31 +88,32 @@ exports.getUserProjectTemplates = (req, res, next) => {
         $in: params.includes
       };
     }
-    return filter;
+
+    // Update filter with User Information
+    return Promise
+      .all([
+        usersSrvc.getUser({email: req.user.email}),
+        userGroupsSrvc.getUserGroup({allUsers: true, role: req.user.role})
+      ])
+      .spread((user, prebuiltGroup) => {
+        if (user.role === 'user')
+          filter = _.assign(filter, { 
+              $or: [
+                { users: user._id }, 
+                { userGroups: {$in: _.concat(user.userGroups, prebuiltGroup._id)} }
+              ]
+            });
+        return filter;
+      })
+      .catch(err => {
+        return filter;
+      });
   }
 
   parseParams(req.query)
     .then(validateParams)
     .then(buildFilter)
-    .then(filter => {
-      return usersSrvc
-        .getUser({email: req.user.email})
-        .then(user => {
-          if (user.role === 'user') 
-            return _.assign(filter, 
-              {
-                $or: [
-                  { users: user._id }, 
-                  { userGroups: {$in: user.userGroups} },
-                  { allUsers: true }
-                ]
-              }
-            );
-          else
-            return filter;
-        })
-        .then(filter => projTemplsSrvc.getProjectTemplates(filter));
-    })
+    .then(filter => projTemplsSrvc.getProjectTemplates(filter))
     .then(projTempls => res.send(projTempls))
     .catch(next);
 };
@@ -148,8 +150,8 @@ exports.createProjectTemplate = (req, res, next) => {
     projTempl.status = 'active';
 
     // Check for all users
-    if (_.includes(projTempl.users, '0')) {
-      projTempl.users = [];
+    if (_.includes(projTempl.userGroups, '0')) {
+      projTempl.userGroups = [];
       projTempl.allUsers = true;
     }
 
@@ -209,17 +211,6 @@ exports.updateProjectTemplate = (req, res, next) => {
 
   function doEdits(data) {
     _.extend(data.projTempl, data.projTemplData);
-    console.log(data.projTemplData);
-
-    // Check for all users
-    if (_.includes(data.projTemplData.users, '0')) {
-      data.projTempl.users = [];
-      data.projTempl.allUsers = true;
-    }
-    else {
-      data.projTempl.allUsers = false;
-    }
-
     return data.projTempl;
   }
 
@@ -260,8 +251,7 @@ function _validateProjectTemplateData(projTemplData) {
     });
   }
   if (projTemplData.users && (!_.isArray(projTemplData.users) ||
-      (!_.every(projTemplData.users, validationUtil.isValidObjectId) && 
-      !_.includes(projTemplData.users, '0')))) {
+      !_.every(projTemplData.users, validationUtil.isValidObjectId))) {
     return customErrors.rejectWithUnprocessableRequestError({
       paramName: 'users',
       errMsg: 'must be an array with valid ids'

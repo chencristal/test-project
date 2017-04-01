@@ -10,8 +10,6 @@ angular.module('app').controller('ProjectTemplateEditCtrl',
   $scope.users = [];
   $scope.userGroups = [];
 
-  var _allUser = { _id: "0", firstName: "All Users" };
-
   (function loadData() {
     ProjectTemplate
       .get({
@@ -58,25 +56,10 @@ angular.module('app').controller('ProjectTemplateEditCtrl',
       .query({ query: query, role: 'user' })
       .$promise
       .then(function(users) {
-
-        // For 'All Users' item
-        users = _.concat(_allUser, users);
-        if ($scope.projectTemplate.allUsers) {
-          $scope.projectTemplate.users = [ _allUser._id ];
-        }
         $scope.users = users;
       });
   };
-
-  $scope.onSelectUser = function(item, model) {
-    if (model === _allUser._id) {
-      $scope.projectTemplate.users = [ _allUser._id ];
-    }
-    else {
-      _.pull($scope.projectTemplate.users, _allUser._id);
-    }
-  };
-
+  
   $scope.saveProjectTemplate = function() {
     $scope.isSaving = true;
     $scope.projectTemplate

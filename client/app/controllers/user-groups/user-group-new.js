@@ -9,7 +9,6 @@ angular.module('app').controller('UserGroupNewCtrl',
 
   $scope.roles = Identity.getLowerRoleNames();
   $scope.selectedRole = { 'selected' : $scope.roles[0] };
-  // $scope.selectedUsers = { 'selected' : [] };
 
   $scope.updateRole = function() {
     $scope.refreshUsers();
@@ -28,7 +27,6 @@ angular.module('app').controller('UserGroupNewCtrl',
   $scope.createUserGroup = function() {
     $scope.isSaving = true;
     $scope.userGroup.role = $scope.selectedRole.selected.value;
-    // $scope.userGroup = _.assign({'assigned': $scope.selectedUsers.selected}, $scope.userGroup);
 
     var userGroup = new UserGroup($scope.userGroup);
     userGroup

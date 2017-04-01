@@ -24,10 +24,6 @@ var projectTemplateSchema = new mongoose.Schema({
     type: mongoose.Schema.ObjectId,
     ref: 'userGroup'
   }],
-  allUsers: {
-    type: Boolean,
-    default: false
-  },
   status: {
     type: String,
     enum: consts.USER.STATUSES

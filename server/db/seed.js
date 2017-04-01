@@ -9,6 +9,7 @@ var mongoose             = require('mongoose');
 var db                   = require('./');
 var log                  = require('../util/logger').logger;
 var User                 = mongoose.model('user');
+var UserGroup            = mongoose.model('userGroup');
 var TermTemplate         = mongoose.model('termTemplate');
 var ProvisionTemplate    = mongoose.model('provisionTemplate');
 var DocumentTemplateType = mongoose.model('documentTemplateType');
@@ -35,6 +36,14 @@ function insertUsers() {
   return User.create(users);
 }
 
+function insertUserGroups() {
+  var userGroups = [
+    { "_id" : ObjectId("58dfa5a4317b43114750c8ca"), "groupName" : "All Users", "status" : "active", "allUsers" : true, "provider" : "local", "role" : "user" },
+    { "_id" : ObjectId("58dfa5a4317b43114750c8cb"), "groupName" : "All Authors", "status" : "active", "allUsers" : true, "provider" : "local", "role" : "author" }
+  ];
+  return UserGroup.create(userGroups);
+}
+
 function insertTermTemplates() {
   var termtemplates = [
     { "_id" : ObjectId("57fa215761ef4235ec502a32"), "termType" : "text", "variable" : "text1", "displayName" : "text1", "help" : "<p>Text variable. Such variable is displayed as input element on properties editor and main text area.<br/></p>", "variant" : { "displayAs" : "dropdown", "default" : 0, "options" : [ ] }, "boolean" : { "default" : false, "exclusionText" : "Exclude", "inclusionText" : "Include" }, "text" : { "placeholder" : "Text variable1" }},
@@ -43,7 +52,7 @@ function insertTermTemplates() {
     { "_id" : ObjectId("57fa21eb61ef4235ec502a36"), "termType" : "boolean", "variable" : "bool2", "displayName" : "bool2", "variant" : { "displayAs" : "dropdown", "default" : 0, "options" : [ ] }, "boolean" : { "default" : true, "exclusionText" : "Exclude text", "inclusionText" : "Include text" }},
     { "_id" : ObjectId("57fa221861ef4235ec502a37"), "termType" : "variant", "variable" : "variant1", "displayName" : "variant1", "variant" : { "default" : "opt3", "displayAs" : "dropdown", "options" : [ { "id" : 1, "value" : "opt1" }, { "id" : 2, "value" : "opt2" }, { "id" : 3, "value" : "opt3" } ] }, "boolean" : { "default" : false, "exclusionText" : "Exclude", "inclusionText" : "Include" }},
     { "_id" : ObjectId("57fa223061ef4235ec502a38"), "termType" : "variant", "variable" : "variant2", "displayName" : "variant2", "variant" : { "default" : "option1", "displayAs" : "radio buttons", "options" : [ { "id" : 1, "value" : "option1" }, { "id" : 2, "value" : "option2" } ] }, "boolean" : { "default" : false, "exclusionText" : "Exclude", "inclusionText" : "Include" }},
-    { "_id" : ObjectId("57fa2310d0376b53ec44ede6"), "termType" : "date", "variable" : "date1", "displayName" : "date1", "variant" : { "displayAs" : "dropdown", "default" : 0, "options" : [ ] }, "boolean" : { "default" : false, "exclusionText" : "Exclude", "inclusionText" : "Include" }}
+    { "_id" : ObjectId("57fa2310d0376b53ec44ede6"), "termType" : "date", "variable" : "date1", "displayName" : "date1", "variant" : { "displayAs" : "dropdown", "default" : 0, "options" : [ ] }, "boolean" : { "default" : false, "exclusionText" : "Exclude", "inclusionText" : "Include" }, "date": {"placeholder": "2017-03-08"}}
   ];
   return TermTemplate.create(termtemplates);
 }
@@ -77,7 +86,7 @@ function insertDocumentTemplates() {
 
 function insertProjectTemplates() {
   var projectTemplates = [
-    { "_id" : ObjectId("57fa4b9d15d084efeef2ba59"), "name" : "examples", "documentTemplates" : [ ObjectId("57fa4b8215d084efeef2ba58"), ObjectId("57faa04c8b473d77f4d4be1a"), ObjectId("57faa17b11a377a8f437cd74"), ObjectId("57faa1b011a377a8f437cd75") ], "users": [ ObjectId("57fa20920cb5ff30ec857430"), ObjectId("57fa20920cb5ff30ec857431") ], "status": "active", "allUsers": true }
+    { "_id" : ObjectId("57fa4b9d15d084efeef2ba59"), "name" : "examples", "documentTemplates" : [ ObjectId("57fa4b8215d084efeef2ba58"), ObjectId("57faa04c8b473d77f4d4be1a"), ObjectId("57faa17b11a377a8f437cd74"), ObjectId("57faa1b011a377a8f437cd75") ], "users": [ ObjectId("57fa20920cb5ff30ec857430"), ObjectId("57fa20920cb5ff30ec857431") ], "status": "active" }
   ];
   return ProjectTemplate.create(projectTemplates);
 }
@@ -93,6 +102,7 @@ db
   .connect()
   .then(clearDb)
   .then(insertUsers)
+  .then(insertUserGroups)
   .then(insertTermTemplates)
   .then(insertProvisionTemplates)
   .then(insertDocumentTemplateTypes)

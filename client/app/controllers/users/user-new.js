@@ -17,7 +17,11 @@ angular.module('app').controller('UserNewCtrl',
 
   $scope.refreshUserGroups = function(query) {
     return UserGroup
-      .query({ query: query, role: $scope.selectedRole.selected.value })
+      .query({ 
+        query: query, 
+        role: $scope.selectedRole.selected.value, 
+        prebuilt: false
+      })
       .$promise
       .then(function(usergroups) {
         $scope.userGroups = usergroups;

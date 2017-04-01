@@ -7,7 +7,7 @@ angular.module('app').controller('UserGroupsListCtrl',
 
   (function loadData() {
     UserGroup
-      .query()
+      .query({prebuilt: false})
       .$promise
       .then(function(usergroups) {
         $scope.userGroups = usergroups;
