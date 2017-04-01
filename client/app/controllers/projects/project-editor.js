@@ -608,11 +608,7 @@ angular.module('app').directive('projectEditor', function () {
 
           var _temp = _.find(values, {'variable': text});
 
-          if (_temp !== undefined && _temp.value == op) {
-            return true;
-          }
-
-          return false;
+          return (_temp !== undefined && _temp.value == op);
         }
 
         function _parseValues(token) {
@@ -675,6 +671,20 @@ angular.module('app').directive('projectEditor', function () {
                   });
 
                   if (_parseIfVariant(token) == true) {
+                    _.map(token.tokens, _parseValues);
+                  }
+                }
+                else if (token.text == 'unlessVariant') {
+                  _.forEach(token.params, function(param) {
+                    if (param.type == 'variable') {
+                      var _temp = _.find(values, {'variable': param.text});
+                      if (_.find(_variables, _temp) == undefined) {
+                        _variables = _.concat(_variables, _temp);
+                      }
+                    }
+                  });
+
+                  if (_parseIfVariant(token) == false) {
                     _.map(token.tokens, _parseValues);
                   }
                 }
