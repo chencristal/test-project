@@ -29,9 +29,9 @@ function clearDb() {
 
 function insertUsers() {
   var users = [
-    { "_id" : ObjectId("57fa20920cb5ff30ec857430"), "firstName" : "user1", "email" : "user1@mail.com", "hashedPassword" : "xKd3xarlKs8fn0iINhD5k0ex5hm4z3ctq1Q6tgsSV8Urogr/qAukddTmN9Pxjrsvfk4DQxAncSbKAFz/k/8GbA==", "salt" : "+zP2BiBaskkh9hXKzh5L5w==", "status" : "active", "invited" : false, "provider" : "local", "role" : "user" },
-    { "_id" : ObjectId("57fa20920cb5ff30ec85742f"), "firstName" : "admin", "email" : "admin@mail.com", "hashedPassword" : "6nvd0F9sEW7yEvjeqT1XC2HO14Knw2Ow2OEJMKhCaSDjtnVftwFohGQ48PSVX5Tl8gFiX4J3HhCzuOkb+iS1Xg==", "salt" : "eTxOoNgYA4kBTQb0Z3JJKQ==", "status" : "active", "invited" : false, "provider" : "local", "role" : "superadmin" },
-    { "_id" : ObjectId("57fa20920cb5ff30ec857431"), "firstName" : "user2", "email" : "user2@mail.com", "hashedPassword" : "Tp8ipKT2vyk3n+P3lzat5+HF62JAg2Uf/CkwQgUA2SV9Sn0unts1r/1WpXSxuWgsVOC3x7YdxQrGGDfh+n1HIg==", "salt" : "20tfkVec7bQymdcpecBLDg==", "status" : "active", "invited" : false, "provider" : "local", "role" : "user" }
+    { "_id" : ObjectId("57fa20920cb5ff30ec857430"), "firstName" : "user1", "email" : "user1@mail.com", "hashedPassword" : "xKd3xarlKs8fn0iINhD5k0ex5hm4z3ctq1Q6tgsSV8Urogr/qAukddTmN9Pxjrsvfk4DQxAncSbKAFz/k/8GbA==", "salt" : "+zP2BiBaskkh9hXKzh5L5w==", "status" : "active", "invited" : false, "provider" : "local", "role" : "user", "urlLogin": true },
+    { "_id" : ObjectId("57fa20920cb5ff30ec85742f"), "firstName" : "admin", "email" : "admin@mail.com", "hashedPassword" : "6nvd0F9sEW7yEvjeqT1XC2HO14Knw2Ow2OEJMKhCaSDjtnVftwFohGQ48PSVX5Tl8gFiX4J3HhCzuOkb+iS1Xg==", "salt" : "eTxOoNgYA4kBTQb0Z3JJKQ==", "status" : "active", "invited" : false, "provider" : "local", "role" : "superadmin", "urlLogin": true },
+    { "_id" : ObjectId("57fa20920cb5ff30ec857431"), "firstName" : "user2", "email" : "user2@mail.com", "hashedPassword" : "Tp8ipKT2vyk3n+P3lzat5+HF62JAg2Uf/CkwQgUA2SV9Sn0unts1r/1WpXSxuWgsVOC3x7YdxQrGGDfh+n1HIg==", "salt" : "20tfkVec7bQymdcpecBLDg==", "status" : "active", "invited" : false, "provider" : "local", "role" : "user", "urlLogin": true }
   ];
   return User.create(users);
 }

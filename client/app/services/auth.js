@@ -15,6 +15,19 @@ angular.module('app').factory('Auth', function($location, $rootScope, $http, Ide
         });
     },
 
+    urlLogin: function(user) {
+      return $http
+        .post('/api/v1/auth/url-login', {
+          email: user.email,
+          password: user.password
+        })
+        .then(function(res) {
+          Identity.setTokenAndUser(res.data);
+          Identity.setCurrentUser(res.data.user);
+          return Identity.getCurrentUser();
+        });
+    },
+
     logout: function() {
       Identity.setCurrentUser();
       Identity.removeTokenAndUser();

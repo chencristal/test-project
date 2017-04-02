@@ -32,7 +32,11 @@ var userSchema = new mongoose.Schema({
 
   status: {
     type: String,
-    enum: consts.USER.STATUSES
+    enum: consts.USER.STATUSES  
+  },
+  urlLogin: {
+    type: Boolean,
+    default: false
   },
   invited: {
     type: Boolean,
