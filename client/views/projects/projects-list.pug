@@ -9,14 +9,11 @@ block content
       include ../common/spinner.pug
   div(ng-hide="isLoading")
     .container.text-justify.terms
-      .col-md-12(style="margin-bottom: 10px")
-        a.btn.btn-default.btn-primary(href="/projects/new") New Project
 
       uib-tabset(active="active" justified="true")
-        uib-tab(index="0" heading="Owned Projects")
+        uib-tab.tab-owned-projects(index="0" heading="Owned Projects")
           .col-md-12
-            .caption
-              span.caption-projects Owned Projects
+            a.btn.btn-default.btn-primary(href="/projects/new" style="margin: 10px") New Project
             table.table.table-striped.projects
               thead
                 tr
@@ -48,10 +45,8 @@ block content
                       ng-disabled="isSaving"
                     )
                       span.glyphicon.glyphicon-trash
-        uib-tab(index="1" heading="Shared Projects")
+        uib-tab.tab-shared-projects(index="1" heading="Shared Projects")
           .col-md-12
-            .caption
-              span.caption-shared-projects Shared Projects
             table.table.table-striped.shared-projects
               thead
                 tr

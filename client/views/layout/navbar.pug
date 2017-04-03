@@ -14,7 +14,7 @@ nav.navbar.navbar-inverse.navbar-static-top(ng-controller="NavbarCtrl")
       ul.nav.navbar-nav.navbar
         li
           a(href="/docs" target="_self") Documentation
-      ul.nav.navbar-nav.navbar-right(ng-if="currentUser")
+      ul.nav.navbar-nav.navbar-right(ng-if="currentUser.role")
         li
           a(href="/profile") {{ currentUser.email }}
         li
