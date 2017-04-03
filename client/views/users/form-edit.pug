@@ -25,6 +25,11 @@ form.form-horizontal(name="userForm")
         ui-select-choices(refresh="refreshUserGroups($select.search)" refresh-delay="300" repeat="userGroup._id as userGroup in userGroups")
           span(ng-bind-html="userGroup.groupName | highlight: $select.search")
 
+  .form-group
+     label.col-md-3.control-label(for="role") URL Login
+     .col-md-9
+       md-switch.md-primary(name="urlLogin" ng-model="user.urlLogin")
+
   .form-group(ng-class="{ 'has-error': userForm.password.$invalid || userForm.password.$error.required }")
     label.col-md-3.control-label(for="password") Password*
     .col-md-9

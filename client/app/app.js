@@ -7,6 +7,7 @@ angular.module('app', [
   'ui.bootstrap',
   'ui.select',
   'textAngular',
+  'ngMaterial',
   'mwl.confirm'
 ])
 .config(function($routeProvider, $locationProvider, $httpProvider) {

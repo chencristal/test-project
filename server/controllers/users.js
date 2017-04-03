@@ -15,12 +15,12 @@ exports.getUsers = function(req, res, next) {
     var data = {
       params: _.pick(query, ['query', 'role', 'includes'])
     };
-    data.fields = req.query.fields || [ 'email', 'firstName', 'role', 'status', 'userGroups' ];
+    data.fields = req.query.fields || [ 'email', 'firstName', 'role', 'status', 'userGroups', 'urlLogin' ];
     return Promise.resolve(data);
   }
 
   function validateParams(data) {
-    var allowedFields = [ 'email', 'firstName', 'role', 'status', 'userGroups' ];
+    var allowedFields = [ 'email', 'firstName', 'role', 'status', 'userGroups', 'urlLogin' ];
 
     if (data.params.includes && !_.every(data.params.includes, validationUtil.isValidObjectId)) {
       return customErrors.rejectWithUnprocessableRequestError({
@@ -107,7 +107,7 @@ exports.getUserById = function(req, res, next) {
   }
 
   validateParams()
-    .then(() => usersSrvc.getUser({ _id: userId }, 'email firstName role status userGroups'))
+    .then(() => usersSrvc.getUser({ _id: userId }, 'email firstName role status userGroups urlLogin'))
     .then(user => _checkPermission(req.user.role, user))
     .then(user => res.send(user))
     .catch(next);
@@ -115,7 +115,7 @@ exports.getUserById = function(req, res, next) {
 
 exports.createUser = function(req, res, next) {
   function parseParams(body) {
-    var allowedFields = ['email', 'firstName', 'role', 'password', 'confirmpass', 'userGroups'];
+    var allowedFields = ['email', 'firstName', 'role', 'password', 'confirmpass', 'userGroups', 'urlLogin'];
     var userData = _.pick(body, allowedFields);
     return Promise.resolve(userData);
   }
@@ -153,7 +153,7 @@ exports.createUser = function(req, res, next) {
 
 exports.updateUser = function(req, res, next) {
   function parseParams(body) {
-    var allowedFields = ['email', 'firstName', 'role', 'password', 'confirmpass', 'status', 'userGroups'];
+    var allowedFields = ['email', 'firstName', 'role', 'password', 'confirmpass', 'status', 'userGroups', 'urlLogin'];
     var userData = _.pick(body, allowedFields);
     userData._id = req.params._id;
 
