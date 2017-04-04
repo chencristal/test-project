@@ -50,3 +50,7 @@ exports.createTermTemplateFromCSV = termTemplData => {
 exports.saveTermTemplate = termTempl => {
   return termTempl.save();
 };
+
+exports.deleteTermTemplate = termTempl => {
+  return termTempl.remove();
+};

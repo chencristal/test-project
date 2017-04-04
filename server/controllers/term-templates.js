@@ -5,13 +5,15 @@ var Promise        = require('bluebird');
 var fs             = require('fs');
 var customErrors   = require('n-custom-errors');
 var consts         = require('../consts');
+var provisionTsSrvc= require('../data-services/provision-templates');
 var termTsSrvc     = require('../data-services/term-templates');
 var validationUtil = require('../util/validations');
 
 exports.getTermTemplates = (req, res, next) => {
   function parseParams(query) {
     var data = {
-      includes: query.includes
+      includes: query.includes,
+      disabled: query.disabled
     };
     data.fields = req.query.fields || ['displayName'];
     return Promise.resolve(data);
@@ -43,6 +45,11 @@ exports.getTermTemplates = (req, res, next) => {
     if (data.includes) {
       data.filter._id = {
         $in: data.includes
+      };
+    }
+    if (data.disabled) {
+      data.filter.disabled = {
+        $eq: data.disabled
       };
     }
     if (_.get(data, 'fields[0]') === '*') {
@@ -96,6 +103,39 @@ exports.createTermTemplate = (req, res, next) => {
     .then(doEdits)
     .then(termTempl => termTsSrvc.createTermTemplate(termTempl))
     .then(termTempl => res.send(termTempl))
+    .catch(next);
+};
+
+exports.deleteTermTemplate = (req, res, next) => {
+  var termTemplId = req.params._id;
+
+  function validateParams() {
+    if (!validationUtil.isValidObjectId(termTemplId)) {
+      return customErrors.rejectWithUnprocessableRequestError({ paramName: 'id', errMsg: 'must be a valid id' });
+    }
+    return Promise.resolve();
+  }
+
+  function checkTemplateUsed(termTempl) {
+    return provisionTsSrvc
+      .getProvisionTemplates({ termTemplates: termTemplId }, 'displayName')
+      .then(provisionTempls => {
+        if (!_.isEmpty(provisionTempls))
+          return customErrors.rejectWithUnprocessableRequestError({ 
+            paramName: 'Term template', 
+            errMsg: 'was already used by provision template "' 
+              + provisionTempls[0].displayName 
+              + '"' 
+          });
+        return Promise.resolve(termTempl);
+      });
+  }
+
+  validateParams()
+    .then(() => termTsSrvc.getTermTemplate({ _id: termTemplId }, '-__v'))
+    .then(checkTemplateUsed)
+    .then(termTsSrvc.deleteTermTemplate)
+    .then(termTempl => res.send(true))
     .catch(next);
 };
 

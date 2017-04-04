@@ -5,7 +5,7 @@ angular.module('app').controller('TermTemplatesListCtrl',
 
   $scope.isLoading = true;
 
-  (function loadData() {
+  $scope.loadData = function() {
     TermTemplate
       .query({
         'fields[]': ['termType', 'variable', 'displayName', 'disabled']
@@ -17,7 +17,8 @@ angular.module('app').controller('TermTemplatesListCtrl',
         $scope.orderBy = 'termType';
         $scope.reverseSort = false;
       });
-  })();
+  };
+  $scope.loadData();
 
   $scope.editTermTemplate = function(termTemplate) {
     $location.path('/term-templates/' + termTemplate._id + '/edit');
@@ -36,6 +37,22 @@ angular.module('app').controller('TermTemplatesListCtrl',
         if (err !== 'cancel') {
           Notifier.error(err, 'Unable to update termTemplate state');
         }
+      })
+      .finally(function() {
+        $scope.isSaving = false;
+      });
+  };
+
+  $scope.deleteTermTemplate = function(termTemplate) {
+    $scope.isSaving = true;
+    termTemplate
+      .$delete()
+      .then(function() {
+        Notifier.info('Term template removed successfully');
+        $scope.loadData();
+      })
+      .catch(function(err) {
+        Notifier.error(err, 'Unable to remove term template');
       })
       .finally(function() {
         $scope.isSaving = false;

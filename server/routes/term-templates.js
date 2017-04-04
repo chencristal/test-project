@@ -55,4 +55,9 @@ module.exports = app => {
     auth.checkPermission('ManageTermTemplate', 'read'),
     termTs.generateCSV
   );
+  app.delete(
+    `/api/${apiVer}/term-templates/:_id`,
+    auth.checkPermission('ManageTermTemplate', 'delete'),
+    termTs.deleteTermTemplate
+  );
 };
