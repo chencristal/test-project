@@ -22,11 +22,15 @@ block content
                 strong Status
               td
           tbody
-            tr(ng-repeat="provisionTemplate in provisionTemplates")
+            tr(ng-repeat="provisionTemplate in provisionTemplates" 
+                  ng-class="{ disabled: provisionTemplate.status === 'inactive' }")
               td {{ provisionTemplate.displayName }}
               td {{ provisionTemplate.status }}
-              td.actions
-                button.btn.btn-info.btn-sm(title="Edit" ng-click="editProvisionTemplate(provisionTemplate)" ng-disabled="isSaving")
+              td.actions.text-right
+                button.btn.btn-info.btn-sm(title="Edit" 
+                          ng-hide="provisionTemplate.status === 'inactive'" 
+                          ng-click="editProvisionTemplate(provisionTemplate)" 
+                          ng-disabled="isSaving")
                   span.glyphicon.glyphicon-pencil
                 button.btn.btn-warning.btn-sm(title="Activate"
                           ng-if="provisionTemplate.status === 'inactive'"

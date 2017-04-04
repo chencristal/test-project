@@ -22,11 +22,15 @@ block content
                 strong Status
               td
           tbody
-            tr(ng-repeat="documentTemplate in documentTemplates")
+            tr(ng-repeat="documentTemplate in documentTemplates"
+                ng-class="{ disabled: documentTemplate.status === 'inactive' }")
               td {{ documentTemplate.name }}
               td {{ documentTemplate.status }}
-              td.actions
-                button.btn.btn-info.btn-sm(title="Edit" ng-click="editDocumentTemplate(documentTemplate)" ng-disabled="isSaving")
+              td.actions.text-right
+                button.btn.btn-info.btn-sm(title="Edit" 
+                          ng-hide="documentTemplate.status === 'inactive'" 
+                          ng-click="editDocumentTemplate(documentTemplate)" 
+                          ng-disabled="isSaving")
                   span.glyphicon.glyphicon-pencil
                 button.btn.btn-warning.btn-sm(title="Activate"
                           ng-if="documentTemplate.status === 'inactive'"
