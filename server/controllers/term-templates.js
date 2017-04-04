@@ -120,13 +120,14 @@ exports.deleteTermTemplate = (req, res, next) => {
     return provisionTsSrvc
       .getProvisionTemplates({ termTemplates: termTemplId }, 'displayName')
       .then(provisionTempls => {
-        if (!_.isEmpty(provisionTempls))
+        if (!_.isEmpty(provisionTempls)) {
+          var provisionTemplNames = _.map(provisionTempls, 'displayName').join(',');
           return customErrors.rejectWithUnprocessableRequestError({ 
             paramName: 'Term template', 
-            errMsg: 'was already used by provision template "' 
-              + provisionTempls[0].displayName 
-              + '"' 
+            errMsg: 'was already used by provision templates : ' 
+              + provisionTemplNames
           });
+        }
         return Promise.resolve(termTempl);
       });
   }

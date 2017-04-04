@@ -180,8 +180,14 @@ exports.deleteProjectTemplate = (req, res, next) => {
     return projectsSrvc
       .getProjects({ projectTemplate: projTemplId }, 'name')
       .then(projects => {
-        if (!_.isEmpty(projects))
-          return customErrors.rejectWithUnprocessableRequestError({ paramName: 'Project template', errMsg: 'was already used by some projects' });
+        if (!_.isEmpty(projects)) {
+          var projectNames = _.map(projects, 'name').join(',');
+          return customErrors.rejectWithUnprocessableRequestError({ 
+            paramName: 'Project template', 
+            errMsg: 'was already used by projects : ' 
+              + projectNames
+          });
+        }
         return Promise.resolve(projTempl);
       });
   }

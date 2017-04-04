@@ -130,8 +130,14 @@ exports.deleteDocumentTemplate = (req, res, next) => {
     return projTemplsSrvc
       .getProjectTemplates({ documentTemplates: docTemplId }, 'name')
       .then(projTempls => {
-        if (!_.isEmpty(projTempls))
-          return customErrors.rejectWithUnprocessableRequestError({ paramName: 'Document template', errMsg: 'was already used by some project templates' });
+        if (!_.isEmpty(projTempls)) {
+          var projTemplNames = _.map(projTempls, 'name').join(',');
+          return customErrors.rejectWithUnprocessableRequestError({ 
+            paramName: 'Document template', 
+            errMsg: 'was already used by project templates : ' 
+              + projTemplNames
+          });
+        }
         return Promise.resolve(docTempl);
       });
   }

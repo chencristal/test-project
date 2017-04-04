@@ -110,8 +110,14 @@ exports.deleteDocumentTemplateType = (req, res, next) => {
     return docTemplsSrvc
       .getDocumentTemplates({ documentType: docTemplTypeId }, 'name')
       .then(docTempls => {
-        if (!_.isEmpty(docTempls))
-          return customErrors.rejectWithUnprocessableRequestError({ paramName: 'Document template type', errMsg: 'was already used by some document templates' });
+        if (!_.isEmpty(docTempls)) {
+          var docTemplNames = _.map(docTempls, 'name').join(',');
+          return customErrors.rejectWithUnprocessableRequestError({ 
+            paramName: 'Document template type', 
+            errMsg: 'was already used by document templates : ' 
+              + docTemplNames
+          });
+        }
         return Promise.resolve(docTemplType);
       });
   }
