@@ -549,7 +549,8 @@ angular.module('app').directive('projectEditor', function () {
       $scope.exportToPdf = function () {
         var projId = $scope.project._id;
         var docId = $scope.relatedData.currrentDocumentTemplate._id;
-        var url = '/api/v1/projects/' + projId + '/' + docId + '/pdf';
+        var mode = $scope.mode;
+        var url = '/api/v1/projects/' + projId + '/' + docId + '/pdf/' + mode;
         $window.open(url, '_blank');
       };
 
@@ -557,7 +558,7 @@ angular.module('app').directive('projectEditor', function () {
         var projId = $scope.project._id;
         var docId = $scope.relatedData.currrentDocumentTemplate._id;
         var docTypeId = $scope.relatedData.currrentDocumentTemplate.documentType;
-        var url = '/api/v1/projects/' + projId + '/' + docId + '/' + docTypeId + '/word';
+        var url = '/api/v1/projects/' + projId + '/' + docId + '/' + docTypeId + '/word/' + mode;
         $window.open(url, '_blank');
       };
 

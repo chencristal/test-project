@@ -8,14 +8,24 @@ var apiVer = config.get('api:version');
 
 module.exports = app => {
   app.get(
-    `/api/${apiVer}/projects/:projectId/:docId/pdf`,
+    `/api/${apiVer}/projects/:projectId/:docId/pdf/redline`,
     auth.checkPermission('ManageProject', 'read'),
-    projects.generatePdf
+    projects.generatePdfRedline
   );
   app.get(
-    `/api/${apiVer}/projects/:projectId/:docId/:docTypeId/word`,
+    `/api/${apiVer}/projects/:projectId/:docId/pdf/edit`,
     auth.checkPermission('ManageProject', 'read'),
-    projects.generateWord
+    projects.generatePdfClean
+  );
+  app.get(
+    `/api/${apiVer}/projects/:projectId/:docId/:docTypeId/word/redline`,
+    auth.checkPermission('ManageProject', 'read'),
+    projects.generateWordRedline
+  );
+  app.get(
+    `/api/${apiVer}/projects/:projectId/:docId/:docTypeId/word/edit`,
+    auth.checkPermission('ManageProject', 'read'),
+    projects.generateWordClean
   );
   app.get(
     `/api/${apiVer}/projects/:_id`,

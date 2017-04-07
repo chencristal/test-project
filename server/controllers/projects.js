@@ -172,7 +172,46 @@ exports.deleteProject = (req, res, next) => {
     .catch(next);
 };
 
-exports.generatePdf = (req, res, next) => {
+exports.generatePdfRedline = (req, res, next) => {
+  var projectId = req.params.projectId;
+  var docId = req.params.docId;
+  
+  function parseParams(params) {
+    return Promise.resolve({
+      projId: params.projectId,
+      docId: params.docId
+    });
+  }
+
+  parseParams(req.params)
+    .then(_getCompiledTemplateRedline)
+    .then(text => {
+      var project = projectsSrvc.getProject({ _id: projectId}, 'name');
+      var docTempl = docTemplSrvc.getDocumentTemplate({ _id: docId}, 'name');
+      Promise.all([project, docTempl])
+      .then(values => {
+        var projectName = values[0].name;
+        var docName = values[1].name;
+        var filename = projectName + '-' + docName + '.pdf';
+        var css_style = templProc.getExportCss();
+        
+        text = text.replace(/\n/g,'<br/>');
+        var prestyle = `
+        <style type="text/css">
+          ${css_style}
+        </style>
+        `;
+        text = prestyle + text;
+        res.setHeader('Content-disposition', 'attachment; filename=' + filename);
+        res.setHeader('Content-type', 'application/pdf');
+        return pdfConverter.write(text, res);
+      })
+      .catch(next);
+    })
+    .catch(next);
+};
+
+exports.generatePdfClean = (req, res, next) => {
   var projectId = req.params.projectId;
   var docId = req.params.docId;
   
@@ -186,7 +225,6 @@ exports.generatePdf = (req, res, next) => {
   parseParams(req.params)
     .then(_getCompiledTemplate)
     .then(text => {
-      console.log(text);
       var project = projectsSrvc.getProject({ _id: projectId}, 'name');
       var docTempl = docTemplSrvc.getDocumentTemplate({ _id: docId}, 'name');
       Promise.all([project, docTempl])
@@ -194,18 +232,8 @@ exports.generatePdf = (req, res, next) => {
         var projectName = values[0].name;
         var docName = values[1].name;
         var filename = projectName + '-' + docName + '.pdf';
-        var style = templProc.getExportCss();
         
         text = text.replace(/\n/g,'<br/>');
-        var prestyle = `
-        <style type="text/css">
-          * {
-            white-space: pre;
-          }
-          ${style}
-        </style>
-        `;
-        text = prestyle + text;
         res.setHeader('Content-disposition', 'attachment; filename=' + filename);
         res.setHeader('Content-type', 'application/pdf');
         return pdfConverter.write(text, res);
@@ -215,7 +243,42 @@ exports.generatePdf = (req, res, next) => {
     .catch(next);
 };
 
-exports.generateWord = (req, res, next) => {
+exports.generateWordRedline = (req, res, next) => {
+  var projectId = req.params.projectId;
+  var docId = req.params.docId;
+  var docTypeId = req.params.docTypeId;
+
+  function parseParams(params) {
+    return Promise.resolve({
+      projId: params.projectId,
+      docId: params.docId,
+      docTypeId: params.docTypeId
+    });
+  }
+
+  parseParams(req.params)
+    .then(_getCompiledTemplateRedline)
+    .then(text => {
+      var project = projectsSrvc.getProject({ _id: projectId}, 'name');
+      var docTempl = docTemplSrvc.getDocumentTemplate({ _id: docId}, 'name');
+      var docTemplType = docTemplTypesSrvc.getDocumentTemplateType({ _id: docTypeId}, 'styles');
+      Promise.all([project, docTempl, docTemplType])
+      .then(values => {
+        var projectName = values[0].name;
+        var docName = values[1].name;
+        var styles = values[2].styles ? JSON.parse(values[2].styles) : {};
+        var filename = projectName + '-' + docName + '.docx';
+
+        res.setHeader('Content-disposition', 'attachment; filename=' + filename);
+        res.setHeader('Content-type', 'application/docx');
+        return wordConverter.write(text, styles, res);  
+      })
+      .catch(next); 
+    })
+    .catch(next);
+};
+
+exports.generateWordClean = (req, res, next) => {
   var projectId = req.params.projectId;
   var docId = req.params.docId;
   var docTypeId = req.params.docTypeId;
@@ -280,7 +343,7 @@ function _validateProjectData(projData) {
   return Promise.resolve(projData);
 }
 
-function _getCompiledTemplate(data) {
+function _getCompiledTemplateRedline(data) {
   function validateParams() {
     if (!validationUtil.isValidObjectId(data.projId)) {
       return customErrors.rejectWithUnprocessableRequestError({ paramName: 'projectId', errMsg: 'must be a valid id' });
@@ -452,7 +515,7 @@ function _getCompiledTemplate(data) {
     .then(generate);
 }
 
-function _getCompiledTemplate_(data) {
+function _getCompiledTemplate(data) {
   function validateParams() {
     if (!validationUtil.isValidObjectId(data.projId)) {
       return customErrors.rejectWithUnprocessableRequestError({ paramName: 'projectId', errMsg: 'must be a valid id' });

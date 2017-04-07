@@ -76,7 +76,10 @@ GeneratorExport.prototype.generateExportVariableEditor = function (variable) {
     case 'textarea':
       return (value.value || value.placeholder);
     case 'boolean':
-      return value.value;
+      if (value.value === 'true')
+        return term.boolean.inclusionText;
+      else
+        return term.boolean.exclusionText;
     case 'variant':
       return value.value;
 
