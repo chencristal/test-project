@@ -6,7 +6,7 @@ angular.module('app').directive('projectEditor', function () {
     scope: {},
     templateUrl: 'views/projects/editor/index.html',
     controller: function ($scope, $window, $element, $timeout, $routeParams, $location, $q, Notifier,
-                          Project, DocumentTemplate, ProvisionTemplate, TermTemplate, ProvisionVariable) {
+              Project, DocumentTemplate, ProvisionTemplate, TermTemplate, ProvisionVariable) {
       /* jshint maxstatements: false */
 
       $scope.isLoading = true;
