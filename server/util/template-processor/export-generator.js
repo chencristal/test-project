@@ -47,39 +47,31 @@ GeneratorExport.prototype.generateExportHtml = function (token) {
 GeneratorExport.prototype.generateExportVariableEditor = function (variable) {
   var self = this;
 
-  var varName = `variables.${variable.variable}`;
+  var projValues = self.data.projValues;
+  var termTempls = self.data.termTempls;
+
   var value = _.find(self.data.projValues, {'variable': variable.variable});
+  var term = _.find(self.data.termTempls, {'variable': variable.variable});
 
   switch (variable.termType) {
     case 'text': 
       return (value.value || value.placeholder);
     case 'textplus':
-      var master = variable.variable;
-      var newline = variable.textplus.newline ? true : false;
-      var prettify = variable.textplus.prettify ? true : false;
-      return `
-        <span class="{{ ${varName}.state == 2 ? 'uncertain-bracket' : null }}">
-        <input type="text"
-               ng-model="${varName}.value"
-               ng-blur="onChange()"
-               ng-click="onClick(${varName}, $event)"
-               ng-class="selectedVariable == ${varName} ? 'highlighted-for-scroll' : null"
-               ng-disabled="${varName}.state == 1"
-               placeholder="{{ ${varName}.placeholder }}" /></span>
-        <span class="{{ variables[v.variable].state == 2 ? 'uncertain-bracket' : null }}" ng-repeat="v in textplus['${master}'] | objectToArray | orderBy: 'sortIndex'">
-               <span ng-if="!${newline} && !${prettify}"> </span>
-               <span class="prettify" ng-if="${prettify} && !$last">, </span>
-               <span class="prettify" ng-if="${prettify} && $last">and </span>
-               <br ng-if="${newline}" />
-        <input type="text"
-               ng-model="variables[v.variable].value"
-               ng-blur="onChange()"
-               ng-click="onClick(variables[v.variable], $event)"
-               ng-class="selectedVariable == variables[v.variable] ? 'highlighted-for-scroll' : null"
-               ng-disabled="variables[v.variable].state == 1"
-               placeholder="{{ variables[v.variable].placeholder }}" />
-        </span>
-        `;
+      var subs = _getSubFields(projValues, variable.variable);
+      var newline = term.textplus.newline ? true : false;
+      var prettify = term.textplus.prettify ? true : false;
+      var html = '<span>' + value.value + '</span>';
+      /*_.forEach(subs, function(sub, key) {
+        html += `<span>`;
+        if (!newline && !prettify) html += `<span> </span>`;
+        if (prettify && key !== subs.length - 1) html += `<span class="prettify">, </span>`;
+        if (prettify && key === subs.length - 1) html += `<span class="prettify"> and </span>`;
+        if (newline) html += `<br />`;
+        html += sub.value;
+        html += `</span>`;
+      });*/
+
+      return html;
 
     case 'textarea':
       return (value.value || value.placeholder);
@@ -693,4 +685,13 @@ function _article(v) {
   if(v == undefined)
     return '';
   return AvsAnSimple.query(v);
+}
+
+function _getSubFields(variables, text) {
+  var master = _.find(variables, {'variable': text});
+  var subs = _.filter(variables, function(v) { return v.variable.indexOf(text + '__') === 0;});
+  if(!subs || subs.length == 0)
+    subs = [master];
+  subs = _.orderBy(subs, ['sortIndex'],['asc']);
+  return subs;
 }
