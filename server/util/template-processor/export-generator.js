@@ -195,7 +195,7 @@ GeneratorExport.prototype.generateExportExpressionHtml = function (token) {
       html = self.generateArticleHtml.call(self, token);
       break;
     case 'pagebreak':
-      html = '';
+      html = '<div style="page-break-after:always;"></div>';
       break;
     case 'expand':
       html = self.generateExpandHtml.call(self, token);

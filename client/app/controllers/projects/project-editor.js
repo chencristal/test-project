@@ -558,6 +558,7 @@ angular.module('app').directive('projectEditor', function () {
         var projId = $scope.project._id;
         var docId = $scope.relatedData.currrentDocumentTemplate._id;
         var docTypeId = $scope.relatedData.currrentDocumentTemplate.documentType;
+        var mode = $scope.mode;
         var url = '/api/v1/projects/' + projId + '/' + docId + '/' + docTypeId + '/word/' + mode;
         $window.open(url, '_blank');
       };
