@@ -206,7 +206,7 @@ Generator.prototype.generateExpressionHtml = function (token) {
         class="exp-ifvariant
           {{ variables.${param1.text}.state == 2 && variables.${param1.text}.state == 2 ? 'uncertain-bracket' : null }}" 
         ng-class="{ 
-          default: $root.ifVariant(variables.${param1.text}.value, '${param2.text}') == 
+          defaulted: $root.ifVariant(variables.${param1.text}.value, '${param2.text}') == 
                       $root.ifVariant(variables.${param1.text}.variant.default, '${param2.text}'),
           selected: $root.ifVariant(variables.${param1.text}.value, '${param2.text}'),
           unselected: !$root.ifVariant(variables.${param1.text}.value, '${param2.text}'),
@@ -219,7 +219,7 @@ Generator.prototype.generateExpressionHtml = function (token) {
         class="exp-unlessvariant
           {{ variables.${param1.text}.state == 2 && variables.${param1.text}.state == 2 ? 'uncertain-bracket' : null }}" 
         ng-class="{ 
-          default: $root.ifVariant(variables.${param1.text}.value, '${param2.text}') != 
+          defaulted: $root.ifVariant(variables.${param1.text}.value, '${param2.text}') != 
                       $root.ifVariant(variables.${param1.text}.variant.default, '${param2.text}'),
           selected: !$root.ifVariant(variables.${param1.text}.value, '${param2.text}'),
           unselected: $root.ifVariant(variables.${param1.text}.value, '${param2.text}'),

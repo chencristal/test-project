@@ -12,7 +12,7 @@ var jquery       = fs.readFileSync('./node_modules/jquery/dist/jquery.js', 'utf-
 
 var WEBSRVC_URL = 'http://vps95616.vps.ovh.ca:8080/convert';
 
-exports.write = (html, styles, output) => {
+exports.write = (html, styles, output, mode) => {
   return new Promise((resolve, reject) => {
     jsdom.env({
       html: html,
@@ -22,7 +22,7 @@ exports.write = (html, styles, output) => {
           return reject(err);
         }
         var gen = new Generator(window.$);
-        var content = gen.generate();
+        var content = gen.generate(mode);
 
         request({
           method: 'POST',
@@ -60,9 +60,11 @@ function Generator($) {
   this.$ = $;
 }
 
-Generator.prototype.generate = function() {
+Generator.prototype.generate = function(mode) {
   var self = this;
   var now = moment().format('YYYY-MM-DD');
+  var content = (mode === 'redline') ? _.map(self.$('body > *'), self.parseNodeRedline.bind(self)) 
+      : _.map(self.$('body > *'), self.parseNode.bind(self));
 
   return {
     documentType: 'Comfort Letter',
@@ -75,7 +77,7 @@ Generator.prototype.generate = function() {
       letterDate: now,
       recipient: []
     },
-    content: _.map(self.$('body > *'), self.parseNode.bind(self))
+    content: content
   };
 };
 
@@ -118,6 +120,48 @@ Generator.prototype.parseNode = function(node) {
   return content;
 };
 
+Generator.prototype.parseNodeRedline = function(node) {
+  var self = this;
+  var $node = self.$(node);
+
+  var content = {
+    type: 'paragraph',
+    text: '',
+    subContent: []
+  };
+
+  var tagName = _.toLower($node.prop('tagName'));
+  switch (tagName) {
+    case 'p':
+      content.text = self.getNodeOwnTextRedline.call(this, $node);
+      break;
+    case 'li':
+      content.text = self.getNodeOwnTextRedline.call(this, $node);
+      break;
+    case 'ul':
+      content.text = self.getNodeOwnTextRedline.call(this, $node);
+      content.subContent = _.map($node.children('li'), (elem, index) => {
+        var subContent = self.parseNodeRedline.call(self, elem);
+        subContent.index = consts.CHARS[index]; // TODO: can be more than CHARS.length
+        return subContent;
+      });
+      break;
+    case 'ol':
+      content.text = self.getNodeOwnTextRedline.call(this, $node);
+      content.subContent = _.map($node.children('li'), (elem, index) => {
+        var subContent = self.parseNodeRedline.call(self, elem);
+        subContent.index = index + 1;
+        return subContent;
+      });
+      break;
+    default:
+      content.text = $node.text();
+      break;
+  }
+
+  return content;
+};
+
 Generator.prototype.getNodeOwnText = function(node) {
   var nodes = this.$(node)
     .contents()
@@ -129,3 +173,71 @@ Generator.prototype.getNodeOwnText = function(node) {
   }
   return '';
 };
+
+Generator.prototype.getNodeOwnTextRedline = function(node) {
+  var $ = this.$;
+  var self = this;
+  var ret = '';
+  var nodes = this.$(node)
+    .contents()
+    .filter(function() {
+      if (this.nodeType === 3)
+        ret += this.nodeValue;
+      else {
+        if (this.nodeName === 'SPAN') {
+          var tag = checkClassList($(this));
+          if (tag === 'normal')
+            ret += self.getNodeOwnTextRedline.call(self, this);
+          else if (tag === 'ins')
+            ret += '<ins>' + self.getNodeOwnTextRedline.call(self, this) + '</ins>';
+          else if (tag === 'del')
+            ret += '<del>' + self.getNodeOwnTextRedline.call(self, this) + '</del>';
+          else
+            ret += '';
+        }
+        else if (this.nodeName === 'B') {
+          ret += '<b>' + self.getNodeOwnTextRedline.call(self, this) + '</b>';
+        }
+        else if (this.nodeName === 'U') {
+          ret += '<u>' + self.getNodeOwnTextRedline.call(self, this) + '</u>';
+        }
+      }
+      return this.nodeType === 3;
+    });
+  return ret;
+};
+
+function checkClassList($node) {
+  var retArray = [
+    // exp-if
+    [
+      // defaulted
+      ['normal', ''],
+      // undefaulted
+      ['ins', 'del']
+    ],
+    // exp-unless
+    [
+      ['ins', 'del'],
+      ['normal', 'del']
+    ],
+    [
+      ['normal']
+    ]
+  ];
+  var i_cond = 0, i_default = 0, i_select = 0;
+  if ($node.hasClass('exp-unless') || $node.hasClass('exp-unlessvariant')) 
+    i_cond = 1;
+
+  if (!$node.hasClass('defaulted'))
+    i_default = 1;
+
+  if ($node.hasClass('unselected'))
+    i_select = 1;
+  
+  if (!$node.hasClass('highlighted')) {
+    i_cond = 2; i_default = 0; i_select = 0;
+  }
+
+  return retArray[i_cond][i_default][i_select];
+}

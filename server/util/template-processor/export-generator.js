@@ -55,12 +55,22 @@ GeneratorExport.prototype.generateExportVariableEditor = function (variable) {
 
   switch (variable.termType) {
     case 'text': 
-      return (value.value || value.placeholder);
+      var html = '';
+      if (value !== undefined)
+        html = `<span>${value.value}</span>`;
+      else 
+        html = `<span>${term.text.placeholder}</span>`;
+      return html;
     case 'textplus':
       var subs = _getSubFields(projValues, variable.variable);
       var newline = term.textplus.newline ? true : false;
       var prettify = term.textplus.prettify ? true : false;
-      var html = '<span>' + value.value + '</span>';
+      var html = '';
+      
+      if (value !== undefined)
+        html = `<span>${value.value}</span>`;
+      else 
+        html = `<span>${term.textplus.placeholder}</span>`;
       /*_.forEach(subs, function(sub, key) {
         html += `<span>`;
         if (!newline && !prettify) html += `<span> </span>`;
@@ -74,23 +84,49 @@ GeneratorExport.prototype.generateExportVariableEditor = function (variable) {
       return html;
 
     case 'textarea':
-      return (value.value || value.placeholder);
+      var html = '';
+      if (value !== undefined)
+        html = `<span>${value.value}</span>`;
+      else 
+        html = `<span></span>`;
+      return html;
     case 'boolean':
-      if (value.value === 'true')
-        return term.boolean.inclusionText;
-      else
-        return term.boolean.exclusionText;
+      var html = '';
+      if (value !== undefined) {
+        if (value.value === 'true' || value.value === true)
+          return term.boolean.inclusionText;
+        else
+          return term.boolean.exclusionText;
+      } 
+      else {
+        if (term.boolean.default === 'true' || term.boolean.default === true)
+          return term.boolean.inclusionText;
+        else
+          return term.boolean.exclusionText;
+      }
     case 'variant':
-      return value.value;
-
+      var html = '';
+      if (value !== undefined)
+        html = `<span>${value.value}</span>`;
+      else 
+        html = `<span>${term.variant.default}</span>`;
+      return html;
     case 'date':
-      var offsetDate = new Date(value.value);
-      var val = moment(offsetDate).format('MMMM D, YYYY');
-      return `<span>${val}</span>`;
-
+      var html = '';
+      if (value !== undefined) {
+        var offsetDate = new Date(value.value);
+        var val = moment(offsetDate).format('MMMM D, YYYY');
+        html = `<span>${val}</span>`;
+      } else 
+        html = `<span></span>`;
+      return html;
     case 'number':
-      var val = value.value;
-      return `<span>${val}</span>`;
+      var html = '';
+      if (value !== undefined)
+        html = `<span>${value.value}</span>`;
+      else 
+        html = `<span></span>`;
+      return html;
 
     case 'default':
       // TODO: what to do here?
@@ -228,6 +264,9 @@ GeneratorExport.prototype.generateMathHtml = function(token) {
     var _temp2 = _.find(projValues, {'variable': param3.text});
     var value = '';
 
+    if (_temp1 === undefined) _temp1 = {value: 0};
+    if (_temp2 === undefined) _temp2 = {value: 0};
+
     if (param1.type == 'variable' && param3.type == 'variable')
       value = _math(_temp1.value, param2.text, _temp2.value);
     else if (param1.type == 'variable' && param3.type == 'constant')
@@ -243,6 +282,8 @@ GeneratorExport.prototype.generateMathHtml = function(token) {
     var _temp2 = _.find(projValues, {'variable': param3.text});
     var offsetDate = new Date(date1.value);
     var value = '';
+
+    if (_temp2 === undefined) _temp2 = {value: 0};
 
     if (param3.type == 'variable') {
       if (param2.text == 'add' || param2.text == 'add-date' || param2.text == 'add-day') {
@@ -271,6 +312,7 @@ GeneratorExport.prototype.generateMathHtml = function(token) {
 }
 GeneratorExport.prototype.generateCaseHtml = function(token) {
   var self = this;
+  var projValues = self.data.projValues;
   var html = '';
   var param1 = token.params[0];
   var param2 = token.params[1];
@@ -289,6 +331,7 @@ GeneratorExport.prototype.generateCaseHtml = function(token) {
 }
 GeneratorExport.prototype.generateArticleHtml = function(token) {
   var self = this;
+  var projValues = self.data.projValues;
   var html = '';
   var param1 = token.params[0];  
   var value = '';

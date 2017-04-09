@@ -271,7 +271,7 @@ exports.generateWordRedline = (req, res, next) => {
 
         res.setHeader('Content-disposition', 'attachment; filename=' + filename);
         res.setHeader('Content-type', 'application/docx');
-        return wordConverter.write(text, styles, res);  
+        return wordConverter.write(text, styles, res, 'redline');
       })
       .catch(next); 
     })
@@ -306,7 +306,7 @@ exports.generateWordClean = (req, res, next) => {
 
         res.setHeader('Content-disposition', 'attachment; filename=' + filename);
         res.setHeader('Content-type', 'application/docx');
-        return wordConverter.write(text, styles, res);  
+        return wordConverter.write(text, styles, res, 'clean');
       })
       .catch(next); 
     })
@@ -409,10 +409,10 @@ function _getCompiledTemplateRedline(data) {
     function getPrecompiledTextPlus(expandable, newline, prettify) {
       var variables = Object.keys(data.values);
       var subs = _.filter(variables, v => v.indexOf(expandable.variable + '__') === 0);
+      var glue = ' ';
       subs = _.map(subs, sub => data.values[sub]);
       subs = _.reverse(subs);
       if(subs.length > 0) {
-        var glue = ' ';
         if(newline && prettify)
           glue = ',\n<br/>';
         else if(newline)
@@ -442,7 +442,8 @@ function _getCompiledTemplateRedline(data) {
           var params = getPrecompiledTextPlus(expandable, newline, prettify);
           var glue = params.glue;
           var subs = params.subs;
-          template = _.replace(template, new RegExp(`{{\\s*${expandable.variable}\\s*}}`,'g'), `{{${expandable.variable}}}${glue}${subs}`);
+          template = _.replace(template, new RegExp(`{{\\s*${expandable.variable}\\s*}}`,'g'), 
+              `{{${expandable.variable}}}${glue}${subs}`);
         });
         template = template.replace(/{{\s*expand\s+([^\s\{\}]+)\s+(\d)\s*}}/g, function() {
           var match = arguments[0];
