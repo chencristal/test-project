@@ -118,14 +118,14 @@ GeneratorExport.prototype.generateExportVariableEditor = function (variable) {
         var val = moment(offsetDate).format('MMMM D, YYYY');
         html = `<span>${val}</span>`;
       } else 
-        html = `<span></span>`;
+        html = `<span>${term.date.placeholder}</span>`;
       return html;
     case 'number':
       var html = '';
       if (value !== undefined && value.value !== undefined)
         html = `<span>${value.value}</span>`;
       else 
-        html = `<span></span>`;
+        html = `<span>${term.number.placeholder}</span>`;
       return html;
 
     case 'default':
