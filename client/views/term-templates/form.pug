@@ -127,7 +127,12 @@ form.form-horizontal(name="termTemplateForm")
       label.col-md-3.control-label(for="displayAs") Display as
       .col-md-9
         select.form-control(name="displayAs" ng-model="termTemplate.variant.displayAs"
+                           ng-if="termTemplate.termType !== 'variant'"
                            ng-options="opt as opt for opt in ['dropdown', 'radio buttons']"
+                           ng-required="true" ng-disabled="isSaving")
+        select.form-control(name="displayAs" ng-model="termTemplate.variant.displayAs"
+                           ng-if="termTemplate.termType === 'variant'"
+                           ng-options="opt as opt for opt in ['dropdown']"
                            ng-required="true" ng-disabled="isSaving")
 
   // Number

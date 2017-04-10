@@ -204,7 +204,7 @@ function insertTermTemplates() {
         "variable" : "test_variant1",
         "variant" : {
             "default" : "First_Option",
-            "displayAs" : "radio buttons",
+            "displayAs" : "dropdown",
             "options" : [ 
                 {
                     "id" : 1,
