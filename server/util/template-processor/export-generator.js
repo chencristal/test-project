@@ -56,7 +56,7 @@ GeneratorExport.prototype.generateExportVariableEditor = function (variable) {
   switch (variable.termType) {
     case 'text': 
       var html = '';
-      if (value !== undefined)
+      if (value !== undefined && value.value !== undefined)
         html = `<span>${value.value}</span>`;
       else 
         html = `<span>${term.text.placeholder}</span>`;
@@ -67,7 +67,7 @@ GeneratorExport.prototype.generateExportVariableEditor = function (variable) {
       var prettify = term.textplus.prettify ? true : false;
       var html = '';
       
-      if (value !== undefined)
+      if (value !== undefined && value.value !== undefined)
         html = `<span>${value.value}</span>`;
       else 
         html = `<span>${term.textplus.placeholder}</span>`;
@@ -85,14 +85,14 @@ GeneratorExport.prototype.generateExportVariableEditor = function (variable) {
 
     case 'textarea':
       var html = '';
-      if (value !== undefined)
+      if (value !== undefined && value.value !== undefined)
         html = `<span>${value.value}</span>`;
       else 
         html = `<span></span>`;
       return html;
     case 'boolean':
       var html = '';
-      if (value !== undefined) {
+      if (value !== undefined && value.value !== undefined) {
         if (value.value === 'true' || value.value === true)
           return term.boolean.inclusionText;
         else
@@ -106,14 +106,14 @@ GeneratorExport.prototype.generateExportVariableEditor = function (variable) {
       }
     case 'variant':
       var html = '';
-      if (value !== undefined)
+      if (value !== undefined && value.value !== undefined)
         html = `<span>${value.value}</span>`;
       else 
         html = `<span>${term.variant.default}</span>`;
       return html;
     case 'date':
       var html = '';
-      if (value !== undefined) {
+      if (value !== undefined && value.value !== undefined) {
         var offsetDate = new Date(value.value);
         var val = moment(offsetDate).format('MMMM D, YYYY');
         html = `<span>${val}</span>`;
@@ -122,7 +122,7 @@ GeneratorExport.prototype.generateExportVariableEditor = function (variable) {
       return html;
     case 'number':
       var html = '';
-      if (value !== undefined)
+      if (value !== undefined && value.value !== undefined)
         html = `<span>${value.value}</span>`;
       else 
         html = `<span></span>`;
@@ -410,207 +410,238 @@ GeneratorExport.prototype.generateExpandHtml = function(token) {
   return html;
 }
 
-exports.getExportCss = function() {
-  return `
-    .selected {
-      color: #000;
-      font-weight: normal;
-      text-decoration: none;
-    }
-    .unselected {
-      display: none;
-    }
-    .exp-if.selected {
-      display: inline;
-      text-decoration: underline;
-      font-weight: bold;
-      color: #000;
-    }
-    .exp-if.selected.defaulted {
-      color: #000;
-      font-weight: normal;
-      text-decoration: none;
-    }
-    .exp-if.selected.highlighted {
-      display: inline;
-      text-decoration: underline;
-      font-weight: bold;
-      color: #00f;
-    }
-    .exp-if.selected.highlighted.defaulted {
-      color: #000;
-      font-weight: normal;
-      text-decoration: none;
-    }
-    .exp-if.unselected {
-      display: inline;
-      color: #d3d3d3;
-      font-weight: normal;
-      text-decoration: line-through;
-    }
-    .exp-if.unselected.defaulted {
-      display: none;
-    }
-    .exp-if.unselected.highlighted {
-      color: #f00;
-      text-decoration: line-through;
-    }
-    .exp-if.unselected.highlighted.defaulted {
-      display: none;
-    }
-    .exp-unless.unselected {
-      display: none;
-    }
-    .exp-unless.unselected.defaulted {
-      display: inline;
-      color: #d3d3d3;
-      font-weight: normal;
-      text-decoration: line-through;
-    }
-    .exp-unless.unselected.highlighted.defaulted {
-      color: #f00;
-      font-weight: normal;
-      text-decoration: line-through;
-    }
-    .exp-unless.selected {
-      display: inline;
-      color: #000;
-      font-weight: normal;
-      text-decoration: none;
-    }
-    .exp-unless.selected.defaulted {
-      display: inline;
-      text-decoration: underline;
-      font-weight: bold;
-      color: #000;
-    }
-    .exp-unless.selected.highlighted {
-      display: inline;
-      color: #000;
-      font-weight: normal;
-      text-decoration: none;
-    }
-    .exp-unless.selected.highlighted.defaulted {
-      display: inline;
-      color: #00f;
-      font-weight: bold;
-      text-decoration: underline;
-    }
-    .exp-ifcond.selected {
-      display: inline;
-      text-decoration: underline;
-      font-weight: bold;
-      color: #000;
-    }
-    .exp-ifcond.selected.defaulted {
-      color: #000;
-      font-weight: normal;
-      text-decoration: none;
-    }
-    .exp-ifcond.selected.highlighted {
-      display: inline;
-      text-decoration: underline;
-      font-weight: bold;
-      color: #00f;
-    }
-    .exp-ifcond.selected.highlighted.defaulted {
-      color: #000;
-      font-weight: normal;
-      text-decoration: none;
-    }
-    .exp-ifcond.unselected {
-      display: inline;
-      color: #d3d3d3;
-      font-weight: normal;
-      text-decoration: line-through;
-    }
-    .exp-ifcond.unselected.defaulted {
-      display: none;
-    }
-    .exp-ifcond.unselected.highlighted {
-      color: #f00;
-      text-decoration: line-through;
-    }
-    .exp-ifcond.unselected.highlighted.defaulted {
-      display: none;
-    }
-    .exp-ifvariant.selected {
-      display: inline;
-      text-decoration: none;
-      font-weight: normal;
-      color: #000;
-    }
-    .exp-ifvariant.selected.defaulted {
-      color: #000;
-      font-weight: normal;
-      text-decoration: none;
-    }
-    .exp-ifvariant.selected.highlighted {
-      display: inline;
-      text-decoration: none;
-      font-weight: normal;
-      color: #000;
-    }
-    .exp-ifvariant.selected.highlighted.defaulted {
-      color: #000;
-      font-weight: normal;
-      text-decoration: none;
-    }
-    .exp-ifvariant.unselected {
-      display: inline;
-      color: #d3d3d3;
-      font-weight: normal;
-      text-decoration: line-through;
-    }
-    .exp-ifvariant.unselected.defaulted {
-      display: none;
-    }
-    .exp-ifvariant.unselected.highlighted {
-      color: #f00;
-      text-decoration: line-through;
-    }
-    .exp-ifvariant.unselected.highlighted.defaulted {
-      display: none;
-    }
-    .exp-unlessvariant.unselected {
-      display: none;
-    }
-    .exp-unlessvariant.unselected.defaulted {
-      display: inline;
-      color: #d3d3d3;
-      font-weight: normal;
-      text-decoration: line-through;
-    }
-    .exp-unlessvariant.unselected.highlighted.defaulted {
-      color: #f00;
-      font-weight: normal;
-      text-decoration: line-through;
-    }
-    .exp-unlessvariant.selected {
-      display: inline;
-      color: #000;
-      font-weight: normal;
-      text-decoration: none;
-    }
-    .exp-unlessvariant.selected.defaulted {
-      display: inline;
-      text-decoration: underline;
-      font-weight: bold;
-      color: #000;
-    }
-    .exp-unlessvariant.selected.highlighted {
-      display: inline;
-      color: #000;
-      font-weight: normal;
-      text-decoration: none;
-    }
-    .exp-unlessvariant.selected.highlighted.defaulted {
-      display: inline;
-      color: #00f;
-      font-weight: bold;
-      text-decoration: underline;
-    }
-  `;
+exports.getExportCss = function(mode) {
+  if (mode === 'redline') 
+    return `
+      .selected {
+        color: #000;
+        font-weight: normal;
+        text-decoration: none;
+      }
+      .unselected {
+        display: none;
+      }
+      .exp-if.selected {
+        display: inline;
+        text-decoration: underline;
+        font-weight: bold;
+        color: #000;
+      }
+      .exp-if.selected.defaulted {
+        color: #000;
+        font-weight: normal;
+        text-decoration: none;
+      }
+      .exp-if.selected.highlighted {
+        display: inline;
+        text-decoration: underline;
+        font-weight: bold;
+        color: #00f;
+      }
+      .exp-if.selected.highlighted.defaulted {
+        color: #000;
+        font-weight: normal;
+        text-decoration: none;
+      }
+      .exp-if.unselected {
+        display: inline;
+        color: #d3d3d3;
+        font-weight: normal;
+        text-decoration: line-through;
+      }
+      .exp-if.unselected.defaulted {
+        display: none;
+      }
+      .exp-if.unselected.highlighted {
+        color: #f00;
+        text-decoration: line-through;
+      }
+      .exp-if.unselected.highlighted.defaulted {
+        display: none;
+      }
+      .exp-unless.unselected {
+        display: none;
+      }
+      .exp-unless.unselected.defaulted {
+        display: inline;
+        color: #d3d3d3;
+        font-weight: normal;
+        text-decoration: line-through;
+      }
+      .exp-unless.unselected.highlighted.defaulted {
+        color: #f00;
+        font-weight: normal;
+        text-decoration: line-through;
+      }
+      .exp-unless.selected {
+        display: inline;
+        color: #000;
+        font-weight: normal;
+        text-decoration: none;
+      }
+      .exp-unless.selected.defaulted {
+        display: inline;
+        text-decoration: underline;
+        font-weight: bold;
+        color: #000;
+      }
+      .exp-unless.selected.highlighted {
+        display: inline;
+        color: #000;
+        font-weight: normal;
+        text-decoration: none;
+      }
+      .exp-unless.selected.highlighted.defaulted {
+        display: inline;
+        color: #00f;
+        font-weight: bold;
+        text-decoration: underline;
+      }
+      .exp-ifcond.selected {
+        display: inline;
+        text-decoration: underline;
+        font-weight: bold;
+        color: #000;
+      }
+      .exp-ifcond.selected.defaulted {
+        color: #000;
+        font-weight: normal;
+        text-decoration: none;
+      }
+      .exp-ifcond.selected.highlighted {
+        display: inline;
+        text-decoration: underline;
+        font-weight: bold;
+        color: #00f;
+      }
+      .exp-ifcond.selected.highlighted.defaulted {
+        color: #000;
+        font-weight: normal;
+        text-decoration: none;
+      }
+      .exp-ifcond.unselected {
+        display: inline;
+        color: #d3d3d3;
+        font-weight: normal;
+        text-decoration: line-through;
+      }
+      .exp-ifcond.unselected.defaulted {
+        display: none;
+      }
+      .exp-ifcond.unselected.highlighted {
+        color: #f00;
+        text-decoration: line-through;
+      }
+      .exp-ifcond.unselected.highlighted.defaulted {
+        display: none;
+      }
+      .exp-ifvariant.selected {
+        display: inline;
+        text-decoration: none;
+        font-weight: normal;
+        color: #000;
+      }
+      .exp-ifvariant.selected.defaulted {
+        color: #000;
+        font-weight: normal;
+        text-decoration: none;
+      }
+      .exp-ifvariant.selected.highlighted {
+        display: inline;
+        text-decoration: none;
+        font-weight: normal;
+        color: #000;
+      }
+      .exp-ifvariant.selected.highlighted.defaulted {
+        color: #000;
+        font-weight: normal;
+        text-decoration: none;
+      }
+      .exp-ifvariant.unselected {
+        display: inline;
+        color: #d3d3d3;
+        font-weight: normal;
+        text-decoration: line-through;
+      }
+      .exp-ifvariant.unselected.defaulted {
+        display: none;
+      }
+      .exp-ifvariant.unselected.highlighted {
+        color: #f00;
+        text-decoration: line-through;
+      }
+      .exp-ifvariant.unselected.highlighted.defaulted {
+        display: none;
+      }
+      .exp-unlessvariant.unselected {
+        display: none;
+      }
+      .exp-unlessvariant.unselected.defaulted {
+        display: inline;
+        color: #d3d3d3;
+        font-weight: normal;
+        text-decoration: line-through;
+      }
+      .exp-unlessvariant.unselected.highlighted.defaulted {
+        color: #f00;
+        font-weight: normal;
+        text-decoration: line-through;
+      }
+      .exp-unlessvariant.selected {
+        display: inline;
+        color: #000;
+        font-weight: normal;
+        text-decoration: none;
+      }
+      .exp-unlessvariant.selected.defaulted {
+        display: inline;
+        text-decoration: underline;
+        font-weight: bold;
+        color: #000;
+      }
+      .exp-unlessvariant.selected.highlighted {
+        display: inline;
+        color: #000;
+        font-weight: normal;
+        text-decoration: none;
+      }
+      .exp-unlessvariant.selected.highlighted.defaulted {
+        display: inline;
+        color: #00f;
+        font-weight: bold;
+        text-decoration: underline;
+      }
+    `;
+  else
+    return `
+      .unselected {
+        display: none;
+      }
+      .exp-if.unselected.defaulted {
+        display: none;
+      }
+      .exp-if.unselected.highlighted.defaulted {
+        display: none;
+      }
+      .exp-unless.unselected {
+        display: none;
+      }
+      .exp-ifcond.unselected.defaulted {
+        display: none;
+      }
+      .exp-ifcond.unselected.highlighted.defaulted {
+        display: none;
+      }
+      .exp-ifvariant.unselected.defaulted {
+        display: none;
+      }
+      .exp-ifvariant.unselected.highlighted.defaulted {
+        display: none;
+      }
+      .exp-unlessvariant.unselected {
+        display: none;
+      }
+    `;
 };
 
 function _getRandomString() {

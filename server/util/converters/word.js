@@ -21,8 +21,8 @@ exports.write = (html, styles, output, mode) => {
         if (err) {
           return reject(err);
         }
-        var gen = new Generator(window.$);
-        var content = gen.generate(mode);
+        var gen = new Generator(window.$, mode);
+        var content = gen.generate();
 
         request({
           method: 'POST',
@@ -56,15 +56,15 @@ exports.write = (html, styles, output, mode) => {
   });
 };
 
-function Generator($) {
+function Generator($, mode) {
   this.$ = $;
+  this.mode = mode;
 }
 
-Generator.prototype.generate = function(mode) {
+Generator.prototype.generate = function() {
   var self = this;
   var now = moment().format('YYYY-MM-DD');
-  var content = (mode === 'redline') ? _.map(self.$('body > *'), self.parseNodeRedline.bind(self)) 
-      : _.map(self.$('body > *'), self.parseNode.bind(self));
+  var content = _.map(self.$('body > *'), self.parseNode.bind(self));
 
   return {
     documentType: 'Comfort Letter',
@@ -94,62 +94,23 @@ Generator.prototype.parseNode = function(node) {
   var tagName = _.toLower($node.prop('tagName'));
   switch (tagName) {
     case 'p':
-      content.text = $node.text();
-      break;
-    case 'ul':
       content.text = self.getNodeOwnText.call(this, $node);
-      content.subContent = _.map($node.children('li'), (elem, index) => {
-        var subContent = self.parseNode.call(self, elem);
-        subContent.index = consts.CHARS[index]; // TODO: can be more than CHARS.length
-        return subContent;
-      });
-      break;
-    case 'ol':
-      content.text = self.getNodeOwnText.call(this, $node);
-      content.subContent = _.map($node.children('li'), (elem, index) => {
-        var subContent = self.parseNode.call(self, elem);
-        subContent.index = index + 1;
-        return subContent;
-      });
-      break;
-    default:
-      content.text = $node.text();
-      break;
-  }
-
-  return content;
-};
-
-Generator.prototype.parseNodeRedline = function(node) {
-  var self = this;
-  var $node = self.$(node);
-
-  var content = {
-    type: 'paragraph',
-    text: '',
-    subContent: []
-  };
-
-  var tagName = _.toLower($node.prop('tagName'));
-  switch (tagName) {
-    case 'p':
-      content.text = self.getNodeOwnTextRedline.call(this, $node);
       break;
     case 'li':
-      content.text = self.getNodeOwnTextRedline.call(this, $node);
+      content.text = self.getNodeOwnText.call(this, $node);
       break;
     case 'ul':
-      content.text = self.getNodeOwnTextRedline.call(this, $node);
+      content.text = self.getNodeOwnText.call(this, $node);
       content.subContent = _.map($node.children('li'), (elem, index) => {
-        var subContent = self.parseNodeRedline.call(self, elem);
+        var subContent = self.parseNode.call(self, elem);
         subContent.index = consts.CHARS[index]; // TODO: can be more than CHARS.length
         return subContent;
       });
       break;
     case 'ol':
-      content.text = self.getNodeOwnTextRedline.call(this, $node);
+      content.text = self.getNodeOwnText.call(this, $node);
       content.subContent = _.map($node.children('li'), (elem, index) => {
-        var subContent = self.parseNodeRedline.call(self, elem);
+        var subContent = self.parseNode.call(self, elem);
         subContent.index = index + 1;
         return subContent;
       });
@@ -163,19 +124,6 @@ Generator.prototype.parseNodeRedline = function(node) {
 };
 
 Generator.prototype.getNodeOwnText = function(node) {
-  var nodes = this.$(node)
-    .contents()
-    .filter(function() {
-      return this.nodeType === 3;
-    });
-  if (nodes.length > 0) {
-    return nodes[0].nodeValue;
-  }
-  return '';
-};
-
-Generator.prototype.getNodeOwnTextRedline = function(node) {
-  var $ = this.$;
   var self = this;
   var ret = '';
   var nodes = this.$(node)
@@ -185,21 +133,29 @@ Generator.prototype.getNodeOwnTextRedline = function(node) {
         ret += this.nodeValue;
       else {
         if (this.nodeName === 'SPAN') {
-          var tag = checkClassList($(this));
-          if (tag === 'normal')
-            ret += self.getNodeOwnTextRedline.call(self, this);
-          else if (tag === 'ins')
-            ret += '<ins>' + self.getNodeOwnTextRedline.call(self, this) + '</ins>';
-          else if (tag === 'del')
-            ret += '<del>' + self.getNodeOwnTextRedline.call(self, this) + '</del>';
-          else
-            ret += '';
+          var tag = checkClassList(self.$(this));
+          if (self.mode === 'redline') {
+            if (tag === 'normal')
+              ret += self.getNodeOwnText.call(self, this);
+            else if (tag === 'ins')
+              ret += '<ins>' + self.getNodeOwnText.call(self, this) + '</ins>';
+            else if (tag === 'del')
+              ret += '<del>' + self.getNodeOwnText.call(self, this) + '</del>';
+            else
+              ret += '';  
+          }
+          else if (self.mode === 'clean') {
+            if (tag === 'normal' || tag === 'ins')
+              ret += self.getNodeOwnText.call(self, this);
+            else
+              ret += '';  
+          }
         }
         else if (this.nodeName === 'B') {
-          ret += '<b>' + self.getNodeOwnTextRedline.call(self, this) + '</b>';
+          ret += '<b>' + self.getNodeOwnText.call(self, this) + '</b>';
         }
         else if (this.nodeName === 'U') {
-          ret += '<u>' + self.getNodeOwnTextRedline.call(self, this) + '</u>';
+          ret += '<u>' + self.getNodeOwnText.call(self, this) + '</u>';
         }
       }
       return this.nodeType === 3;
