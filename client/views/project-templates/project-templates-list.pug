@@ -42,7 +42,8 @@ block content
                           ng-click="setProjectTemplateStatus(projectTemplate, 'inactive')"
                           ng-disabled="isSaving")
                   span.glyphicon.glyphicon-ban-circle
-                button.btn.btn-danger.btn-sm(title="Delete" 
+                button.btn.btn-danger.btn-sm(title="Delete"
+                          ng-if="currentUser.role === 'superadmin' || currentUser.role === 'admin'" 
                           mwl-confirm
                           on-confirm="deleteProjectTemplate(projectTemplate)"
                           confirm-text="Delete"

@@ -60,6 +60,7 @@ block content
                       ng-disabled="isSaving")
                   span.glyphicon.glyphicon-ban-circle
                 button.btn.btn-danger.btn-sm(title="Delete" 
+                      ng-if="currentUser.role === 'superadmin' || currentUser.role === 'admin'" 
                       mwl-confirm
                       on-confirm="deleteTermTemplate(termTemplate)"
                       confirm-text="Delete"
