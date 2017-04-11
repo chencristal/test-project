@@ -232,7 +232,7 @@ Generator.prototype.generateExpressionHtml = function (token) {
 
       _.forEach(variables, function(elem, key) {
         if (key !== variables.length - 1) {
-          classes += `variables.${elem.text}.state == 2 && `;
+          classes += `variables.${elem.text}.state == 2 || `;
           highlighted += `selectedVariable === variables.${elem.text} || `;
         } 
         else {
