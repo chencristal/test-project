@@ -156,6 +156,43 @@ Generator.prototype.generateVariableEditor = function (variable) {
   }
 };
 
+function getIfCondVariables(token) {
+  var left = [], right = [];
+  var param1 = token.params[0];
+  var param3 = token.params[2];
+
+  if (param1.type === 'subexpression')
+    left = getIfCondVariables(param1);
+  else
+    left = param1;
+
+  if (param3.type === 'subexpression')
+    right = getIfCondVariables(param3);
+  else
+    right = param3;
+
+  return _.uniqBy(_.concat(left, right), 'text');
+}
+
+function generateCompExpression(token, suf) {
+  var left = '', right = '';
+  var param1 = token.params[0];
+  var param2 = token.params[1];
+  var param3 = token.params[2];
+
+  if (param1.type === 'subexpression')
+    left = generateCompExpression(param1, suf);
+  else
+    left = `variables.${param1.text}.${suf}`;
+
+  if (param3.type === 'subexpression')
+    right = generateCompExpression(param3, suf);
+  else
+    right = `variables.${param3.text}.${suf}`;
+
+  return `$root.ifCond(${left}, '${param2.text}', ${right})`;
+}
+
 Generator.prototype.generateExpressionHtml = function (token) {
   var self = this;
   var html = '';
@@ -189,22 +226,38 @@ Generator.prototype.generateExpressionHtml = function (token) {
       break;
 
     case 'ifCond':
+      var variables = getIfCondVariables(token)
+      var classes = 'exp-ifcond {{ ', 
+          highlighted = '(';
+
+      _.forEach(variables, function(elem, key) {
+        if (key !== variables.length - 1) {
+          classes += `variables.${elem.text}.state == 2 && `;
+          highlighted += `selectedVariable === variables.${elem.text} || `;
+        } 
+        else {
+          classes += `variables.${elem.text}.state == 2 ? 'uncertain-bracket' : null }}`;
+          highlighted += `selectedVariable === variables.${elem.text})`;
+        }
+      });
+
+      var valueComp = generateCompExpression(token, 'value');
+      var defaultComp = generateCompExpression(token, 'boolean.default');
+
       html += `<span 
-        class="exp-ifcond
-          {{ variables.${param1.text}.state == 2 && variables.${param2.text}.state == 2 && variables.${param3.text}.state == 2 ? 'uncertain-bracket' : null }}" 
+        class="${classes}" 
         ng-class="{ 
-          defaulted: $root.ifCond(variables.${param1.text}.value, '${param2.text}', variables.${param3.text}.value) == 
-                      $root.ifCond(variables.${param1.text}.boolean.default, '${param2.text}', variables.${param3.text}.boolean.default),
-          selected: $root.ifCond(variables.${param1.text}.value, '${param2.text}', variables.${param3.text}.value),
-          unselected: !$root.ifCond(variables.${param1.text}.value, '${param2.text}', variables.${param3.text}.value),
-          highlighted: (selectedVariable === variables.${param1.text} || selectedVariable === variables.${param3.text})
+          defaulted: ${valueComp} == ${defaultComp},
+          selected: ${valueComp},
+          unselected: !${valueComp},
+          highlighted: ${highlighted}
         }">`;
       break;
 
     case 'ifVariant':
       html += `<span 
         class="exp-ifvariant
-          {{ variables.${param1.text}.state == 2 && variables.${param1.text}.state == 2 ? 'uncertain-bracket' : null }}" 
+          {{ variables.${param1.text}.state == 2 ? 'uncertain-bracket' : null }}" 
         ng-class="{ 
           defaulted: $root.ifVariant(variables.${param1.text}.value, '${param2.text}') == 
                       $root.ifVariant(variables.${param1.text}.variant.default, '${param2.text}'),
@@ -217,7 +270,7 @@ Generator.prototype.generateExpressionHtml = function (token) {
     case 'unlessVariant':
       html += `<span 
         class="exp-unlessvariant
-          {{ variables.${param1.text}.state == 2 && variables.${param1.text}.state == 2 ? 'uncertain-bracket' : null }}" 
+          {{ variables.${param1.text}.state == 2 ? 'uncertain-bracket' : null }}" 
         ng-class="{ 
           defaulted: $root.ifVariant(variables.${param1.text}.value, '${param2.text}') != 
                       $root.ifVariant(variables.${param1.text}.variant.default, '${param2.text}'),

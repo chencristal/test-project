@@ -151,12 +151,64 @@ GeneratorExport.prototype.generateExportExpressionHtml = function (token) {
     return (_temp !== undefined && (_temp.value == 'true' || _temp.value == true));
   }
   
-  function _parseIfCond() {
-    var v1 = _parseBoolean(param1.text),
-        op = param2.text,
-        v2 = _parseBoolean(param3.text);
+  function _getIfCondVariables(token) {
+    var left = [], right = [];
+    var param1 = token.params[0];
+    var param3 = token.params[2];
 
-    return _ifCond(v1, op, v2);
+    if (param1.type === 'subexpression')
+      left = _getIfCondVariables(param1);
+    else
+      left = param1;
+
+    if (param3.type === 'subexpression')
+      right = _getIfCondVariables(param3);
+    else
+      right = param3;
+
+    return _.uniqBy(_.concat(left, right), 'text');
+  }
+
+  function _parseIfCondDefault(token) {
+    var left, right;
+    var param1 = token.params[0];
+    var param2 = token.params[1];
+    var param3 = token.params[2];
+
+    if (param1.type === 'subexpression')
+      left = _parseIfCondDefault(param1);
+    else {
+      var _term = _.find(termTempls, {variable: param1.text});
+      left = _term.boolean.default;
+    }
+
+    if (param3.type === 'subexpression')
+      right = _parseIfCondDefault(param3);
+    else {
+      var _term = _.find(termTempls, {variable: param3.text});
+      right = _term.boolean.default;
+    }
+
+    return _ifCond(left, param2.text, right);
+  }
+
+  function _parseIfCond(token) {
+    var left, right;
+    var param1 = token.params[0];
+    var param2 = token.params[1];
+    var param3 = token.params[2];
+
+    if (param1.type === 'subexpression')
+      left = _parseIfCond(param1);
+    else
+      left = _parseBoolean(param1.text);
+
+    if (param3.type === 'subexpression')
+      right = _parseIfCond(param3);
+    else
+      right = _parseBoolean(param3.text);
+
+    return _ifCond(left, param2.text, right);
   }
 
   function _parseIfVariant() {
@@ -189,10 +241,13 @@ GeneratorExport.prototype.generateExportExpressionHtml = function (token) {
       break;
 
     case 'ifCond':
-      var _term1 = _.find(termTempls, {'variable': param1.text});
-      var _term2 = _.find(termTempls, {'variable': param3.text});
-      var value = _parseIfCond();
-      var defaultValue = _ifCond(_term1.boolean.default, param2.text, _term2.boolean.default);
+      var _variables = _getIfCondVariables(token);
+      var _terms = [];
+      _.forEach(_variables, function(elem) {
+        _terms = _.concat(_terms, _.find(termTempls, {variable: elem.text}));
+      });
+      var value = _parseIfCond(token);
+      var defaultValue = _parseIfCondDefault(token);
 
       var defaulted = (value == defaultValue) ? 'defaulted' : '';
       var selected = (value) ? 'selected' : 'unselected';

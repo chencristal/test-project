@@ -188,6 +188,13 @@ function _parseToken(token) {
         tokens: _.map(_.get(token, 'program.body'), _parseToken)
       };
     }
+    case 'SubExpression':
+      var params = _.concat(token.path, token.params);
+      return {
+        type: 'subexpression',
+        text: 'ifCond',
+        params: _.map(params, _parseToken)
+      };
     case 'StringLiteral':
       return {
         type: 'operator',

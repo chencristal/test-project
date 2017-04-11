@@ -5,7 +5,7 @@ angular.module('app').directive('projectEditor', function () {
     restrict: 'E',
     scope: {},
     templateUrl: 'views/projects/editor/index.html',
-    controller: function ($scope, $window, $element, $timeout, $routeParams, $location, $q, Notifier,
+    controller: function ($rootScope, $scope, $window, $element, $timeout, $routeParams, $location, $q, Notifier,
               Project, DocumentTemplate, ProvisionTemplate, TermTemplate, ProvisionVariable) {
       /* jshint maxstatements: false */
 
@@ -568,40 +568,44 @@ angular.module('app').directive('projectEditor', function () {
 
         function _parseBoolean(text) {
           var _temp = _.find(values, {'variable': text});
-
-          if (_temp !== undefined) {
-            if (_temp.value == 'true' || _temp.value == true) {
-              return true;
-            }
-          }
-
-          return false;
+          return (_temp !== undefined && (_temp.value == 'true' || _temp.value == true));
         }
-        function _parseIfCond(token) {
-          var v1 = _parseBoolean(token.params[0].text),
-              op = token.params[1].text,
-              v2 = _parseBoolean(token.params[2].text);
 
-          switch (op) {
-            case 'and':
-              return (v1 && v2);
-            case 'not-and':
-              return (!v1 && v2);
-            case 'and-not':
-              return (v1 && !v2);
-            case 'not-and-not':
-              return (!v1 && !v2);
-            case 'or':
-              return (v1 || v2);
-            case 'not-or':
-              return (!v1 || v2);
-            case 'or-not':
-              return (v1 || !v2);
-            case 'not-or-not':
-              return (!v1 || !v2);
-            default:
-              return false;
-          }
+        function _getIfCondVariables(token) {
+          var left = [], right = [];
+          var param1 = token.params[0];
+          var param3 = token.params[2];
+
+          if (param1.type === 'subexpression')
+            left = _getIfCondVariables(param1);
+          else
+            left = param1;
+
+          if (param3.type === 'subexpression')
+            right = _getIfCondVariables(param3);
+          else
+            right = param3;
+
+          return _.uniqBy(_.concat(left, right), 'text');
+        }
+
+        function _parseIfCond(token) {
+          var left, right;
+          var param1 = token.params[0];
+          var param2 = token.params[1];
+          var param3 = token.params[2];
+
+          if (param1.type === 'subexpression')
+            left = _parseIfCond(param1);
+          else
+            left = _parseBoolean(param1.text);
+
+          if (param3.type === 'subexpression')
+            right = _parseIfCond(param3);
+          else
+            right = _parseBoolean(param3.text);
+
+          return $rootScope.ifCond(left, param2.text, right);
         }
 
         function _parseIfVariant(token) {
@@ -691,15 +695,13 @@ angular.module('app').directive('projectEditor', function () {
                   }
                 }
                 else if (token.text == 'ifCond') {
-                  _.forEach(token.params, function(param) {
-                    if (param.type == 'variable') {
-                      var _temp = _.find(values, {'variable': param.text});
-                      if (_.find(_variables, _temp) == undefined) {
-                        _variables = _.concat(_variables, _temp);
-                      }
+                  var _vars = _getIfCondVariables(token);
+                  _.forEach(_vars, function(_var) {
+                    var _temp = _.find(values, {'variable': _var.text});
+                    if (_.find(_variables, _temp) == undefined) {
+                      _variables = _.concat(_variables, _temp);
                     }
                   });
-
                   if (_parseIfCond(token) == true) {
                     _.map(token.tokens, _parseValues);
                   }
