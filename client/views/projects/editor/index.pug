@@ -1,0 +1,59 @@
+div.editor(ng-style="{ height: editorHeight }")
+  .row
+    .col-sm-12
+      div(ng-show="isLoading")
+        include ../../common/spinner.pug
+
+  .row.content(ng-hide="isLoading" ng-style="{ height: editorHeight - 45 }")
+    .section.col-sm-3.col(style="padding-right:0px;overflow:hidden")
+      .toolbar.col-xs-12(style="padding-right: 5px;height: initial;")
+        .col-xs-6(style="padding: 0px;")
+          h3(style="text-align:left;") {{ ::project.name }}
+
+        .col-xs-6(style="padding: 0px;")
+          div.div-view-state
+            button.btn.btn-view-state(
+              ng-repeat="viewState in viewStates"
+              type="button"
+              class="{{ viewState['btn-class'] }}"
+              title="{{ viewState['name'] }}"
+              ng-click="changeViewState($event)")
+              span(class="{{ viewState['span-class'] }}")
+
+      div(style="clear:both;") &nbsp;
+      .col.properties#properties(style="margin: 0px;padding-right: 15px;" ng-style='{height:editorHeight - 125, overflow:"auto"}')
+        include ./properties.pug
+    .section.col-sm-7.col.editor#editor(style="overflow:hidden")
+      .toolbar.col-sm-6
+        select.form-control(ng-model="relatedData.currrentDocumentTemplate"
+                          ng-options="docTempl as docTempl.name for docTempl in relatedData.documentTemplates"
+                          ng-required="true")
+      .toolbar.buttons.col-sm-6
+        include ./undo-redo.pug
+        button.btn.btn-default.btn-linked-screen(
+          type="button"
+          ng-class="{true: 'fa fa-link btn-linked-screen-on', false: 'fa fa-chain-broken btn-linked-screen-off'}[linkedScreens]"
+          ng-attr-title="{{{true: 'Click for disable linked screens mode', false: 'Click for linked screens mode'}[linkedScreens === true]}}"
+          ng-click="linkedScreens = !linkedScreens"
+        )
+
+        button.btn.btn-default(
+          type="button"
+          ng-class="{true: 'btn-edit', false: 'btn-redline'}[mode === 'edit']"
+          ng-attr-title="{{{true: 'Click for Redline Mode', false: 'Click for Clean Mode'}[mode === 'edit']}}"
+          ng-click="setMode(mode === 'edit' ? 'redline' : 'edit')"
+        )
+          span.glyphicon.glyphicon-font
+        button.btn.btn-default(title="Export to PDF" ng-click="exportToPdf()")
+          img(src="/images/pdf-icon.png")
+        button.btn.btn-default(title="Export to Word" ng-click="exportToWord()")
+          img(src="/images/word-icon.png")
+      div(style="clear:both;") &nbsp;
+      include ./editor.pug
+    .section.col-sm-2.col.help
+      h3.page-header-left Help
+      include ./help.pug
+    .saving(ng-show="isSaving")
+      include ../../common/spinner.pug
+
+  include ./prev-next-change

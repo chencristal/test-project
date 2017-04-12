@@ -1,0 +1,20 @@
+div(ng-controller="NavbarCtrl")
+  ul.nav.nav-sidebar
+    li(ng-class="{ active: isActive('/project-templates') }")
+      a(href="/project-templates") Project Templates
+    li(ng-class="{ active: isActive('/document-templates') }")
+      a(href="/document-templates") Document Templates
+    li(ng-class="{ active: isActive('/document-template-types') }")
+      a(href="/document-template-types") Document Template Types
+    li(ng-class="{ active: isActive('/provision-templates') }")
+      a(href="/provision-templates") Provision Templates
+    li(ng-class="{ active: isActive('/term-templates') }")
+      a(href="/term-templates") Term Templates
+  ul.nav.nav-sidebar(ng-if="currentUser.role === 'superadmin' || currentUser.role === 'admin'")
+    li(ng-class="{ active: isActive('/users') }")
+      a(href="/users") Users
+    li(ng-class="{ active: isActive('/user-groups') }")
+      a(href="/user-groups") User Groups
+  ul.nav.nav-sidebar
+    li(ng-class="{ active: isActive('/profile') }")
+      a(href="/profile") My Profile

@@ -1,0 +1,57 @@
+extends ../layout/layout.pug
+
+block content
+  .row
+    .col-md-12
+      h1.page-header My Profile
+  .row(ng-show="isLoading")
+    .col-md-12
+      include ../common/spinner.pug
+  div(ng-hide="isLoading")
+    .row
+      .col-md-12
+        form.form-horizontal(name="userForm")
+          .form-group(ng-class="{ 'has-error': userForm.firstName.$invalid || userForm.firstName.$error.required }")
+            label.col-md-3.control-label(for="firstName") Name*
+            .col-md-9
+              input.form-control(name="firstName" ng-model="user.firstName" ng-required="true"
+                      placeholder="Your Name" ng-disabled="isSaving")
+
+          .form-group(ng-class="{ 'has-error': userForm.email.$invalid || userForm.email.$error.required }")
+            label.col-md-3.control-label(for="email") Username(Email)*
+            .col-md-9
+              input.form-control(name="email" placeholder="Email" ng-model="user.email" 
+                                ng-required="true" ng-disabled="isSaving")
+
+          .form-group(ng-class="{ 'has-error': userForm.userGroups.$error.required }" 
+                ng-if="currentUser.role !== 'superadmin'")
+            label.col-md-3.control-label(for="userGroups") User Groups
+            .col-md-9
+              ui-select(name="userGroups" multiple="true" ng-model="::user.userGroups" ng-disabled="true")
+                ui-select-match(placeholder="No User Groups") {{ $item.groupName }}
+                ui-select-choices(refresh="refreshUserGroups($select.search)" refresh-delay="300" 
+                    repeat="userGroup._id as userGroup in userGroups")
+                  span(ng-bind-html="userGroup.groupName | highlight: $select.search")
+
+          .form-group
+            label.col-md-3.control-label(for="role") User Role
+            .col-md-9
+              .form-control.form-control-static
+                strong {{ roleName(user.role) }}
+
+          .form-group(ng-class="{ 'has-error': userForm.password.$invalid || userForm.password.$error.required }")
+            label.col-md-3.control-label(for="password") Password*
+            .col-md-9
+              input.form-control(name="password" type="password" placeholder="Password" 
+                        ng-model="user.password" ng-disabled="isSaving")
+
+          .form-group(ng-class="{ 'has-error': userForm.confirmpass.$invalid || userForm.confirmpass.$error.required }")
+            label.col-md-3.control-label(for="confirmpass") Confirm Password*
+            .col-md-9
+              input.form-control(name="confirmpass" type="password" placeholder="Confirm Password" 
+                        ng-model="user.confirmpass" ng-disabled="isSaving")
+    .row
+      .col-md-12
+        .buttons.text-right
+          a.btn.btn-default(href="/users") Cancel
+          button.btn.btn-primary(ng-click="saveProfile()" ng-disabled="userForm.$invalid || isSaving") Save

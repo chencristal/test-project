@@ -1,0 +1,54 @@
+extends ../layout/layout.pug
+
+block content
+  .row
+    .col-md-12
+      h1.page-header Document Template Types
+  .row(ng-show="isLoading")
+    .col-md-12
+      include ../common/spinner.pug
+  div(ng-hide="isLoading")
+    .row
+      .col-md-12
+        a.btn.btn-default.btn-primary(href="/document-template-types/new") New Document Template Type
+    .row
+      .col-md-12
+        table.table.table-striped.document-template-types
+          thead
+            tr
+              td
+                strong Name
+              td
+                strong Status
+              td
+          tbody
+            tr(ng-repeat="documentTemplateType in documentTemplateTypes"
+                ng-class="{ disabled: documentTemplateType.status === 'inactive' }")
+              td {{ documentTemplateType.name }}
+              td {{ documentTemplateType.status }}
+              td.actions.text-right
+                button.btn.btn-info.btn-sm(title="Edit" 
+                          ng-hide="documentTemplateType.status === 'inactive'" 
+                          ng-click="editDocumentTemplateType(documentTemplateType)" 
+                          ng-disabled="isSaving")
+                  span.glyphicon.glyphicon-pencil
+                button.btn.btn-warning.btn-sm(title="Activate"
+                          ng-if="documentTemplateType.status === 'inactive'"
+                          ng-click="setDocumentTemplateTypeStatus(documentTemplateType, 'active')"
+                          ng-disabled="isSaving")
+                  span.glyphicon.glyphicon-refresh
+                button.btn.btn-warning.btn-sm(title="Disable"
+                          ng-if="documentTemplateType.status === 'active'"
+                          ng-click="setDocumentTemplateTypeStatus(documentTemplateType, 'inactive')"
+                          ng-disabled="isSaving")
+                  span.glyphicon.glyphicon-ban-circle
+                button.btn.btn-danger.btn-sm(title="Delete" 
+                          ng-if="currentUser.role === 'superadmin' || currentUser.role === 'admin'" 
+                          mwl-confirm
+                          on-confirm="deleteDocumentTemplateType(documentTemplateType)"
+                          confirm-text="Delete"
+                          confirm-button-type="danger"
+                          placement="left"
+                          message="Are you sure you want to delete this document template type: <b>{{documentTemplateType.name}}</b>?"
+                          ng-disabled="isSaving")
+                  span.glyphicon.glyphicon-trash

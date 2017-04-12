@@ -1,0 +1,42 @@
+form.form-horizontal(name="userForm")
+  .form-group
+     label.col-md-3.control-label(for="firstName") Name
+     .col-md-9
+       input.form-control(name="firstName" ng-model="user.firstName" placeholder="Name" ng-disabled="isSaving")
+
+  .form-group(ng-class="{ 'has-error': userForm.email.$invalid || userForm.email.$error.required }")
+    label.col-md-3.control-label(for="email") Username(Email)*
+    .col-md-9
+      input.form-control(name="email" placeholder="Email" ng-model="user.email" 
+                         ng-required="true" ng-disabled="isSaving")
+
+  .form-group
+     label.col-md-3.control-label(for="role") User Role
+     .col-md-9
+       select.form-control(name="role" ng-model="selectedRole.selected" ng-disabled="isSaving" 
+          ng-options="role as role.label for role in roles track by role.value")
+
+  .form-group(ng-class="{ 'has-error': userForm.userGroups.$error.required }")
+    label.col-md-3.control-label(for="userGroups") User Groups
+    .col-md-9
+      ui-select(name="userGroups" multiple="true" ng-model="user.userGroups" ng-disabled="isSaving")
+        ui-select-match(placeholder="Add User Groups") {{ $item.groupName }}
+        ui-select-choices(refresh="refreshUserGroups($select.search)" refresh-delay="300" repeat="userGroup._id as userGroup in userGroups")
+          span(ng-bind-html="userGroup.groupName | highlight: $select.search")
+
+  .form-group
+     label.col-md-3.control-label(for="role") URL Login
+     .col-md-9
+       md-switch.md-primary(name="urlLogin" ng-model="user.urlLogin")
+
+  .form-group(ng-class="{ 'has-error': userForm.password.$invalid || userForm.password.$error.required }")
+    label.col-md-3.control-label(for="password") Password*
+    .col-md-9
+      input.form-control(name="password" type="password" placeholder="Password" ng-model="user.password" 
+                         ng-required="true" ng-disabled="isSaving")
+
+  .form-group(ng-class="{ 'has-error': userForm.confirmpass.$invalid || userForm.confirmpass.$error.required }")
+    label.col-md-3.control-label(for="confirmpass") Confirm Password*
+    .col-md-9
+      input.form-control(name="confirmpass" type="password" placeholder="Confirm Password" ng-model="user.confirmpass" 
+                         ng-required="true" ng-disabled="isSaving")

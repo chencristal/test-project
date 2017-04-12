@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<!--[if IE 8]> <html lang="en" class="ie8"> <![endif]-->  
+<!--[if IE 9]> <html lang="en" class="ie9"> <![endif]-->  
+<!--[if !IE]><!--> <html lang="en"> <!--<![endif]-->  
+<head>
+    <title>Documentation - Authors</title>
+    <!-- Meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">    
+    <link rel="shortcut icon" href="favicon.ico">  
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+    <!-- Global CSS -->
+    <link rel="stylesheet" href="assets/plugins/bootstrap/css/bootstrap.min.css">   
+    <!-- Plugins CSS -->    
+    <link rel="stylesheet" href="assets/plugins/font-awesome/css/font-awesome.css">
+    <link rel="stylesheet" href="assets/plugins/prism/prism.css">
+    <link rel="stylesheet" href="assets/plugins/lightbox/dist/ekko-lightbox.min.css">
+    <link rel="stylesheet" href="assets/plugins/elegant_font/css/style.css">
+
+    <!-- Theme CSS -->
+    <link id="theme-style" rel="stylesheet" href="assets/css/styles.css">
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    
+</head> 
+
+<body class="body-red">
+    <div class="page-wrapper">
+        <!-- ******Header****** -->
+        <header id="header" class="header">
+            <div class="container">
+                <div class="branding">
+                    <h1 class="logo">
+                        <a href="index.html">
+                            <span aria-hidden="true" class="icon_documents_alt icon"></span>
+                            <span class="text-highlight">Celant-Redux</span><span class="text-bold"> Documentation</span>
+                        </a>
+                    </h1>
+                </div><!--//branding-->
+                <ol class="breadcrumb">
+                    <li><a href="index.html">Home</a></li>
+                    <li class="active">Authors</li>
+                </ol>
+            </div><!--//container-->
+        </header><!--//header-->
+        <div class="doc-wrapper">
+            <div class="container">
+                <div id="doc-header" class="doc-header text-center">
+                    <h1 class="doc-title"><span aria-hidden="true" class="icon fa fa-pencil"></span> Authors</h1>
+                    <div class="meta"><i class="fa fa-clock-o"></i> Last updated: March 18, 2017</div>
+                </div><!--//doc-header-->
+                <div class="doc-body">
+                    <div class="doc-content">
+                        <div class="content-inner">
+                            <section id="intro" class="doc-section">
+                                <h2 class="section-title">Introduction</h2>
+                                <div class="section-block">
+                                    <h3 class="block-title">Who are the Authors?   </h3>
+                                    <p>The Authors create smart templates that users use to create documents.  The best people to draft these templates are the knowledge workers in the organization, who are intimately involved in, and knowledgeable about, the business decisions and considerations involved in the drafting of the document. They may be professionals such as attorneys, or mid-to-senior level executives.</p>
+
+                                </div><!--//section-block-->
+                                <div class="section-block">
+                                    <h3 class="block-title">Template Architecture</h3>
+                                    <p>There are 4 major templates, ordered in a hierarchy, from largest to smallest:</p>
+                                        <ol class="list">
+                                            <li>Project Templates</li>
+                                            <li>Document Templates</li>
+                                            <li>Provision Templates</li>
+                                            <li>Term Templates</li>
+                                        </ol>
+                                    <p>Each template, other than the Term Template, is made up of its smaller components.  For instance, a Project Template consists of Document Templates, a Document Template consists of Provision Templates, and so on. You may have also noticed Document Template Type, but we will explain that later.  Let's start with a discussion of the most basic template, which is the Term Template. </p>
+
+                                </div><!--//section-block-->
+                            </section><!--//doc-section-->
+                            
+                            <section id="term_templates" class="doc-section">
+                                <h2 class="section-title">Term Templates</h2>
+                                <p>Term Templates, on a fundamental level, are variables that represent a value (or multiple values) that will be determined by the User.  As you can see from above below screen shot, you can create New Term Template, or alternatively, you can import them from CSV.</p>
+                                <div class="screenshot-holder">
+                                    <img class="img-responsive" src="assets/images/author/term-template.png" alt="screenshot" />
+                                </div> 
+                                <h6>When creating a new Term Template, there are 6 Term Template types to choose from:</h6>  
+                                <ol> 
+                                    <li>Text</li>
+                                    <li>Text Plus</li>
+                                    <li>Text Area</li>
+                                    <li>Number</li>
+                                    <li>Date</li>
+                                    <li>Boolean (True/False)</li>
+                                    <li>Variant (Dropdown)</li>
+                                </ol>
+                                <div class="screenshot-holder">
+                                    <img class="img-responsive" src="assets/images/author/term-template-new.png" alt="screenshot" />
+                                </div> 
+                                <div id="1text" class="section-block">
+                                    <h3 class="block-title">1. Text</h3>
+                                    <p>Text is the field that hold text variable.  Under Term Type, choose Text. Then under Variable field, you name the variable.  Characters that are permitted are A-Z, a-z, 0-9, and underscore.  Special characters are NOT permitted, except for the underscore.  An example would be "company_name" (without quotes).</p>
+                                    <p>The Display Name field is what the User will see when prompted to input the field.  This can contain special characters including spaces, which should help in describing briefly the information the is requested from the User - for example, "Company Name". It can also be phrased as a question, as as: "What is the Company Name?"</p>
+                                    <p>The Placeholder is the "Default" text.  It is required.  If you are not sure what to put into this field, you can also in brackets "[  ]".</p>
+                                    <p>Help field is the text that the User will see on the right hand side of the screen when as Help text.  [You can also imbed videos, pictures or links.]</p>
+                                </div><!--//section-block-->
+                                <div id="2textplus" class="section-block">
+                                    <h3 class="block-title">2. Text Plus</h3>
+                                    <p>Text Plus  is similar to the Text variable except that in addition, it  permits Users to create sub-fields, that is a separate text box that appears right after the current text box.  This is handy if the contract contemplates one or more parties.  There are two additional check-boxes: 1. Automatically insert commas/and will insert the commas and 'and' at appropriate places.  2.  Insert line break will insert a new line before the new text box; this is helpful for lists.  </p>
+                                    <p> Under Variable field, you name the variable.  Characters that are permitted are A-Z, a-z, 0-9, and underscore.  Special characters are NOT permitted, except for the underscore.  An example would be "company_name" (without quotes).</p>
+                                    <p>The Display Name field is what the User will see when prompted to input the field.  This can contain special characters including spaces, which should help in describing briefly the information the is requested from the User - for example, "Company Name". It can also be phrased as a question, as as: "What is the Company Name?"</p>
+                                    <p>The Placeholder is the "Default" text.  It is required.  If you are not sure what to put into this field, you can also in brackets "[  ]".  Each sub-field will start out with this Placeholder text.</p>
+                                    <p>Help field is the text that the User will see on the right hand side of the screen when as Help text.  [You can also imbed videos, pictures or links.]</p>
+                                </div><!--//section-block-->
+                                <div id="3textarea" class="section-block">
+                                    <h3 class="block-title">3. Text Area</h3>
+                                    <p>Text Area is similar to the Text variable except that it creates a larger text area in the middle panel.  This is handy if the contract contemplates an insertion of a large body of custom text.  However, one limitation of Text Area is that it will not permit redlining of the inside text.  The text area box will disappear if held within false boolean expressions, and appear if held within true boolean expressions.    </p>
+                                    <p> Under Variable field, you name the variable.  Characters that are permitted are A-Z, a-z, 0-9, and underscore.  Special characters are NOT permitted, except for the underscore.  An example would be "company_name" (without quotes).</p>
+                                    <p>The Display Name field is what the User will see when prompted to input the field.  This can contain special characters including spaces, which should help in describing briefly the information the is requested from the User - for example, "Company Name". It can also be phrased as a question, as as: "What is the Company Name?"</p>
+                                    <p>You can set the initial number of rows of the Text Area, and also whether that area will expand when filled, or remain fixed with appearance of a scoll bar.  There is no Placeholder for Text Area.  </p>
+                                    <p>Help field is the text that the User will see on the right hand side of the screen when as Help text.  [You can also imbed videos, pictures or links.]</p>
+                                </div><!--//section-block-->
+                                
+                                <div id="4number" class="section-block">
+                                    <h3 class="block-title">3. Number</h3>
+                                    <p>Number field allows the User to input numbers.  While it is true that you can put numbers into text boxes as well, Number field permits <b>math</b> function to work.  In short, it allows for simple arithmetic, such as additions and subtractions.  For example, in the Provision Template, you can do: <code>{{math number_variable_name 'add' 10}}</code> </p>
+                                    <p>Under Variable field, you name the variable.  Characters that are permitted are A-Z, a-z, 0-9, and underscore.  Special characters are NOT permitted, except for the underscore.  An example would be "employee_number" (without quotes).</p>
+                                    <p>The Display Name field is what the User will see when prompted to input the field.  This can contain special characters including spaces, which should help in describing briefly the information the is requested from the User - for example, "Employee Number". It can also be phrased as a question, as as: "What is the Employee Number?"</p>
+                                    <p>The Placeholder is the "Default" text.  It is required.  If you are not sure what to put into this field, you can set it to zero.</p>
+
+                                    <p>Help field is the text that the User will see on the right hand side of the screen when as Help text.  [You can also imbed videos, pictures or links.]</p>
+                                </div><!--//section-block-->
+                                
+                                <div id="5date" class="section-block">
+                                    <h3 class="block-title">4. Date</h3>
+                                    <p>Date field allows the User to input dates.  The Date Picker calendar will also appear for the User to make it easier to pick a date.  While it is true that you can put dates into text boxes as well, Date field permits <b>math</b> function to work.  In short, it allows for simple arithmetic, such as additions and subtractions.  For example, in the Provision Template, you can do:<code> {{math date_variable_name 'add-year' 7}}</code>  </p>
+                                    <p>Under Variable field, you name the variable.  Characters that are permitted are A-Z, a-z, 0-9, and underscore.  Special characters are NOT permitted, except for the underscore.  An example would be "start_date" (without quotes).</p>
+                                    <p>The Display Name field is what the User will see when prompted to input the field.  This can contain special characters including spaces, which should help in describing briefly the information the is requested from the User - for example, "Start Date". It can also be phrased as a question, as as: "When did employee start?"</p>
+                                    <p>The Placeholder is the "Default" date.  It is required.  If you are not sure what to put into this field, you can set it to today.</p>
+
+                                    <p>Help field is the text that the User will see on the right hand side of the screen when as Help text.  [You can also imbed videos, pictures or links.]</p>
+
+                                </div><!--//section-block-->
+                                <div id="6boolean" class="section-block">
+                                    <h3 class="block-title">5. Boolean</h3>
+                                    <p>Boolean holds values TRUE or FALSE, and displays to the User as a Radio button.  They must choose one or the other, and null value is not permitted.  Because of its flexibility, you can also use it as a choice of two, such as Include/Exclude or Registered/Non-Registered. Although appearing simple, Booleans are probably the most frequently used variable types, as they are able to manipulate the document beyond the purview of the input field. For example, when used in conjunction with IF statement in the Provision Template, you can add or delete large portions of text using the following syntax:</p>
+<p><pre><code>{{#if boolean_name}}This text will appear if boolean is true.{{else}} Otherwise, this text will appear.{{/if}}</code></pre></p> 
+                                    <p>Under Variable field, you name the variable.  Characters that are permitted are A-Z, a-z, 0-9, and underscore.  Special characters are NOT permitted, except for the underscore.  An example would be "is_registered_transaction" (without quotes).</p>
+                                    <p>The Display Name field is what the User will see when prompted to input the field.  This can contain special characters including spaces, which should help in describing briefly the information the is requested from the User - for example, "Type of Transaction". It can also be phrased as a question, as as: "Is this Registered Transaction?"</p>
+                                    <p>Inclusion text and Exclusion text are the text that will appear in the radio button as options.  The default values are Include and Exclude, but if you are using Boolean as a choice-of-two, then you can rename them as necessary, such as "Registered Trasaction"/"Non-Registered Transaction".</p>
+                                    <p>The Placeholder is the "Default" value.  It is required.  It is initially set to TRUE.</p>
+
+                                    <p>Help field is the text that the User will see on the right hand side of the screen when as Help text.  [You can also imbed videos, pictures or links.]</p>
+
+                                </div><!--//section-block-->
+                                <div id="7variant" class="section-block">
+                                    <h3 class="block-title">6. Variant</h3>
+                                    <p>While Boolean is flexible and useful, especially in conjunction with the use of IF, it is limited to a choice of two: TRUE and FALSE values.  When more alternatives than two are required, Variant is the Term Template that can handle the task because it can have unlimited options.  
+                                    <p>Under Variable field, you name the variable.  Characters that are permitted are A-Z, a-z, 0-9, and underscore.  Special characters are NOT permitted, except for the underscore.  An example would be "filing_type" (without quotes).</p>
+                                    <p>The Display Name field is what the User will see when prompted to input the field.  This can contain special characters including spaces, which should help in describing briefly the information the is requested from the User - for example, "Filing Type". It can also be phrased as a question, as as: "What Document are you filing?"</p>
+                                    <p>Click on Add option, and give name to the Option. This option name will be used in the Provision Template, if you want to use it with the IF statement.</p>
+                                    <p>Out of the Options, you need to choose a Default value.  It is required.  The dropdown will update to reflect the Options that have been added.  If you are not sure what to put into this field, you can set it as the first item in the dropdown.</p>
+                                    <p>Display as gives you a choice to show the choices as radio buttons or a dropdown menu.</p>
+
+                                    <p>Help field is the text that the User will see on the right hand side of the screen when as Help text.  [You can also imbed videos, pictures or links.]</p>
+
+                                </div><!--//section-block-->
+                            </section><!--//doc-section-->
+                            
+                            <section id="provision_templates" class="doc-section">
+                                <h2 class="section-title">Provision Templates</h2>
+                                <p>Provision Templates use Term Templates, regular text and other functions to build paragraphs, or "Provisions".  These Provisions will be collected later to form a Document via the Document Template later on.</p>
+                                <div id="1newprovision" class="section-block">
+                                    <h3 class="block-title">1. New Provision Templates</h3>
+                                    <p>Display name is the name that will be used when identifying this provision in the Document Template section.  It is only used to for this purpose.</p>
+                                    <p>Style is a pre-configured style which will tell the app how to present this Provision to the User.  Normal is default. [There is also the Term Sheet style.]</p>
+                                    <p>Condition is a boolean that needs to be true to display this Provision.  You can leave it blank and have this always be shown.  </p>
+                                    <p>Template is where you type in regular text, together with embedded Term Templates and other Provision Functions to create logic-enabled template.  This is the screen in which Authors will spend the most time.</p>
+                                <div class="screenshot-holder">
+                                    <img class="img-responsive" src="assets/images/author/provision-template.png" alt="screenshot" />
+                                </div> 
+                                </div><!--//section-block-->
+                                <div id="2ifelseunless" class="section-block">
+                                    <h3 class="block-title">2. IF, ELSE and UNLESS statements</h3>
+                                    <p>If, Else and Unless statements work together with booleans to make the magic happen!  This is because long text strings can be wrapped in IF clauses, so that it appears and/or disappears when boolean values match. The syntax is:</p>
+<p><pre><code>{{#if boolean_termtemplate}} This is the text that will appear if boolean_termtemplate is TRUE. {{else}} This is the text that will appear if boolean_termtemplate is FALSE. {{/if}}</code></pre></p>
+
+                                    <p>Be mindful of the # when opening the if clause, and always end it with {{/if}}.</p>
+                                    <p>Unless is the opposite of If; you can think of it as if-not.  The syntax is: 
+<p><pre><code>{{#unless boolean_termtemplate}} This is the text that will appear if boolean_termtemplate is FALSE. {{else}}  This is the text that will appear if boolean_termtemplate is TRUE. {{/unless}}</code></pre></p>
+
+                                    <p>Again, be mindful of # when opening unless, and always close with {{/unless}}</p>
+                                    <p><code>{{else}}</code> always has to be within <code>{{#if bool-name}} ... {{/if}}</code> or <code>{{#unless bool-name}} ... {{/unless}}</code>  tags. Both If and Unless can be nested within other If and Unless statements.  </p>
+
+                                    <div class="callout-block callout-info">
+                                        <div class="icon-holder">
+                                            <i class="fa fa-info-circle"></i>
+                                        </div><!--//icon-holder-->
+                                        <div class="content">
+                                            <h4 class="callout-title">Note:</h4>
+                                            <p> [One thing that is important to note is that IF statements need to be within a "carriage return" of the text it is modifying.  If there are "enter/return" characters in between, it is unable to process it.  One way to work around this limitation is to use If statements for each paragraph.]</p>
+                                        </div><!--//content-->
+                                    </div><!--//callout-->
+
+                                    <p>In addition, if you want to use more complex logic including AND/OR, you will need to use <code>ifCond</code>, which is described later.</p>
+                                     
+                                    
+                                </div><!--//section-block-->
+                                <div id="3ifCond" class="section-block">
+                                    <h3 class="block-title">3. ifCond Statements</h3>
+                                    <p>ifCond is used when complex logic is required.  The syntax is similar to if, but it is able to handle two inputs. For examples:
+<p><pre><code>
+{{#ifCond bool1 'and' bool2}} If both bool1 and bool2 are true, this text will appear.{{else}} Otherwise, this will appear. {{/ifCond}} </code> </pre></p>
+<p><pre><code>{{#ifCond bool1 'or' bool2}} If both bool1 or bool2 are true, this text will appear.{{else}} Otherwise, this will appear. {{/ifCond}}</code></pre></p>
+                                    <p>The 8 operators are as follows: <code>'and'</code>, <code>'and-not'</code>, <code>'not-and'</code>, <code>'not-and-not'</code>, <code>'or'</code>, <code>'not-or'</code>, <code>'or-not'</code>, and <code>'not-or-not'</code>.  The order of first and second booleans are important, especially when determining operators such as 'and-not', since the second boolean must be false for the condition to pass.  The nested content is displayed when the result of the expression is true.  
+
+
+                                    <div class="callout-block callout-warning">
+                                        <div class="icon-holder">
+                                            <i class="fa fa-info-circle"></i>
+                                        </div><!--//icon-holder-->
+                                        <div class="content">
+                                            <h4 class="callout-title">Note:</h4>
+                                            <p>IfCond statement not only supports expressions with two variables - it also supports expressions such as [<code> and (or-not), v1 and (v2 or not v3), </code>] for example.</p>
+                                        </div><!--//content-->
+                                    </div><!--//callout-->
+
+                                </div><!--//section-block-->
+                                <div id="4math" class="section-block">
+                                    <h3 class="block-title">4. math Function</h3>
+                                    <p>math function is used to manipulate Number and Date Term Templates. Simple algorithms are supported for Numbers, which are: <code>'add'</code>, <code>'subtract'</code>, <code>'multiply'</code>, and <code>'divide'</code>.  Synonyms are also supported:  <code>'plus'</code>, <code>'minus'</code>, <code>'multiplied_by'</code>, and <code>'divided_by'</code>. ifCond is used when complex logic is required.  The syntax is as follows: <code>{{math number1 'add' number2}}</code> or <code>{{math number1 'minus' 1}}</code>
+                                    <p>For date manipulation, only additions are currently supported.  They are: <code>'add-day'</code>, <code>'add-month'</code>, and <code>'add-year'</code>.  For example:  <code>{{math date1 'add-year' tenor_years}}</code> or <code>{{math date1 'add-month' 6}}</code></p>
+
+                                    <div class="callout-block callout-info">
+                                        <div class="icon-holder">
+                                            <i class="fa fa-info-circle"></i>
+                                        </div><!--//icon-holder-->
+                                        <div class="content">
+                                            <h4 class="callout-title">Note:</h4>
+                                            <p>If you divided by zero, you will get Infinity.  If you do illegal operations, it will result in NaN, which stands for Not-A-Number</p>
+                                        </div><!--//content-->
+                                    </div><!--//callout-->
+
+                                </div><!--//section-block-->
+                                <div id="5case" class="section-block">
+                                    <h3 class="block-title">5. case Function</h3>
+                                    <p>case function is used to manipulate text Term Template, in terms of its casing. The supported chages are: ALL CAPS, all lower case, and Title Case which use the following commands: <code>'upper'</code>, <code>'lower'</code>, and <code>'title'</code>.  The syntax is as follows: <code>{{case 'upper' text1}}</code> or <code>{{case 'title' text1}}</code>
+
+                                    <div class="callout-block callout-info">
+                                        <div class="icon-holder">
+                                            <i class="fa fa-info-circle"></i>
+                                        </div><!--//icon-holder-->
+                                        <div class="content">
+                                            <h4 class="callout-title">Note:</h4>
+                                            <p>'upper' is helpful on the cover page of a document, or in the signature blocks of documents since the name of the entities are frequently upper cased in those contexts.</p>
+                                        </div><!--//content-->
+                                    </div><!--//callout-->
+
+                                </div><!--//section-block-->
+                                <div id="6article" class="section-block">
+                                    <h3 class="block-title">6. article Function</h3>
+                                    <p>article function is used to insert an appropriate indefinite article, that is, "a" or "an" in front of a text Term Template.  It is much smarter than simple Does-the-word-start-with-a-vowel check and you will appreciate its high accuracy.   The syntax is: <code> {{article text1}}</code>
+
+                                    <div class="callout-block callout-info">
+                                        <div class="icon-holder">
+                                            <i class="fa fa-info-circle"></i>
+                                        </div><!--//icon-holder-->
+                                        <div class="content">
+                                            <h4 class="callout-title">Note:</h4>
+                                            <p>The article function only returns "a" or "an" so in a document, you will most likely need to place the text it is determining for, so it would look like: <code>{{article text1}} {{text1}}.</code>  Remember to put a space between the two.</p>
+                                        </div><!--//content-->
+                                    </div><!--//callout-->
+
+                                </div><!--//section-block-->
+                                <div id="7pagebreak" class="section-block">
+                                    <h3 class="block-title">7. Page Break</h3>
+                                    <p>The middle panel view is a continuous view with scrolls, and there is no demarcation for separate pages.  This is a common behavior with HTML documents.  However, when this document needs to be converted to PDF or MS Word, there will inevitably occasions in which a page break will be necessary.  In that case, the Author can use in the Provision Template, the page break function: <code>{{pagebreak}}</code> </p> 
+                                    <p>When used, it will not be visible in in the middle panel until it is converted to PDF or MS Word format.  [Currently this feature works for PDF, but does not work yet for MS Word.] </p>
+
+
+
+                                </div><!--//section-block-->
+
+                            </section><!--//doc-section-->
+                            
+                            <section id="document_templates" class="doc-section">
+                                <h2 class="section-title">Document Templates</h2>
+                                
+                                    <p>Document Templates contain two types of data, both of which are required.  First is simply called the Document Template, which contains information relating to which Provisions are to be contained in the Document.  Second is a style document in JSON format, which contains stylistic and formatting information required to render Microsoft Word documents.   </p>
+                                    
+                                    <div id="1newdocument" class="section-block">
+                                    <h3 class="block-title">1. New Document Template</h3>
+
+                                    <div class="screenshot-holder">
+                                        <img class="img-responsive" src="assets/images/author/document-template-new.png" alt="screenshot" />
+                                    </div> 
+
+                                    <p> In the Name field, put in the name of the Document Template.  It is visible to the User when they select a document in their Edit screen (top middle bar).  It is also used to identify the document in the Project Template screen, when aggregating the Documents to form a Project Template.</p> 
+                                    <p> In the Provision Templates field, it will list all of the provisions available to be included.  You can also start to type the name of the Provision, and it will attempt to auto-complete with matching names.</p> 
+
+
+                                </div><!--//section-block-->
+                                <div id="2documenttype" class="section-block">
+                                    <h3 class="block-title">2. Document Template Types</h3>
+                                    <div class="screenshot-holder">
+                                        <img class="img-responsive" src="assets/images/author/document-template-type.png" alt="screenshot" />
+                                    </div> 
+                                    <p>In the Name field, type in the name of the Document Template Type.  This is used in the Document Template screen to determine its formatting for purposes of generating MS Word documents.  In the Description, please describe the formatting.  In the Styles(JSON) field, the Authors can upload the JSON files.  Once uploaded, it must be linked to the Document Template in order to take its effect on the Document.</p>
+
+                                </div><!--//section-block-->
+                            </section><!--//doc-section-->
+                                <section id="project_templates" class="doc-section">
+                                    <h2 class="section-title">Project Templates</h2>
+                                    <div id="1whymultiple" class="section-block">
+                                        <h3 class="block-title">1. Why Multiple Documents?</h3>
+
+                                        <p>Legal documents and other complex documents come in sets.  Multiple documents working in conjunction in modern transactions is typical, because it allows for modularity and allows multiple specialists to work on the project with clear divisions of labor and responsbility.  It is also sometimes affected by certain documents being governed by different jurisdictions. </p>
+                                    </div><!--//section-block-->
+                                    <div id="2newproject" class="section-block">
+                                        <h3 class="block-title">2. New Project Template</h3>
+                                        <div class="screenshot-holder">
+                                            <img class="img-responsive" src="assets/images/author/project-template.png" alt="screenshot" />
+                                        </div> 
+                                        <p>In the Name, please put in the name of the Project.  This is the name that the Users will see, when they create their Projects. </p>
+                                        <p>In the Document Templates field, it will list all of the Document Templates available to be included in the Project Template.  You can also start to type the name of the Document Template, and it will attempt to auto-complete with matching names. </p>
+
+                                    <div class="callout-block callout-info">
+                                        <div class="icon-holder">
+                                            <i class="fa fa-info-circle"></i>
+                                        </div><!--//icon-holder-->
+                                        <div class="content">
+                                            <h4 class="callout-title">Note:</h4>
+                                            <p>A Document is only available to the User when it has been associated with a Project Template.</p>
+                                        </div><!--//content-->
+                                    </div><!--//callout-->
+
+
+                                    </div><!--//section-block-->
+                                <div class="section-block">
+                                    <div class="jumbotron text-center">
+                                        <h1>Do you have a question that is not answered?</h1>
+                                        <p>You can visit the FAQ page, or please feel free to contact us.</p>
+                                        <ul class="list list-inline center-block">
+                                            <li><a class="btn btn-cta btn-pink" href="faqs.html"><i class="fa fa-external-link"></i> FAQ</a></li>
+                                            <li><a class="btn btn-cta btn-primary" href="#"><i class="fa fa-eye"></i> Contact Us</a></li>
+                                        </ul>
+                                    </div><!--//jumbotron-->
+
+                                </div><!--//section-->
+                            </section><!--//doc-section-->
+
+                            
+                        </div><!--//content-inner-->
+                    </div><!--//doc-content-->
+                    <div class="doc-sidebar">
+                        <nav id="doc-nav">
+                            <ul id="doc-menu" class="nav doc-menu hidden-xs" data-spy="affix">
+                                <li><a class="scrollto" href="#intro">Introduction</a></li>
+                                <li><a class="scrollto" href="#term_templates">Term Templates</a>
+                                    <ul class="nav doc-sub-menu">
+                                        <li><a class="scrollto" href="#1text">1. Text</a></li>
+                                        <li><a class="scrollto" href="#2textplus">2. Text Plus</a></li>
+                                        <li><a class="scrollto" href="#3textplus">3. Text Area</a></li>
+                                        <li><a class="scrollto" href="#4number">4. Number</a></li>
+                                        <li><a class="scrollto" href="#5date">5. Date</a></li>
+                                        <li><a class="scrollto" href="#6boolean">6. Boolean</a></li>
+                                        <li><a class="scrollto" href="#7variant">7. Variant</a></li>
+                                    </ul><!--//nav-->
+                                </li>
+                                <li><a class="scrollto" href="#provision_templates">Provision Templates</a>
+                                    <ul class="nav doc-sub-menu">
+                                        <li><a class="scrollto" href="#1newprovision">1. New Provision</a></li>
+                                        <li><a class="scrollto" href="#2ifelseunless">2. If, Else and Unless</a></li>
+                                        <li><a class="scrollto" href="#3ifCond">3. ifCond</a></li>
+                                        <li><a class="scrollto" href="#4math">4. math</a></li>
+                                        <li><a class="scrollto" href="#5case">5. case</a></li>
+                                        <li><a class="scrollto" href="#6article">6. article</a></li>
+                                        <li><a class="scrollto" href="#7pagebreak">7. pagebreak</a></li>
+                                    </ul><!--//nav-->
+                                </li>
+                                <li><a class="scrollto" href="#document_templates">Document Templates</a>
+                                    <ul class="nav doc-sub-menu">
+                                        <li><a class="scrollto" href="#1newdocument">1. New Document</a></li>
+                                        <li><a class="scrollto" href="#2documenttype">2. Document Type</a></li>
+                                    </ul><!--//nav-->
+                                </li>
+                                <li><a class="scrollto" href="#project_templates">Project Templates</a>
+                                    <ul class="nav doc-sub-menu">
+                                        <li><a class="scrollto" href="#1whymultiple">1. Why Multiple Docs?</a></li>
+                                        <li><a class="scrollto" href="#2newproject">2. New Projects</a></li>
+                                    </ul><!--//nav-->
+                                </li>
+                            </ul><!--//doc-menu-->
+                        </nav>
+                    </div><!--//doc-sidebar-->
+                </div><!--//doc-body-->              
+            </div><!--//container-->
+        </div><!--//doc-wrapper-->
+        
+
+        
+    </div><!--//page-wrapper-->
+    
+    <footer id="footer" class="footer text-center">
+        <div class="container">
+            <!--/* This template is released under the Creative Commons Attribution 3.0 License. Please keep the attribution link below when using for your own project. Thank you for your support. :) If you'd like to use the template without the attribution, you can check out other license options via our website: themes.3rdwavemedia.com */-->
+            <small class="copyright">Designed with <i class="fa fa-heart"></i> by <a href="http://themes.3rdwavemedia.com/" target="_blank">Xiaoying Riley</a> for developers</small>
+            
+        </div><!--//container-->
+    </footer><!--//footer-->
+    
+     
+    <!-- Main Javascript -->          
+    <script type="text/javascript" src="assets/plugins/jquery-1.12.3.min.js"></script>
+    <script type="text/javascript" src="assets/plugins/bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="assets/plugins/prism/prism.js"></script>    
+    <script type="text/javascript" src="assets/plugins/jquery-scrollTo/jquery.scrollTo.min.js"></script>  
+    <script type="text/javascript" src="assets/plugins/lightbox/dist/ekko-lightbox.min.js"></script>                                                                
+    <script type="text/javascript" src="assets/plugins/jquery-match-height/jquery.matchHeight-min.js"></script>
+    <script type="text/javascript" src="assets/js/main.js"></script>
+    
+</body>
+</html> 
+

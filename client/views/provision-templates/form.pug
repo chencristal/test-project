@@ -1,0 +1,24 @@
+form.form-horizontal(name="provisionTemplateForm")
+  .form-group(ng-class="{ 'has-error': provisionTemplateForm.displayName.$error.required }")
+    label.col-md-3.control-label(for="displayName") Display name
+    .col-md-9
+      input.form-control(name="displayName" type="text" placeholder="Display name"
+                         ng-model="provisionTemplate.displayName" ng-required="true" ng-disabled="isSaving")
+
+  .form-group(ng-class="{ 'has-error': provisionTemplateForm.style.$error.required }")
+      label.col-md-3.control-label(for="style") Style
+      .col-md-9
+        select.form-control(name="style" ng-model="provisionTemplate.style" ng-required="true" ng-disabled="isSaving")
+          option(value="normal") Normal
+          option(value="sheet") Sheet
+
+  .form-group
+    label.col-md-3.control-label(for="condition") Condition
+    .col-md-9
+      input.form-control(name="condition" type="text" placeholder="Condition"
+                         ng-model="provisionTemplate.condition" ng-disabled="isSaving")
+
+  .form-group(ng-class="{ 'has-error': provisionTemplateForm.template.$error.required }")
+     label.col-md-3.control-label(for="template") Template
+     .col-md-9
+       text-angular.formt-control(name="template" ng-model="provisionTemplate.template" ng-required="true" ng-disabled="isSaving")

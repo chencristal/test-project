@@ -1,0 +1,30 @@
+form.form-horizontal(name="projectForm")
+  .form-group(ng-class="{ 'has-error': projectForm.name.$error.required }")
+    label.col-md-3.control-label(for="name") Name
+    .col-md-9
+      input.form-control(name="name" type="text" placeholder="Name"
+                         ng-model="project.name" ng-required="true" ng-disabled="isSaving")
+
+  .form-group(ng-class="{ 'has-error': projectForm.projectTemplate.$error.required }")
+    label.col-md-3.control-label(for="projectTemplate") Template
+    .col-md-9
+      ui-select(name="projectTemplate"
+                ng-model="project.projectTemplate" ng-required="true" ng-disabled="isSaving")
+        ui-select-match(placeholder="Select Template") {{ $select.selected.name }}
+        ui-select-choices(repeat="projTempl._id as projTempl in projectTemplates")
+          span(ng-bind-html="projTempl.name | highlight: $select.search")
+  .form-group
+    label.col-md-3.control-label(for="userGroups") Share with User Groups
+    .col-md-9
+      ui-select(name="sharedUserGroups" multiple="true" ng-model="project.sharedUserGroups" ng-disabled="isSaving")
+        ui-select-match(placeholder="Add User Groups") {{ $item.groupName }}
+        ui-select-choices(refresh="refreshUserGroups($select.search)" refresh-delay="300" repeat="userGroup._id as userGroup in userGroups")
+          span(ng-bind-html="userGroup.groupName | highlight: $select.search")
+
+  .form-group
+    label.col-md-3.control-label(for="users") Share with Users
+    .col-md-9
+      ui-select(name="sharedUsers" multiple="true" ng-model="project.sharedUsers" ng-disabled="isSaving")
+        ui-select-match(placeholder="Add Users") {{ $item.firstName }}
+        ui-select-choices(refresh="refreshUsers($select.search)" refresh-delay="300" repeat="user._id as user in users")
+          span(ng-bind-html="user.firstName | highlight: $select.search")
