@@ -82,7 +82,7 @@ exports.getUsers = function(req, res, next) {
       return;
     }
     _.each(req.query.includes, function(id) {
-      var user = _.find(users, d => { return (d._id === id); });
+      var user = _.find(users, d => { return d._id.equals(id); });
       orderedUsers.push(user);
     });
     res.send(orderedUsers);

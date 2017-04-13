@@ -61,7 +61,7 @@ exports.getDocumentTemplates = (req, res, next) => {
       return;
     }
     _.each(req.query.includes, function(id) {
-      var docTempl = _.find(docTempls, d => { return (d._id === id); });
+      var docTempl = _.find(docTempls, d => { return d._id.equals(id); });
       orderedTempls.push(docTempl);
     });
     res.send(orderedTempls);

@@ -81,7 +81,7 @@ exports.getUserGroups = function(req, res, next) {
       return;
     }
     _.each(req.query.includes, function(id) {
-      var usergroup = _.find(usergroups, d => { return (d._id === id); });
+      var usergroup = _.find(usergroups, d => { return d._id.equals(id); });
       orderedUserGroups.push(usergroup);
     });
     res.send(orderedUserGroups);
