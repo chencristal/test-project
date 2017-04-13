@@ -84,7 +84,11 @@ exports.getTermTemplateById = (req, res, next) => {
 
 exports.createTermTemplate = (req, res, next) => {
   function parseParams(body) {
-    var allowedFields = ['termType', 'variable', 'displayName', 'help', 'text','textplus', 'textarea', 'boolean', 'variant', 'date', 'number', 'state'];
+    var allowedFields = [
+      'termType', 'variable', 'displayName', 
+      'help', 'text','textplus', 'textarea', 
+      'boolean', 'variant', 'date', 'number', 'state'
+    ];
     var termTemplData = _.pick(body, allowedFields);
     return Promise.resolve(termTemplData);
   }
@@ -124,8 +128,7 @@ exports.deleteTermTemplate = (req, res, next) => {
           var provisionTemplNames = _.map(provisionTempls, 'displayName').join(',');
           return customErrors.rejectWithUnprocessableRequestError({ 
             paramName: 'Term template', 
-            errMsg: 'was already used by provision templates : ' 
-              + provisionTemplNames
+            errMsg: `was already used by provision templates : ${provisionTemplNames}`
           });
         }
         return Promise.resolve(termTempl);
@@ -142,7 +145,11 @@ exports.deleteTermTemplate = (req, res, next) => {
 
 exports.updateTermTemplate = (req, res, next) => {
   function parseParams(body) {
-    var allowedFields = ['termType', 'variable', 'displayName', 'help', 'text','textplus', 'textarea', 'boolean', 'variant', 'date', 'number', 'state'];
+    var allowedFields = [
+      'termType', 'variable', 'displayName', 
+      'help', 'text','textplus', 'textarea', 
+      'boolean', 'variant', 'date', 'number', 'state'
+    ];
     var termTemplData = _.pick(body, allowedFields);
     termTemplData._id = req.params._id;
     return Promise.resolve(termTemplData);
@@ -207,7 +214,7 @@ exports.importFromCSV = (req, res, next) => {
   for(var i = 1; i < records.length; i ++) {
     var record = records[i].split(/,(?=(?:[^"]*"[^"]*")*[^"]*$)/);
     if(record.length < 3) continue;
-    if (!_.includes(consts.TERM_TYPES, record[0]) || record[1].trim() == '')
+    if (!_.includes(consts.TERM_TYPES, record[0]) || record[1].trim() === '')
       continue;
     var data = {};
     data.termType = record[0];
@@ -222,35 +229,35 @@ exports.importFromCSV = (req, res, next) => {
         var placeholder = record[4] ? record[4] : '[ ]';
         placeholder = placeholder.replace(/\"/g,'');
         data.text = { placeholder: placeholder };
-      break;
+        break;
       case 'boolean':
-        var placeholder = record[4].toLowerCase() == 'true' ? true : false;
+        var placeholder = record[4].toLowerCase() === 'true' ? true : false;
         var inclusion = record[5] ? record[5] : 'Include';
         inclusion = inclusion.replace(/\"/g,'');
         var exclusion = record[6] ? record[6] : 'Exclude';
         exclusion = exclusion.replace(/\"/g,'');
         data.boolean = { default: placeholder, inclusionText: inclusion, exclusionText: exclusion };
-      break;
+        break;
       case 'variant':
         var opts = record.slice(5);
         var options = [];
-        for(var j = 0; j < opts.length; j ++)
-          if(opts[j] != '')
-            options.push({id: j+1, value: opts[j].replace(/\"/g,'')});
+        for(var j = 0; j < opts.length; j ++) {
+          if(opts[j] != '') options.push({id: j+1, value: opts[j].replace(/\"/g,'')});
+        }
         var placeholder = record[4] ? record[4] : '0';
         placeholder = placeholder.replace(/\"/g,'');
         if(options.length == 0 && placeholder != '0')
           options.push({id: 1, value: placeholder});
         data.variant = { default: placeholder, displayAs: 'dropdown', options: options };
-      break;
+        break;
       case 'date':
         placeholder = record[4] ? record[4] : '';
         data.date = { placeholder: placeholder };
-      break;
+        break;
       case 'number':
         var placeholder = parseFloat(record[4])? parseFloat(record[4]) : 0;
         data.number = { placeholder: placeholder };
-      break;
+        break;
     }    
     
     termTsSrvc.createTermTemplateFromCSV(data);

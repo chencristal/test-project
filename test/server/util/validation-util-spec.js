@@ -1,7 +1,7 @@
 'use strict';
 
 var should         = require('should');
-var validationUtil = require('../../../server/util/validation-util');
+var validationUtil = require('../../../server/util/validations');
 
 describe('util', () => {
   describe('validationUtil', () => {

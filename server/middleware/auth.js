@@ -43,9 +43,9 @@ exports.checkPermission = (resource, action) => {
         usersSrvc
           .getUser({ email: req.user.email }, 'status')
           .then(user => {
-            if (user.status === 'active')
+            if (user.status === 'active') {
               return acl.isAllowed(req.user, resource, action);
-            else {
+            } else {
               err = customErrors.getAccessDeniedError('Access denied');
               throw(err);
             }
@@ -61,7 +61,7 @@ exports.checkPermission = (resource, action) => {
           })
           .catch(err => next(err));
       }
-    })
+    });
   };
 };
 
@@ -75,7 +75,7 @@ function checkForRoles(user, roles) {
     roles = [ roles ];
   }
   return _.includes(roles, user.role);
-};
+}
 
 function ensureAuthenticated(req, res, next) {
   var token = _.get(req, 'cookies.token');
@@ -90,4 +90,4 @@ function ensureAuthenticated(req, res, next) {
       var err2 = customErrors.getUnauthorizedRequestError('Invalid token');
       next(err2);
     });
-};
+}

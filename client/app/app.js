@@ -316,10 +316,10 @@ var AvsAnSimple = (function (root) {
     function fill(node) {
         var kidCount = parseInt(dict, 36) || 0,
             offset = kidCount && kidCount.toString(36).length;
-        node.article = dict[offset] == "." ? "a" : "an";
+        node.article = dict[offset] === "." ? "a" : "an";
         dict = dict.substr(1 + offset);
         for (var i = 0; i < kidCount; i++) {
-            var kid = node[dict[0]] = {}
+            var kid = node[dict[0]] = {};
             dict = dict.substr(1);
             fill(kid);
         }
@@ -391,11 +391,11 @@ angular.module('app').run(function($rootScope) {
   };
 
   $rootScope.case = function(op, v) {
-    if(v == undefined)
+    if(v === undefined)
       return '';
     var camelCase = (str) => {
       return str.replace(/(?:^\w|[A-Z]|\b\w)/g, function(letter, index) {
-        return index == 0 ? letter.toLowerCase() : letter.toUpperCase();
+        return index === 0 ? letter.toLowerCase() : letter.toUpperCase();
       }).replace(/\s+/g, '');
     }
     var titleCase = (str) => {
@@ -416,7 +416,7 @@ angular.module('app').run(function($rootScope) {
   };
 
   $rootScope.article = function(v) {
-    if(v == undefined)
+    if(v === undefined)
       return '';
     return AvsAnSimple.query(v);
 

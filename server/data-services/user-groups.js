@@ -2,7 +2,6 @@
 
 var customErrors = require('n-custom-errors');
 var UserGroup    = require('mongoose').model('userGroup');
-var acl          = require('../auth/acl');
 
 exports.getUserGroups = (filter, keys) => {
   return UserGroup

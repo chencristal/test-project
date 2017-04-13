@@ -82,7 +82,7 @@ exports.getUsers = function(req, res, next) {
       return;
     }
     _.each(req.query.includes, function(id) {
-      var user = _.find(users, d => {return d._id == id});
+      var user = _.find(users, d => { return (d._id === id); });
       orderedUsers.push(user);
     });
     res.send(orderedUsers);
@@ -123,15 +123,24 @@ exports.createUser = function(req, res, next) {
   function validateParams(userData) {
     if (userData.password && userData.confirmpass) {
       if (userData.password !== userData.confirmpass) {
-        return customErrors.rejectWithUnprocessableRequestError({ paramName: 'Password', errMsg: 'must be confirmed'});
+        return customErrors.rejectWithUnprocessableRequestError({
+          paramName: 'Password', 
+          errMsg: 'must be confirmed'
+        });
       }
 
       if (userData.password.length < 4) {
-        return customErrors.rejectWithUnprocessableRequestError({ paramName: 'Password', errMsg: 'must be 4 characters at least'});
+        return customErrors.rejectWithUnprocessableRequestError({
+          paramName: 'Password', 
+          errMsg: 'must be 4 characters at least'
+        });
       }
     }
     else {
-      return customErrors.rejectWithUnprocessableRequestError({ paramName: 'Password', errMsg: 'field is required'});
+      return customErrors.rejectWithUnprocessableRequestError({ 
+        paramName: 'Password', 
+        errMsg: 'field is required'
+      });
     }
     return _validateUserData(userData);
   }
@@ -163,20 +172,32 @@ exports.updateUser = function(req, res, next) {
   function validateParams(userData) {
     if (userData.password && userData.confirmpass) {
       if (userData.password !== userData.confirmpass) {
-        return customErrors.rejectWithUnprocessableRequestError({ paramName: 'Password', errMsg: 'must be confirmed'});
+        return customErrors.rejectWithUnprocessableRequestError({ 
+          paramName: 'Password', 
+          errMsg: 'must be confirmed'
+        });
       }
 
       if (userData.password.length < 4) {
-        return customErrors.rejectWithUnprocessableRequestError({ paramName: 'Password', errMsg: 'must be 4 characters at least'});
+        return customErrors.rejectWithUnprocessableRequestError({ 
+          paramName: 'Password', 
+          errMsg: 'must be 4 characters at least'
+        });
       }
     }
 
     if (!validationUtil.isValidObjectId(userData._id)) {
-      return customErrors.rejectWithUnprocessableRequestError({ paramName: 'id', errMsg: 'must be a valid id' });
+      return customErrors.rejectWithUnprocessableRequestError({ 
+        paramName: 'id', 
+        errMsg: 'must be a valid id' 
+      });
     }
     var allowedStatuses = consts.USER.STATUSES;
     if (!_.includes(allowedStatuses, userData.status)) {
-      return customErrors.rejectWithUnprocessableRequestError({ paramName: 'status', errMsg: 'must be a valid value'});
+      return customErrors.rejectWithUnprocessableRequestError({ 
+        paramName: 'status', 
+        errMsg: 'must be a valid value'
+      });
     }
     return _validateUserData(userData);
   }

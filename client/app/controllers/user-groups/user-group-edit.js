@@ -33,10 +33,11 @@ angular.module('app').controller('UserGroupEditCtrl',
   })();
 
   $scope.updateRole = function() {
-    if ($scope.userGroup.role === $scope.selectedRole.selected.value)
+    if ($scope.userGroup.role === $scope.selectedRole.selected.value) {
       $scope.userGroup.assigned = origUserGroup.assigned;
-    else
+    } else {
       $scope.userGroup.assigned = [];
+    }
       
     $scope.refreshUsers();
   };
