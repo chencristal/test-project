@@ -217,6 +217,7 @@ exports.importFromCSV = (req, res, next) => {
     if (!_.includes(consts.TERM_TYPES, record[0]) || record[1].trim() === '')
       continue;
     var data = {};
+    var placeholder;
     data.termType = record[0];
     data.variable = record[1];
     data.displayName = record[2];
@@ -226,12 +227,12 @@ exports.importFromCSV = (req, res, next) => {
     data.disabled = false;
     switch(record[0]) {
       case 'text':
-        var placeholder = record[4] ? record[4] : '[ ]';
+        placeholder = record[4] ? record[4] : '[ ]';
         placeholder = placeholder.replace(/\"/g,'');
         data.text = { placeholder: placeholder };
         break;
       case 'boolean':
-        var placeholder = record[4].toLowerCase() === 'true' ? true : false;
+        placeholder = record[4].toLowerCase() === 'true' ? true : false;
         var inclusion = record[5] ? record[5] : 'Include';
         inclusion = inclusion.replace(/\"/g,'');
         var exclusion = record[6] ? record[6] : 'Exclude';
@@ -242,11 +243,11 @@ exports.importFromCSV = (req, res, next) => {
         var opts = record.slice(5);
         var options = [];
         for(var j = 0; j < opts.length; j ++) {
-          if(opts[j] != '') options.push({id: j+1, value: opts[j].replace(/\"/g,'')});
+          if(opts[j] !== '') options.push({id: j+1, value: opts[j].replace(/\"/g,'')});
         }
-        var placeholder = record[4] ? record[4] : '0';
+        placeholder = record[4] ? record[4] : '0';
         placeholder = placeholder.replace(/\"/g,'');
-        if(options.length == 0 && placeholder != '0')
+        if(options.length === 0 && placeholder !== '0')
           options.push({id: 1, value: placeholder});
         data.variant = { default: placeholder, displayAs: 'dropdown', options: options };
         break;
@@ -255,7 +256,7 @@ exports.importFromCSV = (req, res, next) => {
         data.date = { placeholder: placeholder };
         break;
       case 'number':
-        var placeholder = parseFloat(record[4])? parseFloat(record[4]) : 0;
+        placeholder = parseFloat(record[4])? parseFloat(record[4]) : 0;
         data.number = { placeholder: placeholder };
         break;
     }    
@@ -278,23 +279,23 @@ exports.generateCSV = (req, res, next) => {
       termTempl.displayName = termTempl.displayName.replace(/,/g, ' ');
       termTempl.help = '"' + termTempl.help + '"';
       output += termTempl.termType + ',' + termTempl.variable + ',' + termTempl.displayName + ',' + termTempl.help;
-      if(termTempl.termType == 'text')
+      if(termTempl.termType === 'text')
         output += ',' + '"' + termTempl.text.placeholder + '"';
-      else if(termTempl.termType == 'boolean') {
+      else if(termTempl.termType === 'boolean') {
         output += ',' + termTempl.boolean.default;
         output += ',' + '"' + termTempl.boolean.inclusionText + '"';
         output += ',' + '"' + termTempl.boolean.exclusionText + '"';
       }
-      else if(termTempl.termType == 'variant') {
+      else if(termTempl.termType === 'variant') {
         output += ',' + '"' + termTempl.variant.default + '"';
         if(termTempl.variant.options.length > 0) {
           for(var j = 0; j < termTempl.variant.options.length; j ++)
             output += ',' + '"' + termTempl.variant.options[j].value + '"';
         }
       }
-      else if(termTempl.termType == 'date')
+      else if(termTempl.termType === 'date')
         output += ',' + termTempl.date.placeholder;
-      else if(termTempl.termType == 'number')
+      else if(termTempl.termType === 'number')
         output += ',' + termTempl.number.placeholder;
     }
     return output;

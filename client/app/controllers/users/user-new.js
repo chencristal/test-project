@@ -10,7 +10,7 @@ angular.module('app').controller('UserNewCtrl',
   $scope.roles = Identity.getLowerRoleNames();
   $scope.selectedRole = { 'selected' : $scope.roles[0] };
 
-  $scope.$watch('selectedRole.selected', function(newVal) {
+  $scope.$watch('selectedRole.selected', function(/*newVal*/) {
     $scope.user.userGroups = [];
     $scope.refreshUserGroups();
   });

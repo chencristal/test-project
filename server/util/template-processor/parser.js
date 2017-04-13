@@ -94,24 +94,25 @@ function _parseToken(token) {
           params: _.map(token.params, _parseToken),
           tokens: _.map(_.get(token, 'program.body'), _parseToken)
         };
-      } else if (token.path.original =='pagebreak' && _.size(token.params) === 0) {
+      } else if (token.path.original === 'pagebreak' && _.size(token.params) === 0) {
         return {
           type: 'statement',
           text: token.path.original,
           params: [],
           tokens: _.map(_.get(token, 'program.body'), _parseToken)
         };
-      } else if (token.path.original == 'expand' && _.size(token.params) === 2) {
+      } else if (token.path.original === 'expand' && _.size(token.params) === 2) {
         return {
           type: 'statement',
           text: token.path.original,
           params: _.map(token.params, _parseToken),
           tokens: _.map(_.get(token, 'program.body'), _parseToken)
-        }
+        };
       } else
         return _parseToken(token.path);
+      break;
     case 'BlockStatement': {
-      if (token.path.original == 'if' || token.path.original == 'unless') {
+      if (token.path.original === 'if' || token.path.original === 'unless') {
         if (token.inverse !== undefined) {
           return [{       // chen_debug (for the `else` statement)
             type: 'statement',
@@ -120,13 +121,13 @@ function _parseToken(token) {
             tokens: _.map(_.get(token, 'program.body'), _parseToken)
           }, {
             type: 'statement',
-            text: (token.path.original == 'if') ? 'unless' : 'if',
+            text: (token.path.original === 'if') ? 'unless' : 'if',
             params: _.map(token.params, _parseToken),
             tokens: _.map(_.get(token, 'inverse.body'), _parseToken)
           }];
         }
       }
-      else if (token.path.original == 'ifVariant' || token.path.original == 'unlessVariant') {
+      else if (token.path.original === 'ifVariant' || token.path.original === 'unlessVariant') {
         if (token.inverse !== undefined) {
           return [{       // chen_debug (for the `else` statement)
             type: 'statement',
@@ -135,13 +136,13 @@ function _parseToken(token) {
             tokens: _.map(_.get(token, 'program.body'), _parseToken)
           }, {
             type: 'statement',
-            text: (token.path.original == 'ifVariant') ? 'unlessVariant' : 'ifVariant',
+            text: (token.path.original === 'ifVariant') ? 'unlessVariant' : 'ifVariant',
             params: _.map(token.params, _parseToken),
             tokens: _.map(_.get(token, 'inverse.body'), _parseToken)
           }];
         }
       }
-      else if (token.path.original == 'ifCond') {
+      else if (token.path.original === 'ifCond') {
         if (token.inverse !== undefined) {
           var inverseTokenParams = [
             token.params[0], 
@@ -166,7 +167,7 @@ function _parseToken(token) {
           }];
         }
 
-        /*if (token.params[0].type == 'SubExpression') {
+        /*if (token.params[0].type === 'SubExpression') {
           var firstParams = token.params[0].params;
           firstParams[2] = firstParams[1]; firstParams[1] = firstParams[0];
           firstParams[0] = {
@@ -209,7 +210,7 @@ function _parseToken(token) {
       return {
         type: 'constant',
         text: token.value
-      }
+      };
     default:
       throw new Error('Invalid token type: ' + token.type);
   }

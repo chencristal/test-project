@@ -60,7 +60,10 @@ exports.getDocumentTemplateTypeById = (req, res, next) => {
 
   function validateParams() {
     if (!validationUtil.isValidObjectId(docTemplTypeId)) {
-      return customErrors.rejectWithUnprocessableRequestError({ paramName: 'id', errMsg: 'must be a valid id' });
+      return customErrors.rejectWithUnprocessableRequestError({ 
+        paramName: 'id', 
+        errMsg: 'must be a valid id' 
+      });
     }
     return Promise.resolve();
   }
@@ -101,7 +104,10 @@ exports.deleteDocumentTemplateType = (req, res, next) => {
 
   function validateParams() {
     if (!validationUtil.isValidObjectId(docTemplTypeId)) {
-      return customErrors.rejectWithUnprocessableRequestError({ paramName: 'id', errMsg: 'must be a valid id' });
+      return customErrors.rejectWithUnprocessableRequestError({ 
+        paramName: 'id', 
+        errMsg: 'must be a valid id' 
+      });
     }
     return Promise.resolve();
   }
@@ -114,8 +120,7 @@ exports.deleteDocumentTemplateType = (req, res, next) => {
           var docTemplNames = _.map(docTempls, 'name').join(',');
           return customErrors.rejectWithUnprocessableRequestError({ 
             paramName: 'Document template type', 
-            errMsg: 'was already used by document templates : ' 
-              + docTemplNames
+            errMsg: 'was already used by document templates : ' + docTemplNames
           });
         }
         return Promise.resolve(docTemplType);

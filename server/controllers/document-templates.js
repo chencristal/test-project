@@ -61,7 +61,7 @@ exports.getDocumentTemplates = (req, res, next) => {
       return;
     }
     _.each(req.query.includes, function(id) {
-      var docTempl = _.find(docTempls, d => {return d._id == id});
+      var docTempl = _.find(docTempls, d => { return (d._id === id); });
       orderedTempls.push(docTempl);
     });
     res.send(orderedTempls);
@@ -134,8 +134,7 @@ exports.deleteDocumentTemplate = (req, res, next) => {
           var projTemplNames = _.map(projTempls, 'name').join(',');
           return customErrors.rejectWithUnprocessableRequestError({ 
             paramName: 'Document template', 
-            errMsg: 'was already used by project templates : ' 
-              + projTemplNames
+            errMsg: 'was already used by project templates : ' + projTemplNames
           });
         }
         return Promise.resolve(docTempl);

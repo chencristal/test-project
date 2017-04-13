@@ -42,7 +42,8 @@ exports.login = (req, res, next) => {
       return next(err);
     }
     user = _.pick(user, ['firstName', 'email', 'role', 'userGroups']);
-    acl.userRoles(user)
+    acl
+      .userRoles(user)
       .then(roles => {
         user.role = roles[0];
         return jwtUtil.signToken(user, user.role);

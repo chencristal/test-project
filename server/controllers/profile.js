@@ -27,11 +27,17 @@ exports.updateProfile = function(req, res, next) {
   function validateParams(userData) {
     if (userData.password && userData.confirmpass) {
       if (userData.password !== userData.confirmpass) {
-        return customErrors.rejectWithUnprocessableRequestError({ paramName: 'Password', errMsg: 'must be confirmed'});
+        return customErrors.rejectWithUnprocessableRequestError({ 
+          paramName: 'Password', 
+          errMsg: 'must be confirmed'
+        });
       }
 
       if (userData.password.length < 4) {
-        return customErrors.rejectWithUnprocessableRequestError({ paramName: 'Password', errMsg: 'must be 4 characters at least'});
+        return customErrors.rejectWithUnprocessableRequestError({ 
+          paramName: 'Password', 
+          errMsg: 'must be 4 characters at least'
+        });
       }
     }
 
@@ -44,7 +50,10 @@ exports.updateProfile = function(req, res, next) {
     }
 
     if (!validationUtil.isValidObjectId(userData._id)) {
-      return customErrors.rejectWithUnprocessableRequestError({ paramName: 'id', errMsg: 'must be a valid id' });
+      return customErrors.rejectWithUnprocessableRequestError({ 
+        paramName: 'id', 
+        errMsg: 'must be a valid id' 
+      });
     }
     return _validateUserData(userData);
   }

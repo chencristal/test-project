@@ -51,7 +51,7 @@ exports.getProjectById = (req, res, next) => {
       .getUser({email: req.user.email, _id: proj.owner})
       .then(user => {
         return Promise.resolve(proj);
-      })
+      });
   }
 
   validateParams()
@@ -137,7 +137,7 @@ exports.updateProject = (req, res, next) => {
       .getUser({email: req.user.email, _id: proj.owner})
       .then(user => {
         return Promise.resolve(proj);
-      })
+      });
   }
 
   parseParams(req.body)
@@ -381,8 +381,8 @@ function _getCompiledTemplate(data) {
             result[variable.variable] = variable.value;
 
             //placeholder infusion for textplus sub fields
-            if((variable.value == undefined || variable.value == '') && 
-              (variable.placeholder != undefined && variable.placeholder != ''))  
+            if((variable.value === undefined || variable.value === '') && 
+              (variable.placeholder !== undefined && variable.placeholder !== ''))  
             {
               result[variable.variable] = variable.placeholder;
             }
@@ -403,7 +403,7 @@ function _getCompiledTemplate(data) {
               break;
           }
           var termTypes = ['text', 'date', 'number', 'textplus'];
-          if(termTypes.indexOf(termTempl.termType) > -1 && (variable.value == undefined || variable.value == ''))
+          if(termTypes.indexOf(termTempl.termType) > -1 && (variable.value === undefined || variable.value === ''))
             result[variable.variable] = variable.placeholder;
           return result;
         }, {});
@@ -492,10 +492,10 @@ function _getCompiledTemplate(data) {
           return `{{${textplus}}}${glue}${subs}`;
         });
         for(var variable in data.values) {
-          if(typeof data.values[variable] == 'boolean') {
+          if(typeof data.values[variable] === 'boolean') {
             var v = _.find(data.termTempls, {variable: variable});
             var value = data.values[variable];
-            var newVal = (value == true) ? v.boolean.inclusionText : v.boolean.exclusionText;
+            var newVal = (value === true) ? v.boolean.inclusionText : v.boolean.exclusionText;
             data.values[variable] = newVal;
           }
         }

@@ -171,7 +171,10 @@ exports.deleteProjectTemplate = (req, res, next) => {
 
   function validateParams() {
     if (!validationUtil.isValidObjectId(projTemplId)) {
-      return customErrors.rejectWithUnprocessableRequestError({ paramName: 'id', errMsg: 'must be a valid id' });
+      return customErrors.rejectWithUnprocessableRequestError({ 
+        paramName: 'id', 
+        errMsg: 'must be a valid id' 
+      });
     }
     return Promise.resolve();
   }
@@ -184,8 +187,7 @@ exports.deleteProjectTemplate = (req, res, next) => {
           var projectNames = _.map(projects, 'name').join(',');
           return customErrors.rejectWithUnprocessableRequestError({ 
             paramName: 'Project template', 
-            errMsg: 'was already used by projects : ' 
-              + projectNames
+            errMsg: 'was already used by projects : ' + projectNames
           });
         }
         return Promise.resolve(projTempl);

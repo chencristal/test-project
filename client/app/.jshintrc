@@ -15,6 +15,9 @@
         "moment"       : true,
         "navigator"    : true,
         "toastr"       : true,
-        "window"       : true
+        "window"       : true,
+        "jQuery"       : true,
+        "FileReader"   : true,
+        "autosize"     : true
     }
 }

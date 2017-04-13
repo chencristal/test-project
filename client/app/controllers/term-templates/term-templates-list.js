@@ -63,18 +63,20 @@ angular.module('app').controller('TermTemplatesListCtrl',
     function isValid(file) {
       var filename = file.name;
       var ext = filename.split('.').pop();
-      return ext == 'csv';
+      return ext === 'csv';
     }
     function hasDuplicates(data) {
       var records = data.split(/\n/);
       var termVars = [];
-      for(var i = 0; i < $scope.termTemplates.length; i ++) {
+      var i;
+      for(i = 0; i < $scope.termTemplates.length; i ++) {
         var elem = $scope.termTemplates[i];
-        if(elem.variable)
+        if (elem.variable) {
           termVars.push(elem.variable);
+        }
       }
       
-      for(var i = 0; i < records.length; i ++) {
+      for(i = 0; i < records.length; i ++) {
         var record = records[i].split(',');
         var varname = record[1];  //Variable name
         if(termVars.indexOf(varname) > -1) {
@@ -86,10 +88,10 @@ angular.module('app').controller('TermTemplatesListCtrl',
       return data;
     }
     function upload(data) {
-      if(data == false) return;
+      if(data === false) { return; }
       data = data.split(/\r|\n/);
       for(var i = 0; i < data.length; i ++) {
-        if(data[i] == '') {
+        if(data[i] === '') {
           data.splice(i,1);
           i--;
         }
@@ -114,19 +116,18 @@ angular.module('app').controller('TermTemplatesListCtrl',
       f.onload = function() {
         var data = f.result;
         resolve(data);
-      }
+      };
       f.onerror = function(e) {
         reject(e);
-      }
+      };
       f.readAsText(file);
     });
     promise
       .then(hasDuplicates, e => Notifier.error(e))
       .then(upload);
-    
   };
   $scope.exportToCSV = function() {
-    var randomID = (new Date()).valueOf()
+    var randomID = (new Date()).valueOf();
     var url = `/api/v1/term-templates/${randomID}/export`;
     $window.open(url, '_blank');
   };

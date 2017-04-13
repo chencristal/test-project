@@ -70,7 +70,8 @@ Generator.prototype.generateVariableEditor = function (variable) {
                ng-class="selectedVariable == ${varName} ? 'highlighted-for-scroll' : null"
                ng-disabled="${varName}.state == 1"
                placeholder="{{ ${varName}.placeholder }}" /></span>
-        <span class="{{ variables[v.variable].state == 2 ? 'uncertain-bracket' : null }}" ng-repeat="v in textplus['${master}'] | objectToArray | orderBy: 'sortIndex'">
+        <span class="{{ variables[v.variable].state == 2 ? 'uncertain-bracket' : null }}" 
+                  ng-repeat="v in textplus['${master}'] | objectToArray | orderBy: 'sortIndex'">
                <span ng-if="!${newline} && !${prettify}"> </span>
                <span class="prettify" ng-if="${prettify} && !$last">, </span>
                <span class="prettify" ng-if="${prettify} && $last">and </span>
@@ -104,7 +105,9 @@ Generator.prototype.generateVariableEditor = function (variable) {
       return `
         <span ng-click="onClick(${varName}, $event)"
               ng-class="selectedVariable == ${varName} ? 'highlighted-for-scroll' : null">
-          <select ng-model="${varName}.value" ng-options="opt.v as opt.n for opt in [{ n: '{{ ${varName}.boolean.inclusionText }}', v: true }, { n: '{{ ${varName}.boolean.exclusionText }}', v: false }]"
+          <select ng-model="${varName}.value" ng-options="opt.v as opt.n for opt in [
+                        { n: '{{ ${varName}.boolean.inclusionText }}', v: true }, 
+                        { n: '{{ ${varName}.boolean.exclusionText }}', v: false }]"
               ng-change="onChange()"
               ng-disabled="${varName}.state == 1">
           </select>
@@ -226,7 +229,7 @@ Generator.prototype.generateExpressionHtml = function (token) {
       break;
 
     case 'ifCond':
-      var variables = getIfCondVariables(token)
+      var variables = getIfCondVariables(token);
       var classes = 'exp-ifcond {{ ', 
           highlighted = '(';
 
@@ -317,7 +320,7 @@ Generator.prototype.generateMathHtml = function(token) {
     });
 
   if (date1 === undefined) {    // first variable is not date
-    if (param1.type == 'variable' && param3.type == 'variable') {
+    if (param1.type === 'variable' && param3.type === 'variable') {
       html = `
           <span class="{{ variables.${param1.text}.state == 2 ? 'uncertain-bracket' : null }}">
           <label ng-class="selectedVariable == variables.${param1.text} ? 'highlighted-for-scroll' : null"
@@ -326,7 +329,7 @@ Generator.prototype.generateMathHtml = function(token) {
                  {{$root.math(variables.${param1.text}.value, '${param2.text}', variables.${param3.text}.value)}}
           </label>`;
     }
-    else if (param1.type == 'variable' && param3.type == 'constant') {
+    else if (param1.type === 'variable' && param3.type === 'constant') {
       html = `
           <span class="{{ variables.${param1.text}.state == 2 ? 'uncertain-bracket' : null }}">
           <label ng-class="selectedVariable == variables.${param1.text} ? 'highlighted-for-scroll' : null"
@@ -335,7 +338,7 @@ Generator.prototype.generateMathHtml = function(token) {
                  {{$root.math(variables.${param1.text}.value, '${param2.text}', ${param3.text})}}
           </label>`;
     }
-    else if (param1.type == 'constant' && param3.type == 'variable') {
+    else if (param1.type === 'constant' && param3.type === 'variable') {
       html = `
           <span class="{{ variables.${param3.text}.state == 2 ? 'uncertain-bracket' : null }}">
           <label ng-class="selectedVariable == variables.${param3.text} ? 'highlighted-for-scroll' : null"
@@ -344,7 +347,7 @@ Generator.prototype.generateMathHtml = function(token) {
                  {{$root.math(${param1.text}, '${param2.text}', variables.${param3.text}.value)}}
           </label>`;
     }
-    else if (param1.type == 'constant' && param3.type == 'constant') {
+    else if (param1.type === 'constant' && param3.type === 'constant') {
       html = `
           <span>
           <label>
@@ -358,21 +361,21 @@ Generator.prototype.generateMathHtml = function(token) {
     var offsetAttr = ``;
     var uniqId = _getRandomString();
 
-    if (param3.type == 'variable') {
-      if (param2.text == 'add' || param2.text == 'add-date' || param2.text == 'add-day') {
+    if (param3.type === 'variable') {
+      if (param2.text === 'add' || param2.text === 'add-date' || param2.text === 'add-day') {
         offsetAttr = `ng-offset="variables.${param3.text}.value" ng-date-offset-variable="true"`;
-      } else if (param2.text == 'add-month') {
+      } else if (param2.text === 'add-month') {
         offsetAttr = `ng-offset-month="variables.${param3.text}.value" ng-date-offset-variable="true"`;
-      } else if (param2.text == 'add-year') {
+      } else if (param2.text === 'add-year') {
         offsetAttr = `ng-offset-year="variables.${param3.text}.value" ng-date-offset-variable="true"`;
       }
     }
-    else if (param3.type == 'constant') {
-      if (param2.text == 'add' || param2.text == 'add-date' || param2.text == 'add-day') {
+    else if (param3.type === 'constant') {
+      if (param2.text === 'add' || param2.text === 'add-date' || param2.text === 'add-day') {
         offsetAttr = `ng-offset="${param3.text}"`;
-      } else if (param2.text == 'add-month') {
+      } else if (param2.text === 'add-month') {
         offsetAttr = `ng-offset-month="${param3.text}"`;
-      } else if (param2.text == 'add-year') {
+      } else if (param2.text === 'add-year') {
         offsetAttr = `ng-offset-year="${param3.text}"`;
       }
     }    
@@ -386,15 +389,15 @@ Generator.prototype.generateMathHtml = function(token) {
                ng-disabled="${varName}.state == 1"></label>`;
   }
   
-
   return html;
-}
+};
+
 Generator.prototype.generateCaseHtml = function(token) {
   var self = this;
   var html = '';
   var param1 = token.params[0];
   var param2 = token.params[1];
-  if(param2.type == 'variable') {
+  if(param2.type === 'variable') {
     html = `
           <span class="{{ variables.${param2.text}.state == 2 ? 'uncertain-bracket' : null }}">
           <label ng-class="selectedVariable == variables.${param2.text} ? 'highlighted-for-scroll' : null"
@@ -412,12 +415,13 @@ Generator.prototype.generateCaseHtml = function(token) {
   }
 
   return html;
-}
+};
+
 Generator.prototype.generateArticleHtml = function(token) {
   var self = this;
   var html = '';
   var param1 = token.params[0];
-  if(param1.type == 'variable') {
+  if(param1.type === 'variable') {
     html = `
           <span class="{{ variables.${param1.text}.state == 2 ? 'uncertain-bracket' : null }}">
           <label ng-class="selectedVariable == variables.${param1.text} ? 'label-highlighted-for-scroll' : null"
@@ -435,7 +439,8 @@ Generator.prototype.generateArticleHtml = function(token) {
   }
 
   return html;
-}
+};
+
 Generator.prototype.generateExpandHtml = function(token) {
   var self = this;
   var html = '';
@@ -443,7 +448,7 @@ Generator.prototype.generateExpandHtml = function(token) {
   var param = token.params[0];
   var mode = parseInt(token.params[1].text);
 
-  if(param.type == 'variable') {
+  if(param.type === 'variable') {
     var master = param.text;
     var varName = `variables.${master}`;
     var newline = false,
@@ -479,7 +484,8 @@ Generator.prototype.generateExpandHtml = function(token) {
                ng-class="selectedVariable == ${varName} ? 'highlighted-for-scroll' : null"
                ng-disabled="${varName}.state == 1"
                placeholder="{{ ${varName}.placeholder }}" /></span>
-        <span class="{{ variables[v.variable].state == 2 ? 'uncertain-bracket' : null }}" ng-repeat="v in textplus['${master}'] | objectToArray | orderBy: 'sortIndex'">
+        <span class="{{ variables[v.variable].state == 2 ? 'uncertain-bracket' : null }}" 
+                  ng-repeat="v in textplus['${master}'] | objectToArray | orderBy: 'sortIndex'">
                <span ng-if="!${newline} && !${prettify}"> </span>
                <span class="prettify" ng-if="${prettify} && !$last">, </span>
                <span class="prettify" ng-if="${prettify} && $last">and </span>
@@ -498,7 +504,7 @@ Generator.prototype.generateExpandHtml = function(token) {
     html = '';
 
   return html;
-}
+};
 function _getRandomString() {
   return Math.random().toString(36).slice(2);
 }

@@ -2,9 +2,10 @@
 
 var _              = require('lodash');
 var Promise        = require('bluebird');
-var module_acl     = require('acl');
+var ModuleAcl      = require('acl');
 var log            = require('../util/logger').logger;
 var consts         = require('../consts');
+var customErrors   = require('n-custom-errors');
 
 var acl = null;
 
@@ -14,7 +15,7 @@ exports.initialize = function(connection) {
     return false;
   }
 
-  acl = new module_acl(new module_acl.mongodbBackend(connection.db, 'acl_'));
+  acl = new ModuleAcl(new ModuleAcl.mongodbBackend(connection.db, 'acl_'));
   exports.acl = acl;
   initializeUserRoles();
 };
@@ -27,7 +28,7 @@ exports.removeUser = function(user) {
       resolve(user);
     });
   });
-}
+};
 
 exports.userRoles = function(user) {
   return new Promise((resolve, reject) => {
@@ -38,7 +39,7 @@ exports.userRoles = function(user) {
       else {
         if (_.isEmpty(roles)) {
           exports.addUserToAcl(user)
-            .then(resolve([user.role]))
+            .then(user => resolve([user.role]))
             .catch(err => { 
               reject(err); 
             });
@@ -49,7 +50,7 @@ exports.userRoles = function(user) {
       }
     });
   });
-}
+};
 
 exports.isAllowed = function(user, resource, action) {
   return new Promise((resolve, reject) => {
@@ -60,7 +61,7 @@ exports.isAllowed = function(user, resource, action) {
       else resolve(false);
     });
   });
-}
+};
 
 exports.addUserToAcl = function(user) {
   function removeAllUserRoles(user) {
@@ -88,7 +89,7 @@ exports.addUserToAcl = function(user) {
       err = customErrors.getAccessDeniedError('Access denied');
       return err;
     });
-}
+};
 
 
 function initializeUserRoles() {

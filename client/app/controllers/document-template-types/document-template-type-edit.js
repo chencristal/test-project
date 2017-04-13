@@ -14,7 +14,7 @@ angular.module('app').controller('DocumentTemplateTypeEditCtrl',
       .$promise
       .then(function(documentTemplateType) {
         $scope.documentTemplateType = documentTemplateType;
-        $scope.documentTemplateType.stylelbl = "Replace Styles JSON";
+        $scope.documentTemplateType.stylelbl = 'Replace Styles JSON';
         $scope.isLoading = false;
       })
       .catch(function(err) {
@@ -42,7 +42,7 @@ angular.module('app').controller('DocumentTemplateTypeEditCtrl',
     function isValid(file) {
       var filename = file.name;
       var ext = filename.split('.').pop().toLowerCase();
-      return ext == 'json';
+      return ext === 'json';
     }
     var file = files[0];
     if(!isValid(file)) {
@@ -64,13 +64,13 @@ angular.module('app').controller('DocumentTemplateTypeEditCtrl',
       }
       $scope.documentTemplateType.styles = data;
       $scope.$apply();
-    }
+    };
     f.onerror = function(e) {
       $scope.documentTemplateType.styles = '';
       $scope.$apply();
       Notifier.error(e);
       return;
-    }
+    };
     f.readAsText(file);
   };
 });

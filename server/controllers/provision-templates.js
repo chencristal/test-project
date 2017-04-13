@@ -20,7 +20,8 @@ exports.getProvisionTemplates = (req, res, next) => {
   }
 
   function validateParams(data) {
-    var allowedFields = ['displayName', 'style', 'template', 'templateHtml', 'termTemplates', 'orderedVariables', 'status'];
+    var allowedFields = ['displayName', 'style', 'template', 'templateHtml', 
+          'termTemplates', 'orderedVariables', 'status'];
 
     if (data.params.includes && !_.every(data.params.includes, validationUtil.isValidObjectId)) {
       return customErrors.rejectWithUnprocessableRequestError({
@@ -125,8 +126,7 @@ exports.deleteProvisionTemplate = (req, res, next) => {
           var docTemplNames = _.map(docTempls, 'name').join(',');
           return customErrors.rejectWithUnprocessableRequestError({ 
             paramName: 'Provision template', 
-            errMsg: 'was already used by document templates : ' 
-              + docTemplNames
+            errMsg: 'was already used by document templates : ' + docTemplNames
           });
         }
         return Promise.resolve(provisionTempl);
@@ -209,7 +209,7 @@ function _parseTemplate(provisionTemplData) {
         .then(html => {
           var variables = _.map(termTempls, 'variable');
           var usedVariables = templProc.getUsedVariables(tokensRoot, variables);
-          var usedTermTempls = _.filter(termTempls, tt => _.includes(usedVariables, tt.variable));;
+          var usedTermTempls = _.filter(termTempls, tt => _.includes(usedVariables, tt.variable));
           provisionTemplData.termTemplates = usedTermTempls;
           provisionTemplData.templateHtml = html;
           provisionTemplData.orderedVariables = usedVariables;
