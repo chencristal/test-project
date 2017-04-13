@@ -24,7 +24,7 @@ afterEach(done => {
 after(done => {
   _clearDb()
     .then(db.disconnect)
-   .then(() => done())
+    .then(() => done())
     .catch(done);
 });
 
