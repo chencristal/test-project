@@ -3,8 +3,6 @@
 var _              = require('lodash');
 var Promise        = require('bluebird');
 var ModuleAcl      = require('acl');
-var log            = require('../util/logger').logger;
-var consts         = require('../consts');
 var customErrors   = require('n-custom-errors');
 
 var acl = null;
@@ -24,7 +22,8 @@ exports.removeUser = function(user) {
   var roles = ['superadmin', 'admin', 'author', 'user'];
   return new Promise((resolve, reject) => {
     acl.removeUserRoles(user.email, roles, function(err) {
-      if (err) reject(err);
+      if (err) { reject(err); }
+      
       resolve(user);
     });
   });
@@ -55,10 +54,11 @@ exports.userRoles = function(user) {
 exports.isAllowed = function(user, resource, action) {
   return new Promise((resolve, reject) => {
     acl.isAllowed(user.email, resource, action, function(err, allowed) {
-      if (err) reject(err);
+      if (err) { reject(err); }
       
-      if (allowed === true) resolve(user);
-      else resolve(false);
+      if (allowed === true) { resolve(user); }
+      
+      resolve(false);
     });
   });
 };
@@ -68,7 +68,8 @@ exports.addUserToAcl = function(user) {
     var roles = ['superadmin', 'admin', 'author', 'user'];
     return new Promise((resolve, reject) => {
       acl.removeUserRoles(user.email, roles, function(err) {
-        if (err) reject(err);
+        if (err) { reject(err); }
+
         resolve(user);
       });
     });
@@ -77,7 +78,8 @@ exports.addUserToAcl = function(user) {
   function addUserRole(user) {
     return new Promise((resolve, reject) => {
       acl.addUserRoles(user.email, user.role, function(err) {
-        if (err) reject(err);
+        if (err) { reject(err); }
+
         resolve(user);
       });
     });

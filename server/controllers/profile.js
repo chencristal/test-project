@@ -3,7 +3,6 @@
 var _              = require('lodash');
 var Promise        = require('bluebird');
 var customErrors   = require('n-custom-errors');
-var consts         = require('../consts');
 var usersSrvc      = require('../data-services/users');
 var jwtUtil        = require('../util/jwt');
 var validationUtil = require('../util/validations');

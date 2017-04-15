@@ -39,7 +39,7 @@ handlebars.registerHelper('ifCond', (v1, op, v2, options) => {
 //
 handlebars.registerHelper('math', (v1, op, v2) => {
   /* jshint maxcomplexity: false */  
-  var parse_date = (param) => {
+  var parseDate = (param) => {
     var months = ['January', 'February', 'March', 'April', 'May', 'June',
       'July', 'August', 'September', 'October', 'November', 'December'];
     return months[param.getMonth()] + ' ' + 
@@ -47,31 +47,31 @@ handlebars.registerHelper('math', (v1, op, v2) => {
       param.getFullYear();
   };
 
-  var is_date_operation = false;
+  var isDateOperation = false;
   var date1;
 
   if (isNaN(parseInt(v1))) {  // chen_debug
     date1 = new Date(v1);
-    is_date_operation = true;
+    isDateOperation = true;
   }
   else {
     v1 = parseInt(v1);
   }
   v2 = parseInt(v2);
 
-  if (is_date_operation) {
+  if (isDateOperation) {
     switch (op) {
       case 'add':
       case 'add-date':
       case 'add-day':
         date1.setDate(date1.getDate() + v2);
-        return parse_date(date1);
+        return parseDate(date1);
       case 'add-month':
         date1.setMonth(date1.getMonth() + v2);
-        return parse_date(date1);
+        return parseDate(date1);
       case 'add-year':
         date1.setFullYear(date1.getFullYear() + v2);
-        return parse_date(date1);
+        return parseDate(date1);
       default:
         throw new Error('Invalid operator');
     }
@@ -135,7 +135,9 @@ var AvsAnSimple = (function (root) {
             while (1) {
                 result = node.article || result;
                 node = node[c];
-                if (!node) return result;
+                if (!node) { 
+                  return result;
+                }
                 c = word[sI++] || ' ';
             }
         }
@@ -143,8 +145,9 @@ var AvsAnSimple = (function (root) {
 })({});
 
 handlebars.registerHelper('article', (v) => {
-  if(v === undefined)
+  if (v === undefined) {
     return '';
+  }
   
   return AvsAnSimple.query(v);
 });
@@ -154,14 +157,15 @@ handlebars.registerHelper('pagebreak', () => {
 });
 
 handlebars.registerHelper('case', (op,v) => {
-  if(v === undefined)
+  if (v === undefined) {
     return '';
+  }
 
-  var camelCase = (str) => {
+  /* var camelCase = (str) => {
     return str.replace(/(?:^\w|[A-Z]|\b\w)/g, function(letter, index) {
       return index === 0 ? letter.toLowerCase() : letter.toUpperCase();
     }).replace(/\s+/g, '');
-  };
+  }; */
   var titleCase = (str) => {
     return str.toLowerCase().replace(/\b[a-z]/g, firstLetter => {return firstLetter.toUpperCase();});
   };

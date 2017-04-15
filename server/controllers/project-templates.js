@@ -96,18 +96,18 @@ exports.getUserProjectTemplates = (req, res, next) => {
         userGroupsSrvc.getUserGroup({allUsers: true, role: req.user.role})
       ])
       .spread((user, prebuiltGroup) => {
-        if (user.role === 'user')
+        if (user.role === 'user') {
           filter = _.assign(filter, { 
               $or: [
                 { users: user._id }, 
                 { userGroups: {$in: _.concat(user.userGroups, prebuiltGroup._id)} }
               ]
             });
+        }
+        
         return filter;
       })
-      .catch(err => {
-        return filter;
-      });
+      .catch(() => { return filter; });
   }
 
   parseParams(req.query)
@@ -198,7 +198,7 @@ exports.deleteProjectTemplate = (req, res, next) => {
     .then(() => projTemplsSrvc.getProjectTemplate({ _id: projTemplId }, '-__v'))
     .then(checkTemplateUsed)
     .then(projTemplsSrvc.deleteProjectTemplate)
-    .then(projTempl => res.send(true))
+    .then(() => res.send(true))
     .catch(next);
 };
 

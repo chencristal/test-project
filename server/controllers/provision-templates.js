@@ -137,7 +137,7 @@ exports.deleteProvisionTemplate = (req, res, next) => {
     .then(() => provisionTsSrvc.getProvisionTemplate({ _id: provisionTemplId }, '-__v'))
     .then(checkTemplateUsed)
     .then(provisionTsSrvc.deleteProvisionTemplate)
-    .then(provisionTempl => res.send(true))
+    .then(() => res.send(true))
     .catch(next);
 };
 

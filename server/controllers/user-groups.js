@@ -253,9 +253,7 @@ var _assignMembers = (userGroupData, assignedUsers) => {
       }, {
         $push: { 'userGroups': userGroupData._id }
       })
-      .then(result => {
-        return Promise.resolve(userGroupData);
-      });
+      .then(() => Promise.resolve(userGroupData));
   }
   else {
     return Promise.resolve(userGroupData);
@@ -271,9 +269,7 @@ var _removeMembers = (userGroupData, assignedUsers) => {
       }, {
         $pull: { 'userGroups': userGroupData._id }
       })
-      .then(result => {
-        return Promise.resolve(userGroupData);
-      });
+      .then(() => Promise.resolve(userGroupData));
   }
   else {
     return Promise.resolve(userGroupData);

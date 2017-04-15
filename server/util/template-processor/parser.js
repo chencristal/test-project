@@ -108,8 +108,10 @@ function _parseToken(token) {
           params: _.map(token.params, _parseToken),
           tokens: _.map(_.get(token, 'program.body'), _parseToken)
         };
-      } else
+      } else {
         return _parseToken(token.path);
+      }
+      
       break;
     case 'BlockStatement': {
       if (token.path.original === 'if' || token.path.original === 'unless') {

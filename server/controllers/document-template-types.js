@@ -131,7 +131,7 @@ exports.deleteDocumentTemplateType = (req, res, next) => {
     .then(() => docTemplTypesSrvc.getDocumentTemplateType({ _id: docTemplTypeId }, '-__v'))
     .then(checkTemplateTypeUsed)
     .then(docTemplTypesSrvc.deleteDocumentTemplateType)
-    .then(docTemplType => res.send(true))
+    .then(() => res.send(true))
     .catch(next);
 };
 

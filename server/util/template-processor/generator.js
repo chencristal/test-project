@@ -164,15 +164,17 @@ function getIfCondVariables(token) {
   var param1 = token.params[0];
   var param3 = token.params[2];
 
-  if (param1.type === 'subexpression')
+  if (param1.type === 'subexpression') {
     left = getIfCondVariables(param1);
-  else
+  } else {
     left = param1;
+  }
 
-  if (param3.type === 'subexpression')
+  if (param3.type === 'subexpression') {
     right = getIfCondVariables(param3);
-  else
+  } else {
     right = param3;
+  }
 
   return _.uniqBy(_.concat(left, right), 'text');
 }
@@ -183,15 +185,17 @@ function generateCompExpression(token, suf) {
   var param2 = token.params[1];
   var param3 = token.params[2];
 
-  if (param1.type === 'subexpression')
+  if (param1.type === 'subexpression') {
     left = generateCompExpression(param1, suf);
-  else
+  } else {
     left = `variables.${param1.text}.${suf}`;
+  }
 
-  if (param3.type === 'subexpression')
+  if (param3.type === 'subexpression') {
     right = generateCompExpression(param3, suf);
-  else
+  } else {
     right = `variables.${param3.text}.${suf}`;
+  }
 
   return `$root.ifCond(${left}, '${param2.text}', ${right})`;
 }
@@ -201,7 +205,6 @@ Generator.prototype.generateExpressionHtml = function (token) {
   var html = '';
   var param1 = token.params[0];
   var param2 = token.params[1];
-  var param3 = token.params[2];
 
   switch (token.text) {
     case 'if':
@@ -359,7 +362,6 @@ Generator.prototype.generateMathHtml = function(token) {
 
     var varName = `variables.${date1.variable}`;
     var offsetAttr = ``;
-    var uniqId = _getRandomString();
 
     if (param3.type === 'variable') {
       if (param2.text === 'add' || param2.text === 'add-date' || param2.text === 'add-day') {
@@ -393,7 +395,6 @@ Generator.prototype.generateMathHtml = function(token) {
 };
 
 Generator.prototype.generateCaseHtml = function(token) {
-  var self = this;
   var html = '';
   var param1 = token.params[0];
   var param2 = token.params[1];
@@ -418,7 +419,6 @@ Generator.prototype.generateCaseHtml = function(token) {
 };
 
 Generator.prototype.generateArticleHtml = function(token) {
-  var self = this;
   var html = '';
   var param1 = token.params[0];
   if(param1.type === 'variable') {
@@ -442,7 +442,6 @@ Generator.prototype.generateArticleHtml = function(token) {
 };
 
 Generator.prototype.generateExpandHtml = function(token) {
-  var self = this;
   var html = '';
 
   var param = token.params[0];
@@ -500,8 +499,9 @@ Generator.prototype.generateExpandHtml = function(token) {
         </span>
     `;
   }
-  else
+  else {
     html = '';
+  }
 
   return html;
 };

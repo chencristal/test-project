@@ -503,16 +503,18 @@ angular.module('app').directive('projectEditor', function () {
           var termType = this.variable.termType;
           if(this.variable.state === 1 || this.variable.state === 2) {    //Confirmed, Uncertain State
             var placeholder = '';
-            if(termType.indexOf('textplus') > -1)
+            if(termType.indexOf('textplus') > -1) {
               placeholder = this.variable['textplus'].placeholder;
-            else
+            } else {
               placeholder = this.variable[termType].placeholder;
+            }
+
             if(/^\[.*\]$/.test(placeholder)) {
               this.variable.placeholder = placeholder.substr(1, placeholder.length-2);    //Strip off brackets on both sides
             }
           }
           else {                            //Neutral State
-            this.variable.placeholder = this.variable.placeholder_original;
+            this.variable.placeholder = this.variable.placeholderOriginal;
           }
         }
         else if(termTypesRe.indexOf(this.variable.termType) > -1 && this.variable.value.trim() !== '') {
@@ -652,8 +654,9 @@ angular.module('app').directive('projectEditor', function () {
               case 'statement': {
                 if (token.text === 'if') {
                   _temp = _.find(values, {'variable': token.params[0].text});
-                  if (_.find(_variables, _temp) === undefined)
+                  if (_.find(_variables, _temp) === undefined) {
                     _variables = _.concat(_variables, _temp);
+                  }
 
                   if (_parseBoolean(token.params[0].text) === true) {
                     _.map(token.tokens,  _parseValues);
@@ -661,8 +664,9 @@ angular.module('app').directive('projectEditor', function () {
                 }
                 else if (token.text === 'unless') {
                   _temp = _.find(values, {'variable': token.params[0].text});
-                  if (_.find(_variables, _temp) === undefined)
+                  if (_.find(_variables, _temp) === undefined) {
                     _variables = _.concat(_variables, _temp);
+                  }
 
                   if (_parseBoolean(token.params[0].text) === false) {
                     _.map(token.tokens,  _parseValues);
@@ -860,10 +864,10 @@ angular.module('app').directive('projectEditor', function () {
                 } else {
                   termTempl.value = val.value;
                 }
-                termTempl.placeholder_original = termTempl[termTempl.termType].placeholder;
+                termTempl.placeholderOriginal = termTempl[termTempl.termType].placeholder;
                 termTempl.placeholder = val['placeholder'];
                 if(!termTempl.placeholder) {
-                  termTempl.placeholder = termTempl.placeholder_original;
+                  termTempl.placeholder = termTempl.placeholderOriginal;
                 }
               } else {
                 if (termTempl.termType === 'boolean') {
@@ -875,7 +879,7 @@ angular.module('app').directive('projectEditor', function () {
                 } else if (termTempl.termType === 'number') {
                   termTempl.value = '';
                 }
-                termTempl.placeholder_original = termTempl[termTempl.termType].placeholder;
+                termTempl.placeholderOriginal = termTempl[termTempl.termType].placeholder;
                 termTempl.placeholder = termTempl[termTempl.termType].placeholder;
               }
               termTempl.state = val ? val['state'] : 0;             

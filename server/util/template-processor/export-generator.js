@@ -46,10 +46,6 @@ GeneratorExport.prototype.generateExportHtml = function (token) {
 
 GeneratorExport.prototype.generateExportVariableEditor = function (variable) {
   var self = this;
-
-  var projValues = self.data.projValues;
-  var termTempls = self.data.termTempls;
-
   var value = _.find(self.data.projValues, {'variable': variable.variable});
   var term = _.find(self.data.termTempls, {'variable': variable.variable});
   var html;
@@ -57,21 +53,23 @@ GeneratorExport.prototype.generateExportVariableEditor = function (variable) {
   switch (variable.termType) {
     case 'text': 
       html = '';
-      if (value !== undefined && value.value !== undefined)
+      if (value !== undefined && value.value !== undefined) {
         html = `<span>${value.value}</span>`;
-      else 
+      } else {
         html = `<span>${term.text.placeholder}</span>`;
+      }
       return html;
     case 'textplus':
-      var subs = _getSubFields(projValues, variable.variable);
+      /*var subs = _getSubFields(projValues, variable.variable);
       var newline = term.textplus.newline ? true : false;
-      var prettify = term.textplus.prettify ? true : false;
+      var prettify = term.textplus.prettify ? true : false;*/
       html = '';
       
-      if (value !== undefined && value.value !== undefined)
+      if (value !== undefined && value.value !== undefined) {
         html = `<span>${value.value}</span>`;
-      else 
+      } else {
         html = `<span>${term.textplus.placeholder}</span>`;
+      }
       /*_.forEach(subs, function(sub, key) {
         html += `<span>`;
         if (!newline && !prettify) html += `<span> </span>`;
@@ -86,32 +84,36 @@ GeneratorExport.prototype.generateExportVariableEditor = function (variable) {
 
     case 'textarea':
       html = '';
-      if (value !== undefined && value.value !== undefined)
+      if (value !== undefined && value.value !== undefined) {
         html = `<span>${value.value}</span>`;
-      else 
+      } else { 
         html = `<span></span>`;
+      }
       return html;
     case 'boolean':
       html = '';
       if (value !== undefined && value.value !== undefined) {
-        if (value.value === 'true' || value.value === true)
+        if (value.value === 'true' || value.value === true) {
           return term.boolean.inclusionText;
-        else
+        } else {
           return term.boolean.exclusionText;
+        }
       } 
       else {
-        if (term.boolean.default === 'true' || term.boolean.default === true)
+        if (term.boolean.default === 'true' || term.boolean.default === true) {
           return term.boolean.inclusionText;
-        else
+        } else {
           return term.boolean.exclusionText;
+        }
       }
       break;
     case 'variant':
       html = '';
-      if (value !== undefined && value.value !== undefined)
+      if (value !== undefined && value.value !== undefined) {
         html = `<span>${value.value}</span>`;
-      else 
+      } else {
         html = `<span>${term.variant.default}</span>`;
+      }
       return html;
     case 'date':
       html = '';
@@ -119,15 +121,17 @@ GeneratorExport.prototype.generateExportVariableEditor = function (variable) {
         var offsetDate = new Date(value.value);
         var val = moment(offsetDate).format('MMMM D, YYYY');
         html = `<span>${val}</span>`;
-      } else 
+      } else {
         html = `<span>${term.date.placeholder}</span>`;
+      }
       return html;
     case 'number':
       html = '';
-      if (value !== undefined && value.value !== undefined)
+      if (value !== undefined && value.value !== undefined) {
         html = `<span>${value.value}</span>`;
-      else 
+      } else  {
         html = `<span>${term.number.placeholder}</span>`;
+      }
       return html;
 
     case 'default':
@@ -143,7 +147,6 @@ GeneratorExport.prototype.generateExportExpressionHtml = function (token) {
   var html = '';
   var param1 = token.params[0];
   var param2 = token.params[1];
-  var param3 = token.params[2];
 
   var projValues = self.data.projValues;
   var termTempls = self.data.termTempls;
@@ -158,15 +161,17 @@ GeneratorExport.prototype.generateExportExpressionHtml = function (token) {
     var param1 = token.params[0];
     var param3 = token.params[2];
 
-    if (param1.type === 'subexpression')
+    if (param1.type === 'subexpression') {
       left = _getIfCondVariables(param1);
-    else
+    } else {
       left = param1;
+    }
 
-    if (param3.type === 'subexpression')
+    if (param3.type === 'subexpression') {
       right = _getIfCondVariables(param3);
-    else
+    } else {
       right = param3;
+    }
 
     return _.uniqBy(_.concat(left, right), 'text');
   }
@@ -178,16 +183,16 @@ GeneratorExport.prototype.generateExportExpressionHtml = function (token) {
     var param3 = token.params[2];
     var _term;
 
-    if (param1.type === 'subexpression')
+    if (param1.type === 'subexpression') {
       left = _parseIfCondDefault(param1);
-    else {
+    } else {
       _term = _.find(termTempls, {variable: param1.text});
       left = _term.boolean.default;
     }
 
-    if (param3.type === 'subexpression')
+    if (param3.type === 'subexpression') {
       right = _parseIfCondDefault(param3);
-    else {
+    } else {
       _term = _.find(termTempls, {variable: param3.text});
       right = _term.boolean.default;
     }
@@ -201,25 +206,27 @@ GeneratorExport.prototype.generateExportExpressionHtml = function (token) {
     var param2 = token.params[1];
     var param3 = token.params[2];
 
-    if (param1.type === 'subexpression')
+    if (param1.type === 'subexpression') {
       left = _parseIfCond(param1);
-    else
+    } else {
       left = _parseBoolean(param1.text);
+    }
 
-    if (param3.type === 'subexpression')
+    if (param3.type === 'subexpression') {
       right = _parseIfCond(param3);
-    else
+    } else {
       right = _parseBoolean(param3.text);
+    }
 
     return _ifCond(left, param2.text, right);
   }
 
-  function _parseIfVariant() {
-    var text = param1.text,
-        op = param2.text;
-    var _temp = _.find(projValues, {'variable': text});
+  function _parseIfVariant(token) {
+    var param1 = token.params[0];
+    var param2 = token.params[1];
+    var _temp = _.find(projValues, {'variable': param1.text});
 
-    return (_temp !== undefined && _ifVariant(_temp.value, op));
+    return (_temp !== undefined && _ifVariant(_temp.value, param2.text));
   }
 
   var _term, defaultValue, value;
@@ -262,7 +269,7 @@ GeneratorExport.prototype.generateExportExpressionHtml = function (token) {
 
     case 'ifVariant':
       _term = _.find(termTempls, {'variable': param1.text});
-      value = _parseIfVariant();
+      value = _parseIfVariant(token);
       defaultValue = _ifVariant(_term.variant.default, param2.text);
 
       defaulted = (value === defaultValue) ? 'defaulted' : '';
@@ -272,7 +279,7 @@ GeneratorExport.prototype.generateExportExpressionHtml = function (token) {
 
     case 'unlessVariant':
       _term = _.find(termTempls, {'variable': param1.text});
-      value = _parseIfVariant();
+      value = _parseIfVariant(token);
       defaultValue = _ifVariant(_term.variant.default, param2.text);
 
       defaulted = (value !== defaultValue) ? 'defaulted' : '';
@@ -305,45 +312,44 @@ GeneratorExport.prototype.generateExportExpressionHtml = function (token) {
 };
 
 GeneratorExport.prototype.generateMathHtml = function(token) {
-  var self = this;
   var html = '';
   var param1 = token.params[0];
   var param2 = token.params[1];
   var param3 = token.params[2];
 
-  var projValues = self.data.projValues;
-  var termTempls = self.data.termTempls;
-
-  var date1 = _.find(termTempls, 
+  var date1 = _.find(this.data.termTempls, 
     {
       'variable': token.params[0].text, 
       'termType': 'date'
     });
   var value = '';
-  var _temp1 = _.find(projValues, {'variable': param1.text});
-  var _temp2 = _.find(projValues, {'variable': param3.text});
+  var _temp1 = _.find(this.data.projValues, {'variable': param1.text});
+  var _temp2 = _.find(this.data.projValues, {'variable': param3.text});
 
   if (date1 === undefined) {    // first variable is not date
     
 
-    if (_temp1 === undefined) _temp1 = {value: 0};
-    if (_temp2 === undefined) _temp2 = {value: 0};
+    if (_temp1 === undefined) { _temp1 = {value: 0}; }
+    if (_temp2 === undefined) { _temp2 = {value: 0}; }
 
-    if (param1.type === 'variable' && param3.type === 'variable')
+    if (param1.type === 'variable' && param3.type === 'variable') {
       value = _math(_temp1.value, param2.text, _temp2.value);
-    else if (param1.type === 'variable' && param3.type === 'constant')
+    } else if (param1.type === 'variable' && param3.type === 'constant') {
       value = _math(_temp1.value, param2.text, param3.text);
-    else if (param1.type === 'constant' && param3.type === 'variable')
+    } else if (param1.type === 'constant' && param3.type === 'variable') {
       value = _math(param1.text, param2.text, _temp2.value);
-    else if (param1.type === 'constant' && param3.type === 'constant')
+    } else if (param1.type === 'constant' && param3.type === 'constant') {
       value = _math(param1.text, param2.text, param3.text);
+    }
     html = `<span><label>${value}</label>`;
   }
   else {          // first variable is date actually
 
     var offsetDate = new Date(date1.value);
 
-    if (_temp2 === undefined) _temp2 = {value: 0};
+    if (_temp2 === undefined) {
+      _temp2 = {value: 0};
+    }
 
     if (param3.type === 'variable') {
       if (param2.text === 'add' || param2.text === 'add-date' || param2.text === 'add-day') {
@@ -372,14 +378,12 @@ GeneratorExport.prototype.generateMathHtml = function(token) {
 };
 
 GeneratorExport.prototype.generateCaseHtml = function(token) {
-  var self = this;
-  var projValues = self.data.projValues;
   var html = '';
   var param1 = token.params[0];
   var param2 = token.params[1];
   var value = '';
   if(param2.type === 'variable') {
-    var _temp = _.find(projValues, {'variable': param2.text});
+    var _temp = _.find(this.data.projValues, {'variable': param2.text});
     value = _case(param1.text, _temp.value);
     html = `<span><label>${value}</label>`;
   }
@@ -392,13 +396,11 @@ GeneratorExport.prototype.generateCaseHtml = function(token) {
 };
 
 GeneratorExport.prototype.generateArticleHtml = function(token) {
-  var self = this;
-  var projValues = self.data.projValues;
   var html = '';
   var param1 = token.params[0];  
   var value = '';
   if(param1.type === 'variable') {
-    var _temp = _.find(projValues, {'variable': param1.text});
+    var _temp = _.find(this.data.projValues, {'variable': param1.text});
     value = _article(_temp.value);
   }
   else {
@@ -410,7 +412,6 @@ GeneratorExport.prototype.generateArticleHtml = function(token) {
 };
 
 GeneratorExport.prototype.generateExpandHtml = function(token) {
-  var self = this;
   var html = '';
 
   var param = token.params[0];
@@ -468,14 +469,15 @@ GeneratorExport.prototype.generateExpandHtml = function(token) {
         </span>
     `;
   }
-  else
+  else {
     html = '';
+  }
 
   return html;
 };
 
 exports.getExportCss = function(mode) {
-  if (mode === 'redline') 
+  if (mode === 'redline') { 
     return `
       .selected {
         color: #000;
@@ -676,7 +678,7 @@ exports.getExportCss = function(mode) {
         text-decoration: underline;
       }
     `;
-  else
+  } else {
     return `
       .unselected {
         display: none;
@@ -706,11 +708,12 @@ exports.getExportCss = function(mode) {
         display: none;
       }
     `;
+  }
 };
 
-function _getRandomString() {
+/* function _getRandomString() {
   return Math.random().toString(36).slice(2);
-}
+} */
 
 function _ifCond(v1, op, v2) {
   switch (op) {
@@ -740,8 +743,8 @@ function _ifVariant(v, opt) {
 }
 
 function _math(v1, op, v2) {  
-  if(isNaN(v1)) v1 = 0;
-  if(isNaN(v2)) v2 = 0;
+  if (isNaN(v1)) { v1 = 0; }
+  if (isNaN(v2)) { v2 = 0; }
 
   switch (op) {
     case 'add':
@@ -763,13 +766,14 @@ function _math(v1, op, v2) {
 }
 
 function _case(op, v) {
-  if(v === undefined)
+  if (v === undefined) {
     return '';
-  var camelCase = (str) => {
+  }
+  /* var camelCase = (str) => {
     return str.replace(/(?:^\w|[A-Z]|\b\w)/g, function(letter, index) {
       return index === 0 ? letter.toLowerCase() : letter.toUpperCase();
     }).replace(/\s+/g, '');
-  };
+  }; */
   var titleCase = (str) => {
     return str.toLowerCase().replace(/\b[a-z]/g, firstLetter => {return firstLetter.toUpperCase();});
   };
@@ -816,7 +820,9 @@ var AvsAnSimple = (function (root) {
             while (1) {
                 result = node.article || result;
                 node = node[c];
-                if (!node) return result;
+                if (!node) { 
+                  return result; 
+                }
                 c = word[sI++] || ' ';
             }
         }
@@ -824,16 +830,17 @@ var AvsAnSimple = (function (root) {
 })({});
 
 function _article(v) {
-  if(v === undefined)
+  if (v === undefined) {
     return '';
+  }
   return AvsAnSimple.query(v);
 }
 
-function _getSubFields(variables, text) {
+/* function _getSubFields(variables, text) {
   var master = _.find(variables, {'variable': text});
   var subs = _.filter(variables, function(v) { return v.variable.indexOf(text + '__') === 0;});
   if(!subs || subs.length === 0)
     subs = [master];
   subs = _.orderBy(subs, ['sortIndex'],['asc']);
   return subs;
-}
+} */
