@@ -95,7 +95,7 @@ exports.addUserToAcl = function(user) {
 
 
 function initializeUserRoles() {
-  acl.allow([
+  return Promise.resolve(() => acl.allow([
     {
       roles: ['superadmin'],
       allows: [
@@ -203,5 +203,5 @@ function initializeUserRoles() {
         }
       ]
     }
-  ]);
+  ]));
 }
