@@ -60,11 +60,109 @@ describe('Check admin functions', function() {
           res.body.user.role.should.equal('admin');
 
           // Save the cookie to use it later to retrieve the session
-          authToken = res.body.token;          
-          Cookies = res.headers['set-cookie'].pop().split(';')[0];
+          authToken = res.body.token;
+          Cookies = res.headers['set-cookie'].pop().split(';')[0] + `; token=${authToken}`;
           done();
         });
     });
+  });
+
+  describe('Template manange', function() {
+    var templId;
+
+    describe('Term template manange', function() {
+      var termTempl = {
+        text: {placeholder: "hello world"}, 
+        textarea: {style: "auto"},
+        boolean: {
+          default: true, 
+          inclusionText: "Include", 
+          exclusionText: "Exclude"
+        }, 
+        variant: {
+          "options":[],
+          "displayAs":"dropdown"
+        },
+        date: {default: "2017-04-17T20:13:18.139Z"},
+        termType: "text",
+        variable: "text1",
+        displayName: "text1"
+      };
+
+      it('Create new term template', function(done){
+        var req = request(app).post(`/api/${apiVer}/term-templates`);
+
+        // Set cookie to get saved user session
+        req.cookies = Cookies;
+        req.set('Accept','application/json')
+          .send(termTempl)
+          .expect('Content-Type', /json/)
+          .expect(200)
+          .end(function (err, res) {
+            res.body.termType.should.equal('text');
+            res.body.variable.should.equal('text1');
+            res.body.displayName.should.equal('text1');
+
+            templId = res.body._id;
+            done();
+          });
+      });
+
+      it('Read term template', function(done){
+        var req = request(app).get(`/api/${apiVer}/term-templates/${templId}`);
+
+        // Set cookie to get saved user session
+        req.cookies = Cookies;
+        req.set('Accept','application/json')
+          .expect('Content-Type', /json/)
+          .expect(200)
+          .end(function (err, res) {
+            res.body.termType.should.equal('text');
+            res.body.variable.should.equal('text1');
+            res.body.displayName.should.equal('text1');
+            done();
+          });
+      });
+
+      it('Update term template', function(done){
+        var req = request(app).put(`/api/${apiVer}/term-templates/${templId}`);
+
+        termTempl.displayName = 'test_text';
+        termTempl.text.placeholder = 'Hello World, Hello World';
+
+        // Set cookie to get saved user session
+        req.cookies = Cookies;
+        req.set('Accept','application/json')
+          .send(termTempl)
+          .expect('Content-Type', /json/)
+          .expect(200)
+          .end(function (err, res) {
+            res.body.displayName.should.equal('test_text');
+            res.body.text.placeholder.should.equal('Hello World, Hello World');
+            done();
+          });
+      });
+
+      it('Delete term template', function(done){
+        var req = request(app).delete(`/api/${apiVer}/term-templates/${templId}`);
+
+        // Set cookie to get saved user session
+        req.cookies = Cookies;
+        req.set('Accept','application/json')
+          .expect('Content-Type', /json/)
+          .expect(200)
+          .end(function (err, res) {
+            res.body.should.equal(true);
+            done();
+          });
+      });
+    });
+
+    describe('Project template manange', function() {});
+    describe('Document template manange', function() {});
+    describe('Document template type manange', function() {});
+    describe('Provision template manange', function() {});
+    
   });
 
   describe('User manage', function() {
@@ -74,7 +172,7 @@ describe('Check admin functions', function() {
       var req = request(app).post(`/api/${apiVer}/users`);
 
       // Set cookie to get saved user session
-      req.cookies = Cookies + `; token=${authToken}`;
+      req.cookies = Cookies;
       req.set('Accept','application/json')
         .send(userInfo)
         .expect('Content-Type', /json/)
@@ -93,9 +191,8 @@ describe('Check admin functions', function() {
       var req = request(app).get(`/api/${apiVer}/users/${userId}`);
 
       // Set cookie to get saved user session
-      req.cookies = Cookies + `; token=${authToken}`;
+      req.cookies = Cookies;
       req.set('Accept','application/json')
-        .send(userInfo)
         .expect('Content-Type', /json/)
         .expect(200)
         .end(function (err, res) {
@@ -113,7 +210,7 @@ describe('Check admin functions', function() {
       userInfo.firstName = 'user2';
 
       // Set cookie to get saved user session
-      req.cookies = Cookies + `; token=${authToken}`;
+      req.cookies = Cookies;
       req.set('Accept','application/json')
         .send(userInfo)
         .expect('Content-Type', /json/)
@@ -134,7 +231,7 @@ describe('Check admin functions', function() {
       userInfo.status = 'inactive';
 
       // Set cookie to get saved user session
-      req.cookies = Cookies + `; token=${authToken}`;
+      req.cookies = Cookies;
       req.set('Accept','application/json')
         .send(userInfo)
         .expect('Content-Type', /json/)
