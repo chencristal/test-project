@@ -2,49 +2,25 @@
 
 var _           = require('lodash');
 var request     = require('supertest');
-// var mongoose    = require('mongoose');
+var mongoose    = require('mongoose');
 var should      = require('should');
 var app         = require('../../server/app');
 var usersSrvc   = require('../../server/data-services/users');
 var config      = require('../../config/environment');
 
 var apiVer = config.get('api:version');
-var Cookies, authToken;
-
-var adminInfo = {
-    email: 'admin@mail.com',
-    firstName: 'admin',
-    role: 'admin',
-    password: 'passw',
-    confirmpass: 'passw',
-    userGroups: [],
-    status: 'active'
-  };
+var ObjectId = mongoose.Types.ObjectId;
+var Cookies;
 
 var userInfo = {
-    email: 'user1@mail.com',
-    firstName: 'user1',
+    email: 'testuser1@mail.com',
+    firstName: 'testuser1',
     role: 'user',
     password: 'passw',
     confirmpass: 'passw',
     userGroups: [],
     status: 'active'
   };
-
-describe('Create user accounts first', function() {
-  it('Admin account', function(done) {
-    usersSrvc
-      .createUser(adminInfo)
-      .then(user => {
-        user.email.should.equal('admin@mail.com');
-        user.firstName.should.equal('admin');
-        user.role.should.equal('admin');
-        
-        done();
-      })
-      .catch(done);
-  });
-});
 
 describe('Check admin functions', function() {
   describe('Auth functions', function() {
@@ -60,8 +36,7 @@ describe('Check admin functions', function() {
           res.body.user.role.should.equal('admin');
 
           // Save the cookie to use it later to retrieve the session
-          authToken = res.body.token;
-          Cookies = res.headers['set-cookie'].pop().split(';')[0] + `; token=${authToken}`;
+          Cookies = res.headers['set-cookie'].pop().split(';')[0] + `; token=${res.body.token}`;
           done();
         });
     });
@@ -158,11 +133,302 @@ describe('Check admin functions', function() {
       });
     });
 
-    describe('Project template manange', function() {});
-    describe('Document template manange', function() {});
-    describe('Document template type manange', function() {});
-    describe('Provision template manange', function() {});
+    describe('Provision template manange', function() {
+      var provisionTempl = {
+        displayName: "testprovision",
+        style: "normal",
+        template: "{{#if test_boolean1}}bool1 is true, and text1 is {{test_text1}}{{/if}}",
+        status: "active"
+      };
+
+      it('Create new provision template', function(done){
+        var req = request(app).post(`/api/${apiVer}/provision-templates`);
+
+        // Set cookie to get saved user session
+        req.cookies = Cookies;
+        req.set('Accept','application/json')
+          .send(provisionTempl)
+          .expect('Content-Type', /json/)
+          .expect(200)
+          .end(function (err, res) {
+            res.body.style.should.equal('normal');
+            res.body.displayName.should.equal('testprovision');
+
+            templId = res.body._id;
+            done();
+          });
+      });
+
+      it('Read provision template', function(done){
+        var req = request(app).get(`/api/${apiVer}/provision-templates/${templId}`);
+
+        // Set cookie to get saved user session
+        req.cookies = Cookies;
+        req.set('Accept','application/json')
+          .expect('Content-Type', /json/)
+          .expect(200)
+          .end(function (err, res) {
+            res.body.style.should.equal('normal');
+            res.body.displayName.should.equal('testprovision');
+            done();
+          });
+      });
+
+      it('Update provision template', function(done){
+        var req = request(app).put(`/api/${apiVer}/provision-templates/${templId}`);
+
+        provisionTempl.displayName = 'testprovision2';
+
+        // Set cookie to get saved user session
+        req.cookies = Cookies;
+        req.set('Accept','application/json')
+          .send(provisionTempl)
+          .expect('Content-Type', /json/)
+          .expect(200)
+          .end(function (err, res) {
+            res.body.displayName.should.equal('testprovision2');
+            done();
+          });
+      });
+
+      it('Delete provision template', function(done){
+        var req = request(app).delete(`/api/${apiVer}/provision-templates/${templId}`);
+
+        // Set cookie to get saved user session
+        req.cookies = Cookies;
+        req.set('Accept','application/json')
+          .expect('Content-Type', /json/)
+          .expect(200)
+          .end(function (err, res) {
+            res.body.should.equal(true);
+            done();
+          });
+      });
+    });
+
+    describe('Document template type manange', function() {
+      var documentTemplType = {
+        name: "test_document_templ_type",
+        description: "test_document_templ_type",
+        styles: "{\n\t\"font-size\": 11,\n\t\"font-name\": \"Times New Roman\"",
+        status: "active"
+      };
+
+      it('Create new document template type', function(done){
+        var req = request(app).post(`/api/${apiVer}/document-template-types`);
+
+        // Set cookie to get saved user session
+        req.cookies = Cookies;
+        req.set('Accept','application/json')
+          .send(documentTemplType)
+          .expect('Content-Type', /json/)
+          .expect(200)
+          .end(function (err, res) {
+            res.body.styles.should.equal("{\n\t\"font-size\": 11,\n\t\"font-name\": \"Times New Roman\"");
+            res.body.description.should.equal('test_document_templ_type');
+            res.body.name.should.equal('test_document_templ_type');
+
+            templId = res.body._id;
+            done();
+          });
+      });
+
+      it('Read document template type', function(done){
+        var req = request(app).get(`/api/${apiVer}/document-template-types/${templId}`);
+
+        // Set cookie to get saved user session
+        req.cookies = Cookies;
+        req.set('Accept','application/json')
+          .expect('Content-Type', /json/)
+          .expect(200)
+          .end(function (err, res) {
+            res.body.styles.should.equal("{\n\t\"font-size\": 11,\n\t\"font-name\": \"Times New Roman\"");
+            res.body.description.should.equal('test_document_templ_type');
+            res.body.name.should.equal('test_document_templ_type');
+            done();
+          });
+      });
+
+      it('Update document template type', function(done){
+        var req = request(app).put(`/api/${apiVer}/document-template-types/${templId}`);
+
+        documentTemplType.description = 'test_document_templ_type_2';
+
+        // Set cookie to get saved user session
+        req.cookies = Cookies;
+        req.set('Accept','application/json')
+          .send(documentTemplType)
+          .expect('Content-Type', /json/)
+          .expect(200)
+          .end(function (err, res) {
+            res.body.styles.should.equal("{\n\t\"font-size\": 11,\n\t\"font-name\": \"Times New Roman\"");
+            res.body.description.should.equal('test_document_templ_type_2');
+            res.body.name.should.equal('test_document_templ_type');
+            done();
+          });
+      });
+
+      it('Delete document template type', function(done){
+        var req = request(app).delete(`/api/${apiVer}/document-template-types/${templId}`);
+
+        // Set cookie to get saved user session
+        req.cookies = Cookies;
+        req.set('Accept','application/json')
+          .expect('Content-Type', /json/)
+          .expect(200)
+          .end(function (err, res) {
+            res.body.should.equal(true);
+            done();
+          });
+      });
+    });
+
+    describe('Document template manange', function() {
+      var documentTempl = {
+        name: "testvariables",
+        documentType: ObjectId("57fa4b5315d084efeef2ba57"),
+        provisionTemplates: [ ObjectId("57fa237cd0376b53ec44ede7") ],
+        status: "active"
+      };
+
+      it('Create new document template', function(done){
+        var req = request(app).post(`/api/${apiVer}/document-templates`);
+
+        // Set cookie to get saved user session
+        req.cookies = Cookies;
+        req.set('Accept','application/json')
+          .send(documentTempl)
+          .expect('Content-Type', /json/)
+          .expect(200)
+          .end(function (err, res) {
+            res.body.name.should.equal('testvariables');
+            res.body.status.should.equal('active');
+
+            templId = res.body._id;
+            done();
+          });
+      });
+
+      it('Read document template', function(done){
+        var req = request(app).get(`/api/${apiVer}/document-templates/${templId}`);
+
+        // Set cookie to get saved user session
+        req.cookies = Cookies;
+        req.set('Accept','application/json')
+          .expect('Content-Type', /json/)
+          .expect(200)
+          .end(function (err, res) {
+            res.body.name.should.equal('testvariables');
+            res.body.status.should.equal('active');
+            done();
+          });
+      });
+
+      it('Update document template', function(done){
+        var req = request(app).put(`/api/${apiVer}/document-templates/${templId}`);
+
+        documentTempl.name = 'testvariables2';
+
+        // Set cookie to get saved user session
+        req.cookies = Cookies;
+        req.set('Accept','application/json')
+          .send(documentTempl)
+          .expect('Content-Type', /json/)
+          .expect(200)
+          .end(function (err, res) {
+            res.body.name.should.equal('testvariables2');
+            done();
+          });
+      });
+
+      it('Delete document template', function(done){
+        var req = request(app).delete(`/api/${apiVer}/document-templates/${templId}`);
+
+        // Set cookie to get saved user session
+        req.cookies = Cookies;
+        req.set('Accept','application/json')
+          .expect('Content-Type', /json/)
+          .expect(200)
+          .end(function (err, res) {
+            res.body.should.equal(true);
+            done();
+          });
+      });
+    });
     
+    describe('Project template manange', function() {
+      var projTempl = {
+        name: "test_proj_templ",
+        documentTemplates: [ ObjectId("57fa4b8215d084efeef2ba58") ],
+        userGroups: [ ObjectId("58dfa5a4317b43114750c8ca") ],
+        users: [],
+        status: "active"
+      };
+
+      it('Create new project template', function(done){
+        var req = request(app).post(`/api/${apiVer}/project-templates`);
+
+        // Set cookie to get saved user session
+        req.cookies = Cookies;
+        req.set('Accept','application/json')
+          .send(projTempl)
+          .expect('Content-Type', /json/)
+          .expect(200)
+          .end(function (err, res) {
+            res.body.name.should.equal('test_proj_templ');
+            res.body.status.should.equal('active');
+
+            templId = res.body._id;
+            done();
+          });
+      });
+
+      it('Read project template', function(done){
+        var req = request(app).get(`/api/${apiVer}/project-templates/${templId}`);
+
+        // Set cookie to get saved user session
+        req.cookies = Cookies;
+        req.set('Accept','application/json')
+          .expect('Content-Type', /json/)
+          .expect(200)
+          .end(function (err, res) {
+            res.body.name.should.equal('test_proj_templ');
+            res.body.status.should.equal('active');
+            done();
+          });
+      });
+
+      it('Update project template', function(done){
+        var req = request(app).put(`/api/${apiVer}/project-templates/${templId}`);
+
+        projTempl.name = 'test_proj_templ2';
+
+        // Set cookie to get saved user session
+        req.cookies = Cookies;
+        req.set('Accept','application/json')
+          .send(projTempl)
+          .expect('Content-Type', /json/)
+          .expect(200)
+          .end(function (err, res) {
+            res.body.name.should.equal('test_proj_templ2');
+            done();
+          });
+      });
+
+      it('Delete project template', function(done){
+        var req = request(app).delete(`/api/${apiVer}/project-templates/${templId}`);
+
+        // Set cookie to get saved user session
+        req.cookies = Cookies;
+        req.set('Accept','application/json')
+          .expect('Content-Type', /json/)
+          .expect(200)
+          .end(function (err, res) {
+            res.body.should.equal(true);
+            done();
+          });
+      });
+    });
   });
 
   describe('User manage', function() {
@@ -178,8 +444,8 @@ describe('Check admin functions', function() {
         .expect('Content-Type', /json/)
         .expect(200)
         .end(function (err, res) {
-          res.body.email.should.equal('user1@mail.com');
-          res.body.firstName.should.equal('user1');
+          res.body.email.should.equal('testuser1@mail.com');
+          res.body.firstName.should.equal('testuser1');
           res.body.role.should.equal('user');
 
           userId = res.body._id;
@@ -196,8 +462,8 @@ describe('Check admin functions', function() {
         .expect('Content-Type', /json/)
         .expect(200)
         .end(function (err, res) {
-          res.body.email.should.equal('user1@mail.com');
-          res.body.firstName.should.equal('user1');
+          res.body.email.should.equal('testuser1@mail.com');
+          res.body.firstName.should.equal('testuser1');
           res.body.role.should.equal('user');
           done();
         });
@@ -206,8 +472,8 @@ describe('Check admin functions', function() {
     it('Update user', function(done){
       var req = request(app).put(`/api/${apiVer}/users/${userId}`);
 
-      userInfo.email = 'user2@mail.com';
-      userInfo.firstName = 'user2';
+      userInfo.email = 'testuser2@mail.com';
+      userInfo.firstName = 'testuser2';
 
       // Set cookie to get saved user session
       req.cookies = Cookies;
@@ -216,8 +482,8 @@ describe('Check admin functions', function() {
         .expect('Content-Type', /json/)
         .expect(200)
         .end(function (err, res) {
-          res.body.email.should.equal('user2@mail.com');
-          res.body.firstName.should.equal('user2');
+          res.body.email.should.equal('testuser2@mail.com');
+          res.body.firstName.should.equal('testuser2');
           res.body.role.should.equal('user');
           done();
         });
@@ -226,8 +492,8 @@ describe('Check admin functions', function() {
     it('Disable user', function(done){
       var req = request(app).put(`/api/${apiVer}/users/${userId}`);
 
-      userInfo.email = 'user2@mail.com';
-      userInfo.firstName = 'user2';
+      userInfo.email = 'testuser2@mail.com';
+      userInfo.firstName = 'testuser2';
       userInfo.status = 'inactive';
 
       // Set cookie to get saved user session
@@ -237,8 +503,8 @@ describe('Check admin functions', function() {
         .expect('Content-Type', /json/)
         .expect(200)
         .end(function (err, res) {
-          res.body.email.should.equal('user2@mail.com');
-          res.body.firstName.should.equal('user2');
+          res.body.email.should.equal('testuser2@mail.com');
+          res.body.firstName.should.equal('testuser2');
           res.body.role.should.equal('user');
           res.body.status.should.equal('inactive');
           done();

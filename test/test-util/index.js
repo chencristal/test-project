@@ -5,6 +5,7 @@ var Promise  = require('bluebird');
 var mongoose = require('mongoose');
 var db       = require('../../server/db');
 var acl      = require('../../server/auth/acl');
+var testUtil = require('./test-util');
 require('sinon-as-promised')(Promise);
 require('../../server/util/errors');
 
@@ -12,6 +13,14 @@ before(done => {
   db
     .connect()
     .then(_clearDb)
+    .then(() => testUtil.seedUsers())
+    .then(() => testUtil.seedUserGroups())
+    .then(() => testUtil.seedTermTemplates())
+    .then(() => testUtil.seedProvisionTemplates())
+    .then(() => testUtil.seedDocumentTemplateTypes())
+    .then(() => testUtil.seedDocumentTemplates())
+    .then(() => testUtil.seedProjectTemplates())
+    .then(() => testUtil.seedProjects())
     .then(() => acl.initialize(db.connection))
     .then(() => done())
     .catch(done);

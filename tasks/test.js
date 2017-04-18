@@ -22,6 +22,7 @@ gulp.task('test', () => {
     .src(scanPaths, { read: false })
     .pipe(mocha({
       grep: grep,
-      reporter: reporter
+      reporter: reporter,
+      timeout: 15000
     }));
 });
