@@ -5,7 +5,6 @@ var request     = require('supertest');
 var mongoose    = require('mongoose');
 var should      = require('should');
 var app         = require('../../server/app');
-var usersSrvc   = require('../../server/data-services/users');
 var config      = require('../../config/environment');
 
 var apiVer = config.get('api:version');
@@ -512,7 +511,6 @@ describe('Check admin functions', function() {
     });
   });
 });
-
 
 describe('Check super functions', function() {
   describe('Auth functions', function() {
