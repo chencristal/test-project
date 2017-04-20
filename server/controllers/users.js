@@ -76,9 +76,16 @@ exports.getUsers = function(req, res, next) {
       if (data.params.institution === 'null') {
         data.filter.institutions = [ ];
       } else {
-        data.filter.institutions = _.filter(data.params.institution, function(elem) {
-          return (elem !== 'null');
-        });
+        if (!data.filter['$or']) { 
+          data.filter['$or'] = [];
+        }
+        _.map(data.params.institution, function(elem) {
+            if (elem === 'null') {
+              data.filter['$or'] = _.concat(data.filter['$or'], {'institutions': {'$eq': []}});
+            } else {
+              data.filter['$or'] = _.concat(data.filter['$or'], {'institutions': elem});
+            }
+          });
       }
     }
     

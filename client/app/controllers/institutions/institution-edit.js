@@ -18,14 +18,14 @@ angular.module('app').controller('InstitutionEditCtrl',
         $scope.institution.assigned_admins = [];
         $scope.institution.assigned_authors = [];
         $scope.institution.assigned_users = [];
-
+        
         _.forEach(institution.assigned, function(elem) {
           if (elem.role === 'admin') {
-            $scope.institution.assigned_admins = _.concat($scope.institution.assigned_admins, elem);
+            $scope.institution.assigned_admins = _.concat($scope.institution.assigned_admins, elem._id);
           } else if (elem.role === 'author') {
-            $scope.institution.assigned_authors = _.concat($scope.institution.assigned_authors, elem);
+            $scope.institution.assigned_authors = _.concat($scope.institution.assigned_authors, elem._id);
           } else if (elem.role === 'user') {
-            $scope.institution.assigned_users = _.concat($scope.institution.assigned_users, elem);
+            $scope.institution.assigned_users = _.concat($scope.institution.assigned_users, elem._id);
           }
         });
 

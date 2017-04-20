@@ -5,7 +5,6 @@ var Promise          = require('bluebird');
 var customErrors     = require('n-custom-errors');
 var consts           = require('../consts');
 var institutionsSrvc = require('../data-services/institutions');
-// var userGroupsSrvc   = require('../data-services/user-groups');
 var usersSrvc        = require('../data-services/users');
 var validationUtil   = require('../util/validations');
 var roleUtil         = require('../util/roles');
