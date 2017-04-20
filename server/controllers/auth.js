@@ -15,7 +15,7 @@ exports.urlLogin = (req, res, next) => {
       return next(err);
     }
     
-    user = _.pick(user, ['firstName', 'email', 'role', 'userGroups', 'urlLogin']);
+    user = _.pick(user, ['firstName', 'email', 'role', 'userGroups', 'institutions', 'urlLogin']);
     if (!user.urlLogin) {
       err = customErrors.getAccessDeniedError('This user cannot get login through URL');
       return next(err);
@@ -41,7 +41,7 @@ exports.login = (req, res, next) => {
       err = customErrors.getAccessDeniedError(err.message);
       return next(err);
     }
-    user = _.pick(user, ['firstName', 'email', 'role', 'userGroups']);
+    user = _.pick(user, ['firstName', 'email', 'role', 'userGroups', 'institutions']);
     acl
       .userRoles(user)
       .then(roles => {

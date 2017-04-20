@@ -9,18 +9,21 @@ var validationUtil = require('../util/validations');
 var roleUtil       = require('../util/roles');
 
 exports.getUsers = function(req, res, next) {
-  var role = req.user.role;
+  var _role = req.user.role;
+  var _institution = req.user.institutions[0];   // check the first element of institutions
 
   function parseParams(query) {
     var data = {
       params: _.pick(query, ['query', 'role', 'includes', 'institution'])
     };
-    data.fields = req.query.fields || [ 'email', 'firstName', 'role', 'status', 'userGroups', 'institutions', 'urlLogin' ];
+    data.fields = req.query.fields || [ 'email', 'firstName', 'role', 'status', 
+        'userGroups', 'institutions', 'urlLogin' ];
     return Promise.resolve(data);
   }
 
   function validateParams(data) {
-    var allowedFields = [ 'email', 'firstName', 'role', 'status', 'userGroups', 'institutions', 'urlLogin' ];
+    var allowedFields = [ 'email', 'firstName', 'role', 'status', 
+        'userGroups', 'institutions', 'urlLogin' ];
 
     if (data.params.includes && !_.every(data.params.includes, validationUtil.isValidObjectId)) {
       return customErrors.rejectWithUnprocessableRequestError({
@@ -59,20 +62,19 @@ exports.getUsers = function(req, res, next) {
     if (data.params.role) {
       data.filter.role = 'user';
 
-      var availRoles = roleUtil.getLowerRolesFilters(role);
+      var availRoles = roleUtil.getLowerRolesFilters(_role);
       _.find(availRoles, function(o) {
         if (o === data.params.role) {
           data.filter.role = data.params.role;
         }
       });
-    }
-    else {
+    } else {
       data.filter.role = {
-        $in: roleUtil.getLowerRolesFilters(role)
+        $in: roleUtil.getLowerRolesFilters(_role)
       };
     }
 
-    if (data.params.institution) {
+    if (_role === 'superadmin' && data.params.institution) {   // Only superadmin can request instituion filter
       if (data.params.institution === 'null') {
         data.filter.institutions = [ ];
       } else {
@@ -101,12 +103,19 @@ exports.getUsers = function(req, res, next) {
       };
     }
 
-    //
     // The user cannot get his own account information.
-    //
     data.filter.email = {
       $ne: req.user.email
     };
+
+    // The user(not super) can get the users of own institution.
+    if (_role !== 'superadmin') {
+      if (_institution) {
+        data.filter.institutions = _institution;
+      } else {
+        data.filter.institutions = [ ];
+      }
+    }
 
     return data;
   }
@@ -118,7 +127,9 @@ exports.getUsers = function(req, res, next) {
       return;
     }
     _.each(req.query.includes, function(id) {
-      var user = _.find(users, d => { return d._id.equals(id); });
+      var user = _.find(users, d => {
+        return d._id.equals(id);
+      });
       orderedUsers.push(user);
     });
     res.send(orderedUsers);
@@ -146,7 +157,7 @@ exports.getUserById = function(req, res, next) {
   }
 
   validateParams()
-    .then(() => usersSrvc.getUser({ _id: userId }, 'email firstName role status userGroups urlLogin'))
+    .then(() => usersSrvc.getUser({ _id: userId }, 'email firstName role status userGroups urlLogin institutions'))
     .then(user => _checkPermission(req.user.role, user))
     .then(user => res.send(user))
     .catch(next);
@@ -154,7 +165,8 @@ exports.getUserById = function(req, res, next) {
 
 exports.createUser = function(req, res, next) {
   function parseParams(body) {
-    var allowedFields = ['email', 'firstName', 'role', 'password', 'confirmpass', 'userGroups', 'urlLogin'];
+    var allowedFields = ['email', 'firstName', 'role', 'password', 'confirmpass', 
+        'userGroups', 'urlLogin', 'institutions'];
     var userData = _.pick(body, allowedFields);
     return Promise.resolve(userData);
   }
@@ -201,7 +213,8 @@ exports.createUser = function(req, res, next) {
 
 exports.updateUser = function(req, res, next) {
   function parseParams(body) {
-    var allowedFields = ['email', 'firstName', 'role', 'password', 'confirmpass', 'status', 'userGroups', 'urlLogin'];
+    var allowedFields = ['email', 'firstName', 'role', 'password', 'confirmpass', 
+        'status', 'userGroups', 'urlLogin', 'institutions'];
     var userData = _.pick(body, allowedFields);
     userData._id = req.params._id;
 

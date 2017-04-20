@@ -1,8 +1,9 @@
 form.form-horizontal(name="userForm")
-  .form-group
+  .form-group(ng-class="{ 'has-error': userForm.firstName.$invalid || userForm.firstName.$error.required }")
      label.col-md-3.control-label(for="firstName") Name
      .col-md-9
-       input.form-control(name="firstName" ng-model="user.firstName" placeholder="Name" ng-disabled="isSaving")
+       input.form-control(name="firstName" ng-model="user.firstName" 
+            placeholder="Name" ng-disabled="isSaving" ng-required="true")
 
   .form-group(ng-class="{ 'has-error': userForm.email.$invalid || userForm.email.$error.required }")
     label.col-md-3.control-label(for="email") Username(Email)*
@@ -22,7 +23,8 @@ form.form-horizontal(name="userForm")
     .col-md-9
       ui-select(name="userGroups" multiple="true" ng-model="user.userGroups" ng-disabled="isSaving")
         ui-select-match(placeholder="Add User Groups") {{ $item.groupName }}
-        ui-select-choices(refresh="refreshUserGroups($select.search)" refresh-delay="300" repeat="userGroup._id as userGroup in userGroups")
+        ui-select-choices(refresh="refreshUserGroups($select.search)" 
+              refresh-delay="300" repeat="userGroup._id as userGroup in userGroups")
           span(ng-bind-html="userGroup.groupName | highlight: $select.search")
 
   .form-group
@@ -33,9 +35,11 @@ form.form-horizontal(name="userForm")
   .form-group(ng-class="{ 'has-error': userForm.password.$invalid || userForm.password.$error.required }")
     label.col-md-3.control-label(for="password") Password*
     .col-md-9
-      input.form-control(name="password" type="password" placeholder="Password" ng-model="user.password" ng-disabled="isSaving")
+      input.form-control(name="password" type="password" placeholder="Password" 
+            ng-model="user.password" ng-disabled="isSaving")
 
   .form-group(ng-class="{ 'has-error': userForm.confirmpass.$invalid || userForm.confirmpass.$error.required }")
     label.col-md-3.control-label(for="confirmpass") Confirm Password*
     .col-md-9
-      input.form-control(name="confirmpass" type="password" placeholder="Confirm Password" ng-model="user.confirmpass" ng-disabled="isSaving")
+      input.form-control(name="confirmpass" type="password" placeholder="Confirm Password" 
+            ng-model="user.confirmpass" ng-disabled="isSaving")
