@@ -18,6 +18,10 @@ var userSchema = new mongoose.Schema({
     default: 'user'
   },
 
+  institutions: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'institution'
+  }],
   userGroups: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'userGroup'

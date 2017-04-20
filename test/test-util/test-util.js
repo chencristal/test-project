@@ -6,6 +6,7 @@ var should            = require('should');
 
 var User                 = mongoose.model('user');
 var UserGroup            = mongoose.model('userGroup');
+var Institution          = mongoose.model('institution');
 var TermTemplate         = mongoose.model('termTemplate');
 var ProvisionTemplate    = mongoose.model('provisionTemplate');
 var DocumentTemplateType = mongoose.model('documentTemplateType');
@@ -21,14 +22,22 @@ var testUtil = {
   seedUsers: function() {
     var self = this;
     var users = [
-      { "_id" : self.ObjectId("57fa20920cb5ff30ec85742f"), "firstName" : "super", "email" : "super@mail.com", "hashedPassword" : "6nvd0F9sEW7yEvjeqT1XC2HO14Knw2Ow2OEJMKhCaSDjtnVftwFohGQ48PSVX5Tl8gFiX4J3HhCzuOkb+iS1Xg==", "salt" : "eTxOoNgYA4kBTQb0Z3JJKQ==", "status" : "active", "invited" : false, "provider" : "local", "role" : "superadmin", "urlLogin": true },
-      { "_id" : self.ObjectId("58e3b961e3cb4a2052c05e51"), "firstName" : "admin", "email" : "admin@mail.com", "hashedPassword" : "NxRNMJS8nuDlZcVOT3jq/MO7jhZh8xYRiNVkdLQ+Kn+XB5M8OQNgCqZBDVEE8NlX9aBNJ5MqRzcpXg895rp/Og==", "salt" : "3AYnT4W4brcXjrBTBQSFxA==", "status" : "active", "invited" : false, "provider" : "local", "role" : "admin", "urlLogin": false },
-      { "_id" : self.ObjectId("58e3b970e3cb4a2052c05e52"), "firstName" : "author", "email" : "author@mail.com", "hashedPassword" : "5RQz9ZH+xZMDp3izVntFJ4n6fmEtj/lRs7sITLRiINvqYi/yVDFxh4bouloGWIHkKzPiMJ8sNwBmemFYijOf6Q==", "salt" : "VZNIO6RKPjRbufU1X3mMbw==", "status" : "active", "invited" : false, "provider" : "local", "role" : "author", "urlLogin": false },
-      { "_id" : self.ObjectId("57fa20920cb5ff30ec857430"), "firstName" : "user1", "email" : "user1@mail.com", "hashedPassword" : "xKd3xarlKs8fn0iINhD5k0ex5hm4z3ctq1Q6tgsSV8Urogr/qAukddTmN9Pxjrsvfk4DQxAncSbKAFz/k/8GbA==", "salt" : "+zP2BiBaskkh9hXKzh5L5w==", "status" : "active", "invited" : false, "provider" : "local", "role" : "user", "urlLogin": false },
-      { "_id" : self.ObjectId("57fa20920cb5ff30ec857431"), "firstName" : "user2", "email" : "user2@mail.com", "hashedPassword" : "Tp8ipKT2vyk3n+P3lzat5+HF62JAg2Uf/CkwQgUA2SV9Sn0unts1r/1WpXSxuWgsVOC3x7YdxQrGGDfh+n1HIg==", "salt" : "20tfkVec7bQymdcpecBLDg==", "status" : "active", "invited" : false, "provider" : "local", "role" : "user", "urlLogin": false },
-      { "_id" : self.ObjectId("58e3b97be3cb4a2052c05e53"), "firstName" : "guest", "email" : "guest@mail.com", "hashedPassword" : "93bPpjbeD1hyCC4qF9YAsN8xiNfPoWkXQkabUwu3hFbPJN1yDHthuU1vyoiDoBf3n71jXhOm7nQm1dSUQR2AjQ==", "salt" : "QI6rEfxQlaoKpfmfDto+9A==", "status" : "active", "invited" : false, "provider" : "local", "role" : "user", "urlLogin": true }
+      { "_id" : self.ObjectId("57fa20920cb5ff30ec85742f"), "firstName" : "super", "email" : "super@mail.com", "hashedPassword" : "6nvd0F9sEW7yEvjeqT1XC2HO14Knw2Ow2OEJMKhCaSDjtnVftwFohGQ48PSVX5Tl8gFiX4J3HhCzuOkb+iS1Xg==", "salt" : "eTxOoNgYA4kBTQb0Z3JJKQ==", "status" : "active", "institutions": [ ], "invited" : false, "provider" : "local", "role" : "superadmin", "urlLogin": true },
+      { "_id" : self.ObjectId("58e3b961e3cb4a2052c05e51"), "firstName" : "admin", "email" : "admin@mail.com", "hashedPassword" : "NxRNMJS8nuDlZcVOT3jq/MO7jhZh8xYRiNVkdLQ+Kn+XB5M8OQNgCqZBDVEE8NlX9aBNJ5MqRzcpXg895rp/Og==", "salt" : "3AYnT4W4brcXjrBTBQSFxA==", "status" : "active", "institutions": [ ObjectId("58dfa5a4317b43114750c8cc") ], "invited" : false, "provider" : "local", "role" : "admin", "urlLogin": false },
+      { "_id" : self.ObjectId("58e3b970e3cb4a2052c05e52"), "firstName" : "author", "email" : "author@mail.com", "hashedPassword" : "5RQz9ZH+xZMDp3izVntFJ4n6fmEtj/lRs7sITLRiINvqYi/yVDFxh4bouloGWIHkKzPiMJ8sNwBmemFYijOf6Q==", "salt" : "VZNIO6RKPjRbufU1X3mMbw==", "status" : "active", "institutions": [ ObjectId("58dfa5a4317b43114750c8cc") ], "invited" : false, "provider" : "local", "role" : "author", "urlLogin": false },
+      { "_id" : self.ObjectId("57fa20920cb5ff30ec857430"), "firstName" : "user1", "email" : "user1@mail.com", "hashedPassword" : "xKd3xarlKs8fn0iINhD5k0ex5hm4z3ctq1Q6tgsSV8Urogr/qAukddTmN9Pxjrsvfk4DQxAncSbKAFz/k/8GbA==", "salt" : "+zP2BiBaskkh9hXKzh5L5w==", "status" : "active", "institutions": [ ObjectId("58dfa5a4317b43114750c8cc") ], "invited" : false, "provider" : "local", "role" : "user", "urlLogin": false },
+      { "_id" : self.ObjectId("57fa20920cb5ff30ec857431"), "firstName" : "user2", "email" : "user2@mail.com", "hashedPassword" : "Tp8ipKT2vyk3n+P3lzat5+HF62JAg2Uf/CkwQgUA2SV9Sn0unts1r/1WpXSxuWgsVOC3x7YdxQrGGDfh+n1HIg==", "salt" : "20tfkVec7bQymdcpecBLDg==", "status" : "active", "institutions": [ ObjectId("58dfa5a4317b43114750c8cc") ], "invited" : false, "provider" : "local", "role" : "user", "urlLogin": false },
+      { "_id" : self.ObjectId("58e3b97be3cb4a2052c05e53"), "firstName" : "guest", "email" : "guest@mail.com", "hashedPassword" : "93bPpjbeD1hyCC4qF9YAsN8xiNfPoWkXQkabUwu3hFbPJN1yDHthuU1vyoiDoBf3n71jXhOm7nQm1dSUQR2AjQ==", "salt" : "QI6rEfxQlaoKpfmfDto+9A==", "status" : "active", "institutions": [ ObjectId("58dfa5a4317b43114750c8cc") ], "invited" : false, "provider" : "local", "role" : "user", "urlLogin": true }
     ];
     return User.create(users);
+  },
+
+  seedInstitutions: function() {
+    var self = this;
+    var institutions = [
+    	{ "_id" : ObjectId("58dfa5a4317b43114750c8cc"), "institutionName" : "Institution Group 1", "status" : "active", "provider" : "local" }
+    ];
+    return Institution.create(institutions);
   },
 
   seedUserGroups: function() {

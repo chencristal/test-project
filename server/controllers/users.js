@@ -13,20 +13,36 @@ exports.getUsers = function(req, res, next) {
 
   function parseParams(query) {
     var data = {
-      params: _.pick(query, ['query', 'role', 'includes'])
+      params: _.pick(query, ['query', 'role', 'includes', 'institution'])
     };
-    data.fields = req.query.fields || [ 'email', 'firstName', 'role', 'status', 'userGroups', 'urlLogin' ];
+    data.fields = req.query.fields || [ 'email', 'firstName', 'role', 'status', 'userGroups', 'institutions', 'urlLogin' ];
     return Promise.resolve(data);
   }
 
   function validateParams(data) {
-    var allowedFields = [ 'email', 'firstName', 'role', 'status', 'userGroups', 'urlLogin' ];
+    var allowedFields = [ 'email', 'firstName', 'role', 'status', 'userGroups', 'institutions', 'urlLogin' ];
 
     if (data.params.includes && !_.every(data.params.includes, validationUtil.isValidObjectId)) {
       return customErrors.rejectWithUnprocessableRequestError({
         paramName: 'includes',
         errMsg: 'must be an array with valid ids'
       });
+    }
+    if (data.params.institution) {
+      if ((!data.params.institution instanceof Array && data.params.institution !== 'null') || 
+          (data.params.institution instanceof Array && !_.every(data.params.institution, function (elem) {
+          if (elem === 'null') {
+            return true;
+          } else {
+            return validationUtil.isValidObjectId(elem);
+          }
+        }))) 
+      {
+        return customErrors.rejectWithUnprocessableRequestError({ 
+          paramName: 'institution', 
+          errMsg: 'must be a valid id'
+        });
+      }
     }
     if (!_.every(data.fields, field => _.includes(allowedFields, field))) {
       return customErrors.rejectWithUnprocessableRequestError({
@@ -39,6 +55,7 @@ exports.getUsers = function(req, res, next) {
 
   function buildFilter(data) {
     data.filter = {};
+    
     if (data.params.role) {
       data.filter.role = 'user';
 
@@ -54,11 +71,23 @@ exports.getUsers = function(req, res, next) {
         $in: roleUtil.getLowerRolesFilters(role)
       };
     }
+
+    if (data.params.institution) {
+      if (data.params.institution === 'null') {
+        data.filter.institutions = [ ];
+      } else {
+        data.filter.institutions = _.filter(data.params.institution, function(elem) {
+          return (elem !== 'null');
+        });
+      }
+    }
+    
     if (data.params.query) {
       data.filter.firstName = {
         $regex: new RegExp(data.params.query, 'i')
       };
     }
+
     if (data.params.includes) {
       data.filter._id = {
         $in: data.params.includes
@@ -101,7 +130,10 @@ exports.getUserById = function(req, res, next) {
 
   function validateParams() {
     if (!validationUtil.isValidObjectId(userId)) {
-      return customErrors.rejectWithUnprocessableRequestError({ paramName: 'id', errMsg: 'must be a valid id'});
+      return customErrors.rejectWithUnprocessableRequestError({ 
+        paramName: 'id', 
+        errMsg: 'must be a valid id'
+      });
     }
     return Promise.resolve();
   }

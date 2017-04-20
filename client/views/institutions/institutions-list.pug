@@ -1,0 +1,40 @@
+extends ../layout/layout.pug
+
+block content
+  .row
+    .col-md-12
+      h1.page-header Institutions
+  .row(ng-show="isLoading")
+    .col-md-12
+      include ../common/spinner.pug
+  div(ng-hide="isLoading")
+    .row
+      .col-md-12
+        a.btn.btn-default.btn-primary(href="/institutions/new") New Institution
+    .row
+      .col-md-12
+        table.table.table-striped.users
+          thead
+            tr
+              td.institution-name
+                strong Institution Name
+              td.status
+                strong Status
+              td
+          tbody
+            tr(ng-repeat="institution in institutions")
+              td {{ institution.institutionName }}
+              td {{ institution.status }}
+              td.actions.text-right
+                button.btn.btn-info.btn-sm(title="Edit" ng-click="editInstitution(institution)" ng-disabled="isSaving")
+                  span.glyphicon.glyphicon-pencil
+                button.btn.btn-warning.btn-sm(title="Activate"
+                                              ng-if="institution.status === 'inactive'"
+                                              ng-click="setInstitutionStatus(institution, 'active')"
+                                              ng-disabled="isSaving")
+                  span.glyphicon.glyphicon-refresh
+                button.btn.btn-warning.btn-sm(title="Suspend"
+                                              ng-if="institution.status === 'active'"
+                                              ng-click="setInstitutionStatus(institution, 'inactive')"
+                                              ng-disabled="isSaving")
+                  span.glyphicon.glyphicon-ban-circle

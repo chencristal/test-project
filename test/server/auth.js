@@ -21,7 +21,7 @@ var userInfo = {
     status: 'active'
   };
 
-describe('Check admin functions', function() {
+/*describe('Check admin functions', function() {
   describe('Auth functions', function() {
     it('Admin login action', function(done) {
       request(app)
@@ -510,7 +510,7 @@ describe('Check admin functions', function() {
         });
     });
   });
-});
+});*/
 
 describe('Check super functions', function() {
   describe('Auth functions', function() {
@@ -1001,9 +1001,48 @@ describe('Check super functions', function() {
         });
     });
   });
+
+  /*describe('Institution manage', function() {
+    var institutionInfo = {
+      institutionName: 'institution1',
+      status: 'active'
+    };
+    var institutionId;
+
+    it('Create new institution', function(done){
+      var req = request(app).post(`/api/${apiVer}/institutions`);
+
+      // Set cookie to get saved user session
+      req.cookies = Cookies;
+      req.set('Accept','application/json')
+        .send(institutionInfo)
+        .expect('Content-Type', /json/)
+        .expect(200)
+        .end(function (err, res) {
+          console.log(res.body);
+
+          institutionId = res.body._id;
+          done();
+        });
+    });
+
+    it('Read institution', function(done){
+      var req = request(app).get(`/api/${apiVer}/institutions/${institutionId}`);
+
+      // Set cookie to get saved user session
+      req.cookies = Cookies;
+      req.set('Accept','application/json')
+        .expect('Content-Type', /json/)
+        .expect(200)
+        .end(function (err, res) {
+          console.log(res.body);
+          done();
+        });
+    });
+  });*/
 });
 
-describe('Check author functions', function() {
+/*describe('Check author functions', function() {
   describe('Auth functions', function() {
     it('Author login action', function(done) {
       request(app)
@@ -1411,4 +1450,4 @@ describe('Check author functions', function() {
       });
     });
   });
-});
+});*/

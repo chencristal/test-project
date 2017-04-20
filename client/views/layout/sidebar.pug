@@ -15,6 +15,8 @@ div(ng-controller="NavbarCtrl")
       a(href="/users") Users
     li(ng-class="{ active: isActive('/user-groups') }")
       a(href="/user-groups") User Groups
+    li(ng-class="{ active: isActive('/institutions') }" ng-if="currentUser.role === 'superadmin'")
+      a(href="/institutions") Institutions
   ul.nav.nav-sidebar
     li(ng-class="{ active: isActive('/profile') }")
       a(href="/profile") My Profile

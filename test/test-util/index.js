@@ -15,6 +15,7 @@ before(done => {
     .then(_clearDb)
     .then(() => testUtil.seedUsers())
     .then(() => testUtil.seedUserGroups())
+    .then(() => testUtil.seedInstitutions())
     .then(() => testUtil.seedTermTemplates())
     .then(() => testUtil.seedProvisionTemplates())
     .then(() => testUtil.seedDocumentTemplateTypes())

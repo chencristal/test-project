@@ -16,6 +16,7 @@ var allowance = [
         },
         { 
           resources: [
+            'ManageInstitution',
             'ManageProjectTemplate',
             'ManageDocumentTemplate',
             'ManageDocumentTemplateType',
@@ -50,10 +51,12 @@ var allowance = [
           permissions: [ 'read', 'create', 'update', 'delete' ]
         },
         { 
-          resources: [
-            'ManageProfile'
-          ], 
+          resources: ['ManageProfile'], 
           permissions: ['read', 'update'] 
+        },
+        {
+          resources: ['ManageInstitution'],
+          permissions: ['read'] 
         }
       ]
     },
@@ -64,6 +67,7 @@ var allowance = [
           resources: [
             'ManageUser', 
             'ManageUserGroup', 
+            'ManageInstitution'
           ], 
           permissions: ['read'] 
         },
@@ -92,6 +96,7 @@ var allowance = [
           resources: [
             'ManageUser',
             'ManageUserGroup', 
+            'ManageInstitution',
             'ManageProjectTemplate',
             'ManageDocumentTemplate',
             'ManageDocumentTemplateType',

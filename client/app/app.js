@@ -73,6 +73,19 @@ angular.module('app', [
       controller: 'UserGroupEditCtrl'
     })
 
+    .when('/institutions', {
+      templateUrl: 'views/institutions/institutions-list.html',
+      controller: 'InstitutionsListCtrl'
+    })
+    .when('/institutions/new', {
+      templateUrl: 'views/institutions/institution-new.html',
+      controller: 'InstitutionNewCtrl'
+    })
+    .when('/institutions/:_id/edit', {
+      templateUrl: 'views/institutions/institution-edit.html',
+      controller: 'InstitutionEditCtrl'
+    })
+
     .when('/term-templates', {
       templateUrl: 'views/term-templates/term-templates-list.html',
       controller: 'TermTemplatesListCtrl'

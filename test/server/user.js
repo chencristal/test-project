@@ -11,7 +11,7 @@ var apiVer = config.get('api:version');
 var ObjectId = mongoose.Types.ObjectId;
 var Cookies;
 
-describe('Check user functions', function() {
+/*describe('Check user functions', function() {
   describe('Auth functions', function() {
     it('User login action (user2)', function(done) {
       request(app)
@@ -593,4 +593,4 @@ describe('Check user functions', function() {
         });
     });
   });
-});
+});*/
