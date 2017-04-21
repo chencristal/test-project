@@ -28,6 +28,10 @@ var projectSchema = new mongoose.Schema({
     type: mongoose.Schema.ObjectId,
     ref: 'userGroup'
   }],
+  institutions: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'institution'
+  }],
   
   values: [{
     _id: false,

@@ -11,6 +11,10 @@ var termTemplateSchema = new mongoose.Schema({
     enum: consts.TERM_TYPES,
     required: true
   },
+  institutions: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'institution'
+  }],
   variable: {
     type: String,
     required: true,

@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('app').controller('UserEditCtrl',
-  function($scope, $routeParams, $location, Notifier, User, UserGroup, Identity) {
+  function($scope, $routeParams, $location, Notifier, User, UserGroup, Institution, Identity) {
 
   $scope.isLoading = true;
   $scope.isSaving = false;
@@ -20,7 +20,11 @@ angular.module('app').controller('UserEditCtrl',
       })
       .$promise
       .then(function(user) {
-        $scope.user = user;
+        $scope.user = angular.copy(user);
+
+        // User has only one institution currently
+        $scope.user.institutions = (user.institutions[0] === undefined ? 'null' : user.institutions[0]);
+        
         $scope.selectedRole.selected = Identity.getRoleName(user.role);
         origUserGroups = $scope.user.userGroups;
         
@@ -55,9 +59,26 @@ angular.module('app').controller('UserEditCtrl',
       });
   };
 
+  $scope.refreshInstitutions = function(query) {
+    return Institution
+      .query({ 
+        query: query
+      })
+      .$promise
+      .then(function(institutions) {
+        $scope.institutions = _.concat({
+          '_id' : 'null',
+          'institutionName': 'Non-member'
+        }, institutions);
+      });
+  };
+
   $scope.saveUser = function() {
     $scope.isSaving = true;
     $scope.user.role = $scope.selectedRole.selected.value;
+
+    // Institution have to be _id param
+    $scope.user.institutions = $scope.user.institutions._id;
 
     $scope.user
       .$update()

@@ -7,6 +7,7 @@ var acl          = require('../auth/acl');
 exports.getUsers = (filter, keys) => {
   return User
     .find(filter, keys)
+    .populate('institutions')
     .sort('email')
     .exec();
 };
@@ -14,6 +15,7 @@ exports.getUsers = (filter, keys) => {
 exports.getUser = (filter, keys) => {
   return User
     .findOne(filter)
+    .populate('institutions')
     .select(keys)
     .exec()
     .then(user => {

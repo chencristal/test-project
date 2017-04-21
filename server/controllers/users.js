@@ -197,8 +197,20 @@ exports.createUser = function(req, res, next) {
   }
 
   function doEdits(userData) {
+    var requestor = req.user;
     var user = _.assign({}, userData);
     user.status = 'active';
+
+    // If the user is non-member
+    if (user.institutions === 'null') {
+      user.institutions = [];
+    }
+
+    // Check the role for the institutions
+    if (requestor.role !== 'superadmin') {
+      user.institutions = requestor.institutions;
+    }
+
     return user;
   }
 
@@ -255,7 +267,19 @@ exports.updateUser = function(req, res, next) {
   }
 
   function doEdits(data) {
+    var requestor = req.user;
+    // If the user is non-member
+    if (data.userData.institutions === 'null') {
+      data.userData.institutions = [];
+    }
+
     _.extend(data.user, data.userData);
+
+    // Check the role for the institutions
+    if (requestor.role !== 'superadmin') {
+      data.user.institutions = requestor.institutions;
+    }
+
     return data.user;
   }
 
@@ -289,6 +313,15 @@ function _validateUserData(userData) {
     return customErrors.rejectWithUnprocessableRequestError({
       paramName: 'userGroups',
       errMsg: 'must be an array with valid ids'
+    });
+  }
+
+  if (userData.institutions && (userData.institutions !== 'null' 
+      && !validationUtil.isValidObjectId(userData.institutions))) 
+  {
+    return customErrors.rejectWithUnprocessableRequestError({ 
+      paramName: 'institution', 
+      errMsg: 'must be a valid id'
     });
   }
 

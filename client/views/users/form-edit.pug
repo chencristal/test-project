@@ -27,6 +27,16 @@ form.form-horizontal(name="userForm")
               refresh-delay="300" repeat="userGroup._id as userGroup in userGroups")
           span(ng-bind-html="userGroup.groupName | highlight: $select.search")
 
+  .form-group(ng-class="{ 'has-error': userForm.institutions.$error.required }" ng-if="currentUser.role === 'superadmin'")
+    label.col-md-3.control-label(for="institutions") Institutions
+    .col-md-9
+      ui-select(name="institutions" ng-model="user.institutions" ng-disabled="isSaving")
+        ui-select-match(placeholder="Add Institution")
+          span(ng-bind-html="$select.selected.institutionName")
+        ui-select-choices(refresh="refreshInstitutions($select.search)" 
+            refresh-delay="300" repeat="institution._id as institution in institutions")
+          span(ng-bind-html="institution.institutionName | highlight: $select.search")
+
   .form-group
      label.col-md-3.control-label(for="role") URL Login
      .col-md-9
