@@ -126,29 +126,31 @@ Generator.prototype.parseNode = function(node) {
 Generator.prototype.getNodeOwnText = function(node) {
   var self = this;
   var ret = '';
-  var nodes = this.$(node)
+  this.$(node)
     .contents()
     .filter(function() {
-      if (this.nodeType === 3)
+      if (this.nodeType === 3) {
         ret += this.nodeValue;
-      else {
+      } else {
         if (this.nodeName === 'SPAN') {
           var tag = checkClassList(self.$(this));
           if (self.mode === 'redline') {
-            if (tag === 'normal')
+            if (tag === 'normal') {
               ret += self.getNodeOwnText.call(self, this);
-            else if (tag === 'ins')
+            } else if (tag === 'ins') {
               ret += '<ins>' + self.getNodeOwnText.call(self, this) + '</ins>';
-            else if (tag === 'del')
+            } else if (tag === 'del') {
               ret += '<del>' + self.getNodeOwnText.call(self, this) + '</del>';
-            else
+            } else {
               ret += '';  
+            }
           }
           else if (self.mode === 'clean') {
-            if (tag === 'normal' || tag === 'ins')
+            if (tag === 'normal' || tag === 'ins') {
               ret += self.getNodeOwnText.call(self, this);
-            else
+            } else {
               ret += '';  
+            }
           }
         }
         else if (this.nodeName === 'B') {
@@ -181,19 +183,22 @@ function checkClassList($node) {
       ['normal']
     ]
   ];
-  var i_cond = 0, i_default = 0, i_select = 0;
-  if ($node.hasClass('exp-unless') || $node.hasClass('exp-unlessvariant')) 
-    i_cond = 1;
-
-  if (!$node.hasClass('defaulted'))
-    i_default = 1;
-
-  if ($node.hasClass('unselected'))
-    i_select = 1;
-  
-  if (!$node.hasClass('highlighted')) {
-    i_cond = 2; i_default = 0; i_select = 0;
+  var iCond = 0, iDefault = 0, iSelect = 0;
+  if ($node.hasClass('exp-unless') || $node.hasClass('exp-unlessvariant')) {
+    iCond = 1;
   }
 
-  return retArray[i_cond][i_default][i_select];
+  if (!$node.hasClass('defaulted')) {
+    iDefault = 1;
+  }
+
+  if ($node.hasClass('unselected')) {
+    iSelect = 1;
+  }
+  
+  if (!$node.hasClass('highlighted')) {
+    iCond = 2; iDefault = 0; iSelect = 0;
+  }
+
+  return retArray[iCond][iDefault][iSelect];
 }

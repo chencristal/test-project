@@ -135,11 +135,12 @@ angular.module('app').directive('projectEditor', function () {
       $scope.changeViewState = function($event) {
         $event.stopPropagation();
 
-        if (this.viewState.type == 'Confirmed') {
+        var flag;
+        if (this.viewState.type === 'Confirmed') {
 
-          if (this.viewState['btn-class'] == $scope.defaultViewStates[0]['btn-class']) {    // Hide the Confirmed
-            var flag = $scope.filterVal.flag - 4;
-            if (flag == 0) {
+          if (this.viewState['btn-class'] === $scope.defaultViewStates[0]['btn-class']) {    // Hide the Confirmed
+            flag = $scope.filterVal.flag - 4;
+            if (flag === 0) {
               jQuery('.div-view-state').effect('shake');
               return;
             }
@@ -148,20 +149,21 @@ angular.module('app').directive('projectEditor', function () {
             $scope.filterVal = _.find($scope.filter, { 'flag': flag});
           }
           else {      // Show the Confirmed
-            var flag = $scope.filterVal.flag + 4;
+            flag = $scope.filterVal.flag + 4;
             
-            if (flag == 7)
+            if (flag === 7) {
               angular.copy($scope.defaultViewStates, $scope.viewStates);
-            else
+            } else {
               angular.copy($scope.defaultViewStates[0], $scope.viewStates[0]);
+            }
             $scope.filterVal = _.find($scope.filter, { 'flag': flag});
           }
         }
-        else if (this.viewState.type == 'Uncertain') {
+        else if (this.viewState.type === 'Uncertain') {
 
-          if (this.viewState['btn-class'] == $scope.defaultViewStates[1]['btn-class']) {    // Hide the Uncertain
-            var flag = $scope.filterVal.flag - 2;
-            if (flag == 0) {
+          if (this.viewState['btn-class'] === $scope.defaultViewStates[1]['btn-class']) {    // Hide the Uncertain
+            flag = $scope.filterVal.flag - 2;
+            if (flag === 0) {
               jQuery('.div-view-state').effect('shake');
               return;
             }
@@ -170,20 +172,21 @@ angular.module('app').directive('projectEditor', function () {
             $scope.filterVal = _.find($scope.filter, { 'flag': flag});
           }
           else {      // Show the Uncertain
-            var flag = $scope.filterVal.flag + 2;
+            flag = $scope.filterVal.flag + 2;
             
-            if (flag == 7)
+            if (flag === 7) {
               angular.copy($scope.defaultViewStates, $scope.viewStates);
-            else
+            } else {
               angular.copy($scope.defaultViewStates[1], $scope.viewStates[1]);
+            }
             $scope.filterVal = _.find($scope.filter, { 'flag': flag});
           }
         }
-        else if (this.viewState['type'] == 'Neutral') {
+        else if (this.viewState['type'] === 'Neutral') {
 
-          if (this.viewState['btn-class'] == $scope.defaultViewStates[2]['btn-class']) {    // Hide the Neutrals
-            var flag = $scope.filterVal.flag - 1;
-            if (flag == 0) {
+          if (this.viewState['btn-class'] === $scope.defaultViewStates[2]['btn-class']) {    // Hide the Neutrals
+            flag = $scope.filterVal.flag - 1;
+            if (flag === 0) {
               jQuery('.div-view-state').effect('shake');
               return;
             }
@@ -192,16 +195,17 @@ angular.module('app').directive('projectEditor', function () {
             $scope.filterVal = _.find($scope.filter, { 'flag': flag});
           }
           else {      // Show the Neutrals
-            var flag = $scope.filterVal.flag + 1;
+            flag = $scope.filterVal.flag + 1;
             
-            if (flag == 7)
+            if (flag === 7) {
               angular.copy($scope.defaultViewStates, $scope.viewStates);
-            else
+            } else {
               angular.copy($scope.defaultViewStates[2], $scope.viewStates[2]);
+            }
             $scope.filterVal = _.find($scope.filter, { 'flag': flag});
           }
         }
-      }
+      };
 
       $scope.$watch('relatedData.currrentDocumentTemplate', function (newDocTempl) {
         if (newDocTempl) {          
@@ -220,15 +224,13 @@ angular.module('app').directive('projectEditor', function () {
           $('textarea').on('keydown', function(e) {
             var keyCode = e.keyCode || e.which;
 
-            if (keyCode == 9) {
+            if (keyCode === 9) {
               e.preventDefault();
               var start = $(this).get(0).selectionStart;
               var end = $(this).get(0).selectionEnd;
 
               // set textarea value to: text before caret + tab + text after caret
-              $(this).val($(this).val().substring(0, start)
-                          + "\t"
-                          + $(this).val().substring(end));
+              $(this).val($(this).val().substring(0, start) + '\t' + $(this).val().substring(end));
 
               // put caret at right position again
               $(this).get(0).selectionStart =
@@ -250,7 +252,7 @@ angular.module('app').directive('projectEditor', function () {
         $('input.exp-disabled').removeClass('exp-disabled');
         $('span.unselected input').addClass('exp-disabled');
         
-        var className = variable.termType == 'boolean' ? '#editor .highlighted' : '.highlighted-for-scroll';
+        var className = variable.termType === 'boolean' ? '#editor .highlighted' : '.highlighted-for-scroll';
 
         fromEditor = typeof fromEditor !== 'undefined' ? fromEditor : false;
   	    currentTarget = typeof currentTarget !== 'undefined' ? currentTarget : false;
@@ -259,13 +261,12 @@ angular.module('app').directive('projectEditor', function () {
 
         setTimeout(function () {
           $scope.currentChange = -1;
-          if(variable.termType == 'boolean') {
+          if(variable.termType === 'boolean') {
             $scope.changes = $('#editor .highlighted');
-          }
-          else
+          } else {
             $scope.changes = $('.highlighted-for-scroll');
-
-        }, 50)
+          }
+        }, 50);
 
         if ($scope.linkedScreens) {
           setTimeout(function () {
@@ -274,25 +275,27 @@ angular.module('app').directive('projectEditor', function () {
             
             var containerProp = document.getElementById('properties');
 
-            if(variable.termType == 'boolean') {
-              var elementEditor = $('#editor .highlighted');
+            var elementEditor;
+            if(variable.termType === 'boolean') {
+              elementEditor = $('#editor .highlighted');
+            } else {
+              elementEditor = $('.highlighted-for-scroll');
             }
-            else
-              var elementEditor = $('.highlighted-for-scroll');
 
             if (elementEditor.length) {
+              var diff, scrollOffsetTop;
               if (!fromEditor) {
 	              var elementPropRect = elementProp.getBoundingClientRect().top;
 	              var containerEditRect = containerEdit.getBoundingClientRect().top;
-	              var diff = elementPropRect - containerEditRect;
-                var scrollOffsetTop = elementEditor[0].offsetTop - diff - 80;
-	              smooth_scroll_to(containerEdit, scrollOffsetTop, 600);
+	              diff = elementPropRect - containerEditRect;
+                scrollOffsetTop = elementEditor[0].offsetTop - diff - 80;
+	              smoothScrollTo(containerEdit, scrollOffsetTop, 600);
               } else {
 	              var elementEditorRect = currentTarget.getBoundingClientRect().top;
 	              var containerPropRect = containerProp.getBoundingClientRect().top;
-	              var diff = elementEditorRect - containerPropRect;
-	              var scrollOffsetTop = elementProp.offsetTop - diff - 70;
-		            smooth_scroll_to(containerProp, scrollOffsetTop, 600);
+	              diff = elementEditorRect - containerPropRect;
+	              scrollOffsetTop = elementProp.offsetTop - diff - 70;
+		            smoothScrollTo(containerProp, scrollOffsetTop, 600);
               }
             }
 
@@ -341,7 +344,7 @@ angular.module('app').directive('projectEditor', function () {
             })
             .then(function () {
               _.each($scope.variables, function (variable) {
-                if(variable.termType == 'textplus_sub') {
+                if (variable.termType === 'textplus_sub') {
                   var master = variable.variable.split('__')[0];
                   $scope.viewStatus[variable.variable] = $scope.viewStatus[master];
                 }
@@ -350,7 +353,7 @@ angular.module('app').directive('projectEditor', function () {
                     (_.find($scope.viewedVars, {'variable': variable.variable}) !== undefined) ? true : false;
                 }*/
               });
-            })
+            });
           });
 
         // copy to another variable cause of angular scope specification.
@@ -394,7 +397,9 @@ angular.module('app').directive('projectEditor', function () {
           $scope.prevChange();
           return;
         }
-        var hiddenParents = $(element).parentsUntil('#editor').filter(function() {return $(this).css('display') == 'none';}).first();
+        var hiddenParents = $(element).parentsUntil('#editor').filter(function() {
+          return $(this).css('display') === 'none';
+        }).first();
         if(hiddenParents.length > 0) {
           $scope.prevChange();
           return;
@@ -407,9 +412,8 @@ angular.module('app').directive('projectEditor', function () {
         var containerEditRect = container.getBoundingClientRect().top;
         var diff = elementPropRect - containerEditRect;
         var scrollOffsetTop = element.offsetTop - diff - 80;
-        smooth_scroll_to(container, scrollOffsetTop, 600);
-
-      }
+        smoothScrollTo(container, scrollOffsetTop, 600);
+      };
 
       $scope.nextChange = function () {
         if ($scope.currentChange === null) {
@@ -432,7 +436,9 @@ angular.module('app').directive('projectEditor', function () {
           $scope.nextChange();
           return;
         }
-        var hiddenParents = $(element).parentsUntil('#editor').filter(function() {return $(this).css('display') == 'none';}).first();
+        var hiddenParents = $(element).parentsUntil('#editor').filter(function() {
+          return $(this).css('display') === 'none';
+        }).first();
         if(hiddenParents.length > 0) {
           $scope.nextChange();
           return;
@@ -446,18 +452,19 @@ angular.module('app').directive('projectEditor', function () {
         var containerEditRect = container.getBoundingClientRect().top;
         var diff = elementPropRect - containerEditRect;
         var scrollOffsetTop = element.offsetTop - diff - 80;
-        smooth_scroll_to(container, scrollOffsetTop, 600);
-      }
+        smoothScrollTo(container, scrollOffsetTop, 600);
+      };
 
       $scope.getSubFields = function (variable) {
         var master = _.find($scope.variables, {'variable': variable});
         var subs = _.filter($scope.variables, function(v) { return v.variable.indexOf(variable + '__') === 0;});
-        if(!subs || subs.length == 0)
+        if(!subs || subs.length === 0) {
           subs = [master];
+        }
         subs = _.orderBy(subs, ['sortIndex'],['asc']);
         return subs;
-      }
-      $scope.addSubField = function (variable, $event) {
+      };
+      $scope.addSubField = function (variable/*, $event*/) {
         var subs = $scope.getSubFields(variable.variable);
         var temp = subs[0].variable.split('__');
         
@@ -472,16 +479,16 @@ angular.module('app').directive('projectEditor', function () {
         $scope.variables[sub.variable] = sub;
         $scope.textplus[variable.variable].push(sub);
         $scope.viewStatus[sub.variable] = $scope.viewStatus[variable.variable];
-      }
-      $scope.removeSubField = function (variable, $event) {
+      };
+      $scope.removeSubField = function (variable/*, $event*/) {
         delete $scope.variables[variable.variable];
         var master = variable.variable.split('__')[0];
         _.remove($scope.textplus[master], {variable: variable.variable});
-      }
+      };
 
-      $scope.changeState = function ($event) {
+      $scope.changeState = function (/*$event*/) {
         var index = this.variable.state ? this.variable.state : 0;
-        if (index == $scope.variableStates.length - 1) {
+        if (index === $scope.variableStates.length - 1) {
           index = 0;
         } else {
           index += 1;
@@ -489,26 +496,29 @@ angular.module('app').directive('projectEditor', function () {
         this.variable.state = index;
         var termTypes = ['text', 'date', 'number', 'textplus', 'textplus_sub'];       //for placeholder actions
         var termTypesRe = ['text', 'textplus', 'textplus_sub'];                       //for actual value actions
-        if(this.variable.value == undefined)
+        if(this.variable.value === undefined) {
           this.variable.value = '';
-        if(termTypes.indexOf(this.variable.termType) > -1 && this.variable.value.trim() == '') {
+        }
+        if(termTypes.indexOf(this.variable.termType) > -1 && this.variable.value.trim() === '') {
           var termType = this.variable.termType;
-          if(this.variable.state == 1 || this.variable.state == 2) {    //Confirmed, Uncertain State
+          if(this.variable.state === 1 || this.variable.state === 2) {    //Confirmed, Uncertain State
             var placeholder = '';
-            if(termType.indexOf('textplus') > -1)
+            if(termType.indexOf('textplus') > -1) {
               placeholder = this.variable['textplus'].placeholder;
-            else
+            } else {
               placeholder = this.variable[termType].placeholder;
+            }
+
             if(/^\[.*\]$/.test(placeholder)) {
               this.variable.placeholder = placeholder.substr(1, placeholder.length-2);    //Strip off brackets on both sides
             }
           }
           else {                            //Neutral State
-            this.variable.placeholder = this.variable.placeholder_original;
+            this.variable.placeholder = this.variable.placeholderOriginal;
           }
         }
-        else if(termTypesRe.indexOf(this.variable.termType) > -1 && this.variable.value.trim() != '') {
-          if(this.variable.state == 1 || this.variable.state == 2) {    //Confirmed, Uncertain State
+        else if(termTypesRe.indexOf(this.variable.termType) > -1 && this.variable.value.trim() !== '') {
+          if(this.variable.state === 1 || this.variable.state === 2) {    //Confirmed, Uncertain State
             var value = this.variable.value;
             if(/^\[.*\]$/.test(value)) {
               this.variable.value = value.substr(1, value.length-2);            //Strip off brackets on both sides and leave it unchanged when Neutral
@@ -516,7 +526,7 @@ angular.module('app').directive('projectEditor', function () {
           }
         }
         $scope.save();
-      }
+      };
 
       $scope.undo = function () {
         $scope.currentPos -= 1;
@@ -525,7 +535,7 @@ angular.module('app').directive('projectEditor', function () {
         $scope.variables = $scope.vars;
 
         $scope.save(true);
-      }
+      };
 
       $scope.redo = function () {
         $scope.currentPos += 1;
@@ -534,7 +544,7 @@ angular.module('app').directive('projectEditor', function () {
         $scope.variables = $scope.vars;
 
         $scope.save(true);
-      }
+      };
 
       angular.element($window).bind('resize', _setEditorHeight);
 
@@ -568,7 +578,7 @@ angular.module('app').directive('projectEditor', function () {
 
         function _parseBoolean(text) {
           var _temp = _.find(values, {'variable': text});
-          return (_temp !== undefined && (_temp.value == 'true' || _temp.value == true));
+          return (_temp !== undefined && (_temp.value === 'true' || _temp.value === true));
         }
 
         function _getIfCondVariables(token) {
@@ -576,15 +586,17 @@ angular.module('app').directive('projectEditor', function () {
           var param1 = token.params[0];
           var param3 = token.params[2];
 
-          if (param1.type === 'subexpression')
+          if (param1.type === 'subexpression') {
             left = _getIfCondVariables(param1);
-          else
+          } else {
             left = param1;
+          }
 
-          if (param3.type === 'subexpression')
+          if (param3.type === 'subexpression') {
             right = _getIfCondVariables(param3);
-          else
+          } else {
             right = param3;
+          }
 
           return _.uniqBy(_.concat(left, right), 'text');
         }
@@ -595,15 +607,17 @@ angular.module('app').directive('projectEditor', function () {
           var param2 = token.params[1];
           var param3 = token.params[2];
 
-          if (param1.type === 'subexpression')
+          if (param1.type === 'subexpression') {
             left = _parseIfCond(param1);
-          else
+          } else {
             left = _parseBoolean(param1.text);
+          }
 
-          if (param3.type === 'subexpression')
+          if (param3.type === 'subexpression') {
             right = _parseIfCond(param3);
-          else
+          } else {
             right = _parseBoolean(param3.text);
+          }
 
           return $rootScope.ifCond(left, param2.text, right);
         }
@@ -614,13 +628,13 @@ angular.module('app').directive('projectEditor', function () {
 
           var _temp = _.find(values, {'variable': text});
 
-          return (_temp !== undefined && _temp.value == op);
+          return (_temp !== undefined && _temp.value === op);
         }
 
         function _parseValues(token) {
-          if (!token) {
-            return '';
-          }
+          /*jshint maxcomplexity:30*/
+          var _temp;
+          if (!token) { return ''; }
 
           if (token.type === undefined) {     // chen_debug (if the token is array)
             _.map(token, _parseValues);
@@ -631,78 +645,80 @@ angular.module('app').directive('projectEditor', function () {
                 _.map(token.tokens, _parseValues);
                 break;
               case 'variable': {
-                var _temp = _.find(values, {'variable': token.text});
-                if (_.find(_variables, _temp) == undefined) {
+                _temp = _.find(values, {'variable': token.text});
+                if (_.find(_variables, _temp) === undefined) {
                   _variables = _.concat(_variables, _temp);
                 }
                 break;
               }
               case 'statement': {
-                if (token.text == 'if') {
-                  var _temp = _.find(values, {'variable': token.params[0].text});
-                  if (_.find(_variables, _temp) == undefined)
+                if (token.text === 'if') {
+                  _temp = _.find(values, {'variable': token.params[0].text});
+                  if (_.find(_variables, _temp) === undefined) {
                     _variables = _.concat(_variables, _temp);
+                  }
 
-                  if (_parseBoolean(token.params[0].text) == true) {
+                  if (_parseBoolean(token.params[0].text) === true) {
                     _.map(token.tokens,  _parseValues);
                   }
                 }
-                else if (token.text == 'unless') {
-                  var _temp = _.find(values, {'variable': token.params[0].text});
-                  if (_.find(_variables, _temp) == undefined)
+                else if (token.text === 'unless') {
+                  _temp = _.find(values, {'variable': token.params[0].text});
+                  if (_.find(_variables, _temp) === undefined) {
                     _variables = _.concat(_variables, _temp);
+                  }
 
-                  if (_parseBoolean(token.params[0].text) == false) {
+                  if (_parseBoolean(token.params[0].text) === false) {
                     _.map(token.tokens,  _parseValues);
                   }
                 }
-                else if (token.text == 'math') {
+                else if (token.text === 'math') {
                   _.forEach(token.params, function(param) {
-                    if (param.type == 'variable') {
-                      var _temp = _.find(values, {'variable': param.text});
-                      if (_.find(_variables, _temp) == undefined) {
+                    if (param.type === 'variable') {
+                      _temp = _.find(values, {'variable': param.text});
+                      if (_.find(_variables, _temp) === undefined) {
                         _variables = _.concat(_variables, _temp);
                       }
                     }
                   });
                 }
-                else if (token.text == 'ifVariant') {
+                else if (token.text === 'ifVariant') {
                   _.forEach(token.params, function(param) {
-                    if (param.type == 'variable') {
-                      var _temp = _.find(values, {'variable': param.text});
-                      if (_.find(_variables, _temp) == undefined) {
-                        _variables = _.concat(_variables, _temp);
-                      }
-                    }
-                  });
-
-                  if (_parseIfVariant(token) == true) {
-                    _.map(token.tokens, _parseValues);
-                  }
-                }
-                else if (token.text == 'unlessVariant') {
-                  _.forEach(token.params, function(param) {
-                    if (param.type == 'variable') {
-                      var _temp = _.find(values, {'variable': param.text});
-                      if (_.find(_variables, _temp) == undefined) {
+                    if (param.type === 'variable') {
+                      _temp = _.find(values, {'variable': param.text});
+                      if (_.find(_variables, _temp) === undefined) {
                         _variables = _.concat(_variables, _temp);
                       }
                     }
                   });
 
-                  if (_parseIfVariant(token) == false) {
+                  if (_parseIfVariant(token) === true) {
                     _.map(token.tokens, _parseValues);
                   }
                 }
-                else if (token.text == 'ifCond') {
+                else if (token.text === 'unlessVariant') {
+                  _.forEach(token.params, function(param) {
+                    if (param.type === 'variable') {
+                      _temp = _.find(values, {'variable': param.text});
+                      if (_.find(_variables, _temp) === undefined) {
+                        _variables = _.concat(_variables, _temp);
+                      }
+                    }
+                  });
+
+                  if (_parseIfVariant(token) === false) {
+                    _.map(token.tokens, _parseValues);
+                  }
+                }
+                else if (token.text === 'ifCond') {
                   var _vars = _getIfCondVariables(token);
                   _.forEach(_vars, function(_var) {
-                    var _temp = _.find(values, {'variable': _var.text});
-                    if (_.find(_variables, _temp) == undefined) {
+                    _temp = _.find(values, {'variable': _var.text});
+                    if (_.find(_variables, _temp) === undefined) {
                       _variables = _.concat(_variables, _temp);
                     }
                   });
-                  if (_parseIfCond(token) == true) {
+                  if (_parseIfCond(token) === true) {
                     _.map(token.tokens, _parseValues);
                   }
                 }
@@ -718,13 +734,13 @@ angular.module('app').directive('projectEditor', function () {
         var retVar = {};
         _.forEach($scope.variables, function(variable) {
           retVar[variable.variable] = 
-            (_.find(_variables, {'variable': variable.variable}) == undefined) ? false : true;
+            (_.find(_variables, {'variable': variable.variable}) === undefined) ? false : true;
         });
 
         // return retVar;
         $scope.viewStatus = angular.copy(retVar);
         _.each($scope.variables, function (variable) {
-          if(variable.termType == 'textplus_sub') {
+          if(variable.termType === 'textplus_sub') {
             var master = variable.variable.split('__')[0];
             $scope.viewStatus[variable.variable] = $scope.viewStatus[master];
           }
@@ -848,10 +864,11 @@ angular.module('app').directive('projectEditor', function () {
                 } else {
                   termTempl.value = val.value;
                 }
-                termTempl.placeholder_original = termTempl[termTempl.termType].placeholder;
+                termTempl.placeholderOriginal = termTempl[termTempl.termType].placeholder;
                 termTempl.placeholder = val['placeholder'];
-                if(!termTempl.placeholder)
-                  termTempl.placeholder = termTempl.placeholder_original;
+                if(!termTempl.placeholder) {
+                  termTempl.placeholder = termTempl.placeholderOriginal;
+                }
               } else {
                 if (termTempl.termType === 'boolean') {
                   termTempl.value = termTempl.boolean.default;
@@ -862,7 +879,7 @@ angular.module('app').directive('projectEditor', function () {
                 } else if (termTempl.termType === 'number') {
                   termTempl.value = '';
                 }
-                termTempl.placeholder_original = termTempl[termTempl.termType].placeholder;
+                termTempl.placeholderOriginal = termTempl[termTempl.termType].placeholder;
                 termTempl.placeholder = termTempl[termTempl.termType].placeholder;
               }
               termTempl.state = val ? val['state'] : 0;             
@@ -873,7 +890,7 @@ angular.module('app').directive('projectEditor', function () {
                 (_.find($scope.viewedVars, {'variable': termTempl.variable}) !== undefined) ? true : false;*/
             });
             _.each($scope.variables, function(v) {
-              if(v.termType == 'textplus') {
+              if(v.termType === 'textplus') {
                 var subs = _.filter($scope.project.values, function(sub) { return sub.variable.indexOf(v.variable + '__') === 0; });
                 $scope.textplus[v.variable] = [];
                 _.each(subs, function(sub) {
@@ -901,11 +918,11 @@ angular.module('app').directive('projectEditor', function () {
         });
       }
 
-      var smooth_scroll_to = function (element, target, duration) {
+      var smoothScrollTo = function (element, target, duration) {
         target = Math.round(target);
         duration = Math.round(duration);
         if (duration < 0) {
-          return Promise.reject("bad duration");
+          return Promise.reject('bad duration');
         }
         
         if (duration === 0) {
@@ -913,14 +930,14 @@ angular.module('app').directive('projectEditor', function () {
           return Promise.resolve();
         }
 
-        var start_time = Date.now();
-        var end_time = start_time + duration;
+        var startTime = Date.now();
+        var endTime = startTime + duration;
 
-        var start_top = element.scrollTop;
-        var distance = target - start_top;
+        var startTop = element.scrollTop;
+        var distance = target - startTop;
 
         // based on http://en.wikipedia.org/wiki/Smoothstep
-        var smooth_step = function (start, end, point) {
+        var smoothStep = function (start, end, point) {
           if (point <= start) {
             return 0;
           }
@@ -929,28 +946,28 @@ angular.module('app').directive('projectEditor', function () {
           }
           var x = (point - start) / (end - start); // interpolation
           return x * x * (3 - 2 * x);
-        }
+        };
 
         return new Promise(function (resolve, reject) {
           // This is to keep track of where the element's scrollTop is
           // supposed to be, based on what we're doing
-          var previous_top = element.scrollTop;
+          var previousTop = element.scrollTop;
 
           // This is like a think function from a game loop
-          var scroll_frame = function () {
-            if (element.scrollTop != previous_top) {
-              reject("interrupted");
+          var scrollFrame = function () {
+            if (element.scrollTop !== previousTop) {
+              reject('interrupted');
               return;
             }
 
             // set the scrollTop for this frame
             var now = Date.now();
-            var point = smooth_step(start_time, end_time, now);
-            var frameTop = Math.round(start_top + (distance * point));
+            var point = smoothStep(startTime, endTime, now);
+            var frameTop = Math.round(startTop + (distance * point));
             element.scrollTop = frameTop;
 
             // check if we're done!
-            if (now >= end_time) {
+            if (now >= endTime) {
               resolve();
               return;
             }
@@ -958,21 +975,20 @@ angular.module('app').directive('projectEditor', function () {
             // If we were supposed to scroll but didn't, then we
             // probably hit the limit, so consider it done; not
             // interrupted.
-            if (element.scrollTop === previous_top
-              && element.scrollTop !== frameTop) {
+            if (element.scrollTop === previousTop && element.scrollTop !== frameTop) {
               resolve();
               return;
             }
-            previous_top = element.scrollTop;
+            previousTop = element.scrollTop;
 
             // schedule next frame for execution
-            setTimeout(scroll_frame, 0);
-          }
+            setTimeout(scrollFrame, 0);
+          };
 
           // boostrap the animation process
-          setTimeout(scroll_frame, 0);
+          setTimeout(scrollFrame, 0);
         });
-      }
+      };
 
       _loadData();
       _setEditorHeight();

@@ -96,18 +96,18 @@ exports.getUserProjectTemplates = (req, res, next) => {
         userGroupsSrvc.getUserGroup({allUsers: true, role: req.user.role})
       ])
       .spread((user, prebuiltGroup) => {
-        if (user.role === 'user')
+        if (user.role === 'user') {
           filter = _.assign(filter, { 
               $or: [
                 { users: user._id }, 
                 { userGroups: {$in: _.concat(user.userGroups, prebuiltGroup._id)} }
               ]
             });
+        }
+        
         return filter;
       })
-      .catch(err => {
-        return filter;
-      });
+      .catch(() => { return filter; });
   }
 
   parseParams(req.query)
@@ -171,7 +171,10 @@ exports.deleteProjectTemplate = (req, res, next) => {
 
   function validateParams() {
     if (!validationUtil.isValidObjectId(projTemplId)) {
-      return customErrors.rejectWithUnprocessableRequestError({ paramName: 'id', errMsg: 'must be a valid id' });
+      return customErrors.rejectWithUnprocessableRequestError({ 
+        paramName: 'id', 
+        errMsg: 'must be a valid id' 
+      });
     }
     return Promise.resolve();
   }
@@ -184,8 +187,7 @@ exports.deleteProjectTemplate = (req, res, next) => {
           var projectNames = _.map(projects, 'name').join(',');
           return customErrors.rejectWithUnprocessableRequestError({ 
             paramName: 'Project template', 
-            errMsg: 'was already used by projects : ' 
-              + projectNames
+            errMsg: 'was already used by projects : ' + projectNames
           });
         }
         return Promise.resolve(projTempl);
@@ -196,7 +198,7 @@ exports.deleteProjectTemplate = (req, res, next) => {
     .then(() => projTemplsSrvc.getProjectTemplate({ _id: projTemplId }, '-__v'))
     .then(checkTemplateUsed)
     .then(projTemplsSrvc.deleteProjectTemplate)
-    .then(projTempl => res.send(true))
+    .then(() => res.send(true))
     .catch(next);
 };
 

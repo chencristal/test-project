@@ -2,7 +2,6 @@
 
 var _              = require('lodash');
 var Promise        = require('bluebird');
-var fs             = require('fs');
 var customErrors   = require('n-custom-errors');
 var consts         = require('../consts');
 var provisionTsSrvc= require('../data-services/provision-templates');
@@ -84,7 +83,11 @@ exports.getTermTemplateById = (req, res, next) => {
 
 exports.createTermTemplate = (req, res, next) => {
   function parseParams(body) {
-    var allowedFields = ['termType', 'variable', 'displayName', 'help', 'text','textplus', 'textarea', 'boolean', 'variant', 'date', 'number', 'state'];
+    var allowedFields = [
+      'termType', 'variable', 'displayName', 
+      'help', 'text','textplus', 'textarea', 
+      'boolean', 'variant', 'date', 'number', 'state'
+    ];
     var termTemplData = _.pick(body, allowedFields);
     return Promise.resolve(termTemplData);
   }
@@ -124,8 +127,7 @@ exports.deleteTermTemplate = (req, res, next) => {
           var provisionTemplNames = _.map(provisionTempls, 'displayName').join(',');
           return customErrors.rejectWithUnprocessableRequestError({ 
             paramName: 'Term template', 
-            errMsg: 'was already used by provision templates : ' 
-              + provisionTemplNames
+            errMsg: `was already used by provision templates : ${provisionTemplNames}`
           });
         }
         return Promise.resolve(termTempl);
@@ -136,13 +138,17 @@ exports.deleteTermTemplate = (req, res, next) => {
     .then(() => termTsSrvc.getTermTemplate({ _id: termTemplId }, '-__v'))
     .then(checkTemplateUsed)
     .then(termTsSrvc.deleteTermTemplate)
-    .then(termTempl => res.send(true))
+    .then(() => res.send(true))
     .catch(next);
 };
 
 exports.updateTermTemplate = (req, res, next) => {
   function parseParams(body) {
-    var allowedFields = ['termType', 'variable', 'displayName', 'help', 'text','textplus', 'textarea', 'boolean', 'variant', 'date', 'number', 'state'];
+    var allowedFields = [
+      'termType', 'variable', 'displayName', 
+      'help', 'text','textplus', 'textarea', 
+      'boolean', 'variant', 'date', 'number', 'state'
+    ];
     var termTemplData = _.pick(body, allowedFields);
     termTemplData._id = req.params._id;
     return Promise.resolve(termTemplData);
@@ -199,17 +205,24 @@ exports.enableTermTemplate = (req, res, next) => {
     .catch(next);
 };
 
-exports.importFromCSV = (req, res, next) => {
+exports.importFromCSV = (req, res/*, next*/) => {
   var records = req.body;
-  if(!Array.isArray(records) || records.length < 2)
+  if (!Array.isArray(records) || records.length < 2) {
     res.send('No variables to import');
+  }
 
-  for(var i = 1; i < records.length; i ++) {
+  for (var i = 1; i < records.length; i ++) {
     var record = records[i].split(/,(?=(?:[^"]*"[^"]*")*[^"]*$)/);
-    if(record.length < 3) continue;
-    if (!_.includes(consts.TERM_TYPES, record[0]) || record[1].trim() == '')
+    
+    if (record.length < 3) {
       continue;
+    }
+
+    if (!_.includes(consts.TERM_TYPES, record[0]) || record[1].trim() === '') {
+      continue;
+    }
     var data = {};
+    var placeholder;
     data.termType = record[0];
     data.variable = record[1];
     data.displayName = record[2];
@@ -219,38 +232,44 @@ exports.importFromCSV = (req, res, next) => {
     data.disabled = false;
     switch(record[0]) {
       case 'text':
-        var placeholder = record[4] ? record[4] : '[ ]';
+        placeholder = record[4] ? record[4] : '[ ]';
         placeholder = placeholder.replace(/\"/g,'');
         data.text = { placeholder: placeholder };
-      break;
+        break;
       case 'boolean':
-        var placeholder = record[4].toLowerCase() == 'true' ? true : false;
+        placeholder = record[4].toLowerCase() === 'true' ? true : false;
         var inclusion = record[5] ? record[5] : 'Include';
         inclusion = inclusion.replace(/\"/g,'');
         var exclusion = record[6] ? record[6] : 'Exclude';
         exclusion = exclusion.replace(/\"/g,'');
         data.boolean = { default: placeholder, inclusionText: inclusion, exclusionText: exclusion };
-      break;
+        break;
       case 'variant':
         var opts = record.slice(5);
         var options = [];
-        for(var j = 0; j < opts.length; j ++)
-          if(opts[j] != '')
-            options.push({id: j+1, value: opts[j].replace(/\"/g,'')});
-        var placeholder = record[4] ? record[4] : '0';
+        for(var j = 0; j < opts.length; j ++) {
+          if(opts[j] !== '') { 
+            options.push({
+              id: j + 1, 
+              value: opts[j].replace(/\"/g,'')
+            });
+          }
+        }
+        placeholder = record[4] ? record[4] : '0';
         placeholder = placeholder.replace(/\"/g,'');
-        if(options.length == 0 && placeholder != '0')
+        if(options.length === 0 && placeholder !== '0') {
           options.push({id: 1, value: placeholder});
+        }
         data.variant = { default: placeholder, displayAs: 'dropdown', options: options };
-      break;
+        break;
       case 'date':
         placeholder = record[4] ? record[4] : '';
         data.date = { placeholder: placeholder };
-      break;
+        break;
       case 'number':
-        var placeholder = parseFloat(record[4])? parseFloat(record[4]) : 0;
+        placeholder = parseFloat(record[4])? parseFloat(record[4]) : 0;
         data.number = { placeholder: placeholder };
-      break;
+        break;
     }    
     
     termTsSrvc.createTermTemplateFromCSV(data);
@@ -265,30 +284,33 @@ exports.generateCSV = (req, res, next) => {
     for(var i = 0; i < termTempls.length; i ++) {
       output += '\r\n';
       var termTempl = termTempls[i];
-      if(!termTempl.help)
+      if(!termTempl.help) {
         termTempl.help = '';
+      }
       termTempl.variable = termTempl.variable;
       termTempl.displayName = termTempl.displayName.replace(/,/g, ' ');
       termTempl.help = '"' + termTempl.help + '"';
       output += termTempl.termType + ',' + termTempl.variable + ',' + termTempl.displayName + ',' + termTempl.help;
-      if(termTempl.termType == 'text')
+      if(termTempl.termType === 'text') {
         output += ',' + '"' + termTempl.text.placeholder + '"';
-      else if(termTempl.termType == 'boolean') {
+      } else if(termTempl.termType === 'boolean') {
         output += ',' + termTempl.boolean.default;
         output += ',' + '"' + termTempl.boolean.inclusionText + '"';
         output += ',' + '"' + termTempl.boolean.exclusionText + '"';
       }
-      else if(termTempl.termType == 'variant') {
+      else if(termTempl.termType === 'variant') {
         output += ',' + '"' + termTempl.variant.default + '"';
         if(termTempl.variant.options.length > 0) {
-          for(var j = 0; j < termTempl.variant.options.length; j ++)
+          for(var j = 0; j < termTempl.variant.options.length; j ++) {
             output += ',' + '"' + termTempl.variant.options[j].value + '"';
+          }
         }
       }
-      else if(termTempl.termType == 'date')
+      else if(termTempl.termType === 'date') {
         output += ',' + termTempl.date.placeholder;
-      else if(termTempl.termType == 'number')
+      } else if(termTempl.termType === 'number') {
         output += ',' + termTempl.number.placeholder;
+      }
     }
     return output;
   }

@@ -26,10 +26,11 @@ exports.getUserProjects = (req, res, next) => {
   usersSrvc
     .getUser({email: req.user.email})
     .then(user => {
-      if (req.query.type === 'shared')
+      if (req.query.type === 'shared') {
         return projectsSrvc.getSharedProjects(user);
-      else
+      } else {
         return projectsSrvc.getUserProjects(user);
+      }
     })
     .then(projects => res.send(projects))
     .catch(next);
@@ -40,19 +41,21 @@ exports.getProjectById = (req, res, next) => {
 
   function validateParams() {
     if (!validationUtil.isValidObjectId(projId)) {
-      return customErrors.rejectWithUnprocessableRequestError(
-        { paramName: 'id', errMsg: 'must be a valid id' });
+      return customErrors.rejectWithUnprocessableRequestError({ 
+        paramName: 'id', 
+        errMsg: 'must be a valid id' 
+      });
     }
     return Promise.resolve();
   }
 
-  function checkOwner(proj) {
+  /* function checkOwner(proj) {
     return usersSrvc
       .getUser({email: req.user.email, _id: proj.owner})
       .then(user => {
         return Promise.resolve(proj);
-      })
-  }
+      });
+  } */
 
   validateParams()
     .then(() => projectsSrvc.getProject({ _id: projId }, '-__v'))
@@ -80,13 +83,16 @@ exports.createProject = (req, res, next) => {
     .then(validateParams)
     .then(proj => {
       return usersSrvc
-        .getUser({email: req.user.email})
+        .getUser({ email: req.user.email })
         .then(user => {
-          if (user.role === 'user')
+          if (user.role === 'user') {
             return _.assign(proj, {owner: user._id});
-          else
-            return customErrors.rejectWithUnprocessableRequestError(
-              { paramName: 'Only users', errMsg: 'can save the project' });
+          } else {
+            return customErrors.rejectWithUnprocessableRequestError({ 
+              paramName: 'Only users', 
+              errMsg: 'can save the project'
+            });
+          }
         });
     })
     .then(doEdits)
@@ -105,8 +111,12 @@ exports.updateProject = (req, res, next) => {
 
   function validateParams(projData) {
     if (!validationUtil.isValidObjectId(projData._id)) {
-      return customErrors.rejectWithUnprocessableRequestError({ paramName: 'id', errMsg: 'must be a valid id' });
+      return customErrors.rejectWithUnprocessableRequestError({ 
+        paramName: 'id', 
+        errMsg: 'must be a valid id' 
+      });
     }
+
     return _validateProjectData(projData);
   }
 
@@ -132,13 +142,13 @@ exports.updateProject = (req, res, next) => {
     return data.proj;
   }
 
-  function checkOwner(proj) {
+  /* function checkOwner(proj) {
     return usersSrvc
       .getUser({email: req.user.email, _id: proj.owner})
       .then(user => {
         return Promise.resolve(proj);
-      })
-  }
+      });
+  } */
 
   parseParams(req.body)
     .then(validateParams)
@@ -168,7 +178,7 @@ exports.deleteProject = (req, res, next) => {
   validateParams()
     .then(() => projectsSrvc.getProject({ _id: projId }, '-__v'))
     .then(proj => projectsSrvc.deleteProject(proj))
-    .then(projects => res.send(true))
+    .then(() => res.send(true))
     .catch(next);
 };
 
@@ -193,15 +203,15 @@ exports.generatePdfRedline = (req, res, next) => {
         var projectName = values[0].name;
         var docName = values[1].name;
         var filename = projectName + '-' + docName + '.pdf';
-        var css_style = templProc.getExportCss('redline');
+        var cssStyle = templProc.getExportCss('redline');
         
         text = text.replace(/\n/g,'<br/>');
-        var prestyle = `
+        var preStyle = `
         <style type="text/css">
-          ${css_style}
+          ${cssStyle}
         </style>
         `;
-        text = prestyle + text;
+        text = preStyle + text;
         res.setHeader('Content-disposition', 'attachment; filename=' + filename);
         res.setHeader('Content-type', 'application/pdf');
         return pdfConverter.write(text, res);
@@ -232,15 +242,15 @@ exports.generatePdfClean = (req, res, next) => {
         var projectName = values[0].name;
         var docName = values[1].name;
         var filename = projectName + '-' + docName + '.pdf';
-        var css_style = templProc.getExportCss('clean');
+        var cssStyle = templProc.getExportCss('clean');
         
         text = text.replace(/\n/g,'<br/>');
-        var prestyle = `
+        var preStyle = `
         <style type="text/css">
-          ${css_style}
+          ${cssStyle}
         </style>
         `;
-        text = prestyle + text;
+        text = preStyle + text;
         res.setHeader('Content-disposition', 'attachment; filename=' + filename);
         res.setHeader('Content-type', 'application/pdf');
         return pdfConverter.write(text, res);
@@ -381,8 +391,8 @@ function _getCompiledTemplate(data) {
             result[variable.variable] = variable.value;
 
             //placeholder infusion for textplus sub fields
-            if((variable.value == undefined || variable.value == '') && 
-              (variable.placeholder != undefined && variable.placeholder != ''))  
+            if ((variable.value === undefined || variable.value === '') && 
+              (variable.placeholder !== undefined && variable.placeholder !== ''))  
             {
               result[variable.variable] = variable.placeholder;
             }
@@ -403,8 +413,11 @@ function _getCompiledTemplate(data) {
               break;
           }
           var termTypes = ['text', 'date', 'number', 'textplus'];
-          if(termTypes.indexOf(termTempl.termType) > -1 && (variable.value == undefined || variable.value == ''))
+          if (termTypes.indexOf(termTempl.termType) > -1 && 
+              (variable.value === undefined || variable.value === '')) 
+          {
             result[variable.variable] = variable.placeholder;
+          }
           return result;
         }, {});
         data.expandables = _.filter(data.termTempls,{termType: 'textplus'});
@@ -420,22 +433,25 @@ function _getCompiledTemplate(data) {
       subs = _.map(subs, sub => data.values[sub]);
       subs = _.reverse(subs);
       if(subs.length > 0) {
-        if(newline && prettify)
+        if(newline && prettify) {
           glue = ',\n<br/>';
-        else if(newline)
+        } else if(newline) {
           glue = '\n<br/>';
-        else if(prettify)
+        } else if(prettify) {
           glue = ', ';
+        }
         if(prettify) {
           var temp = subs.slice(0,-1).join(glue);
           var last = subs[subs.length-1];
-          if(newline)
+          if(newline) {
             subs = temp + ' and\n<br/>' + last;
-          else
+          } else {
             subs = temp + ' and ' + last;
+          }
         }
-        else
+        else {
           subs = subs.join(glue);
+        }
       }
       return {glue: glue, subs: subs};
     }
@@ -458,8 +474,9 @@ function _getCompiledTemplate(data) {
           var mode = parseInt(arguments[2]);
 
           var expandable = _.find(data.expandables, {variable: textplus});
-          if(!textplus)
+          if(!textplus) {
             return match;
+          }
 
           var newline = false,
               prettify = false;
@@ -492,10 +509,10 @@ function _getCompiledTemplate(data) {
           return `{{${textplus}}}${glue}${subs}`;
         });
         for(var variable in data.values) {
-          if(typeof data.values[variable] == 'boolean') {
+          if(typeof data.values[variable] === 'boolean') {
             var v = _.find(data.termTempls, {variable: variable});
             var value = data.values[variable];
-            var newVal = (value == true) ? v.boolean.inclusionText : v.boolean.exclusionText;
+            var newVal = (value === true) ? v.boolean.inclusionText : v.boolean.exclusionText;
             data.values[variable] = newVal;
           }
         }

@@ -24,6 +24,11 @@ angular.module('app').controller('UserGroupEditCtrl',
         $scope.selectedRole.selected = Identity.getRoleName(usergroup.role);
         origUserGroup = angular.copy($scope.userGroup);
 
+        $scope.userGroup.assigned = [];
+        _.forEach(origUserGroup.assigned, function(elem) {
+          $scope.userGroup.assigned = _.concat($scope.userGroup.assigned, elem._id);
+        });
+
         $scope.isLoading = false;
       })
       .catch(function(err) {
@@ -33,10 +38,12 @@ angular.module('app').controller('UserGroupEditCtrl',
   })();
 
   $scope.updateRole = function() {
-    if ($scope.userGroup.role === $scope.selectedRole.selected.value)
-      $scope.userGroup.assigned = origUserGroup.assigned;
-    else
-      $scope.userGroup.assigned = [];
+    $scope.userGroup.assigned = [];
+    if ($scope.userGroup.role === $scope.selectedRole.selected.value) {
+      _.forEach(origUserGroup.assigned, function(elem) {
+        $scope.userGroup.assigned = _.concat($scope.userGroup.assigned, elem._id);
+      });
+    }
       
     $scope.refreshUsers();
   };

@@ -7,6 +7,7 @@ module.exports = app => {
   require('./users')(app);
   require('./profile')(app);
   require('./user-groups')(app);
+  require('./institutions')(app);
   require('./term-templates')(app);
   require('./provision-templates')(app);
   require('./provision-variables')(app);

@@ -10,6 +10,7 @@ var db                   = require('./');
 var log                  = require('../util/logger').logger;
 var User                 = mongoose.model('user');
 var UserGroup            = mongoose.model('userGroup');
+var Institution          = mongoose.model('institution');
 var TermTemplate         = mongoose.model('termTemplate');
 var ProvisionTemplate    = mongoose.model('provisionTemplate');
 var DocumentTemplateType = mongoose.model('documentTemplateType');
@@ -29,14 +30,21 @@ function clearDb() {
 
 function insertUsers() {
   var users = [
-    { "_id" : ObjectId("57fa20920cb5ff30ec85742f"), "firstName" : "super", "email" : "super@mail.com", "hashedPassword" : "6nvd0F9sEW7yEvjeqT1XC2HO14Knw2Ow2OEJMKhCaSDjtnVftwFohGQ48PSVX5Tl8gFiX4J3HhCzuOkb+iS1Xg==", "salt" : "eTxOoNgYA4kBTQb0Z3JJKQ==", "status" : "active", "invited" : false, "provider" : "local", "role" : "superadmin", "urlLogin": true },
-    { "_id" : ObjectId("58e3b961e3cb4a2052c05e51"), "firstName" : "admin", "email" : "admin@mail.com", "hashedPassword" : "NxRNMJS8nuDlZcVOT3jq/MO7jhZh8xYRiNVkdLQ+Kn+XB5M8OQNgCqZBDVEE8NlX9aBNJ5MqRzcpXg895rp/Og==", "salt" : "3AYnT4W4brcXjrBTBQSFxA==", "status" : "active", "invited" : false, "provider" : "local", "role" : "admin", "urlLogin": false },
-    { "_id" : ObjectId("58e3b970e3cb4a2052c05e52"), "firstName" : "author", "email" : "author@mail.com", "hashedPassword" : "5RQz9ZH+xZMDp3izVntFJ4n6fmEtj/lRs7sITLRiINvqYi/yVDFxh4bouloGWIHkKzPiMJ8sNwBmemFYijOf6Q==", "salt" : "VZNIO6RKPjRbufU1X3mMbw==", "status" : "active", "invited" : false, "provider" : "local", "role" : "author", "urlLogin": false },
-    { "_id" : ObjectId("57fa20920cb5ff30ec857430"), "firstName" : "user1", "email" : "user1@mail.com", "hashedPassword" : "xKd3xarlKs8fn0iINhD5k0ex5hm4z3ctq1Q6tgsSV8Urogr/qAukddTmN9Pxjrsvfk4DQxAncSbKAFz/k/8GbA==", "salt" : "+zP2BiBaskkh9hXKzh5L5w==", "status" : "active", "invited" : false, "provider" : "local", "role" : "user", "urlLogin": false },
-    { "_id" : ObjectId("57fa20920cb5ff30ec857431"), "firstName" : "user2", "email" : "user2@mail.com", "hashedPassword" : "Tp8ipKT2vyk3n+P3lzat5+HF62JAg2Uf/CkwQgUA2SV9Sn0unts1r/1WpXSxuWgsVOC3x7YdxQrGGDfh+n1HIg==", "salt" : "20tfkVec7bQymdcpecBLDg==", "status" : "active", "invited" : false, "provider" : "local", "role" : "user", "urlLogin": false },
-    { "_id" : ObjectId("58e3b97be3cb4a2052c05e53"), "firstName" : "guest", "email" : "guest@mail.com", "hashedPassword" : "93bPpjbeD1hyCC4qF9YAsN8xiNfPoWkXQkabUwu3hFbPJN1yDHthuU1vyoiDoBf3n71jXhOm7nQm1dSUQR2AjQ==", "salt" : "QI6rEfxQlaoKpfmfDto+9A==", "status" : "active", "invited" : false, "provider" : "local", "role" : "user", "urlLogin": true }
+    { "_id" : ObjectId("57fa20920cb5ff30ec85742f"), "firstName" : "super", "email" : "super@mail.com", "hashedPassword" : "6nvd0F9sEW7yEvjeqT1XC2HO14Knw2Ow2OEJMKhCaSDjtnVftwFohGQ48PSVX5Tl8gFiX4J3HhCzuOkb+iS1Xg==", "salt" : "eTxOoNgYA4kBTQb0Z3JJKQ==", "status" : "active", "institutions": [ ], "invited" : false, "provider" : "local", "role" : "superadmin", "urlLogin": true },
+    { "_id" : ObjectId("58e3b961e3cb4a2052c05e51"), "firstName" : "admin", "email" : "admin@mail.com", "hashedPassword" : "NxRNMJS8nuDlZcVOT3jq/MO7jhZh8xYRiNVkdLQ+Kn+XB5M8OQNgCqZBDVEE8NlX9aBNJ5MqRzcpXg895rp/Og==", "salt" : "3AYnT4W4brcXjrBTBQSFxA==", "status" : "active", "institutions": [ ObjectId("58dfa5a4317b43114750c8cc") ], "invited" : false, "provider" : "local", "role" : "admin", "urlLogin": false },
+    { "_id" : ObjectId("58e3b970e3cb4a2052c05e52"), "firstName" : "author", "email" : "author@mail.com", "hashedPassword" : "5RQz9ZH+xZMDp3izVntFJ4n6fmEtj/lRs7sITLRiINvqYi/yVDFxh4bouloGWIHkKzPiMJ8sNwBmemFYijOf6Q==", "salt" : "VZNIO6RKPjRbufU1X3mMbw==", "status" : "active", "institutions": [ ObjectId("58dfa5a4317b43114750c8cc") ], "invited" : false, "provider" : "local", "role" : "author", "urlLogin": false },
+    { "_id" : ObjectId("57fa20920cb5ff30ec857430"), "firstName" : "user1", "email" : "user1@mail.com", "hashedPassword" : "xKd3xarlKs8fn0iINhD5k0ex5hm4z3ctq1Q6tgsSV8Urogr/qAukddTmN9Pxjrsvfk4DQxAncSbKAFz/k/8GbA==", "salt" : "+zP2BiBaskkh9hXKzh5L5w==", "status" : "active", "institutions": [ ObjectId("58dfa5a4317b43114750c8cc") ], "invited" : false, "provider" : "local", "role" : "user", "urlLogin": false },
+    { "_id" : ObjectId("57fa20920cb5ff30ec857431"), "firstName" : "user2", "email" : "user2@mail.com", "hashedPassword" : "Tp8ipKT2vyk3n+P3lzat5+HF62JAg2Uf/CkwQgUA2SV9Sn0unts1r/1WpXSxuWgsVOC3x7YdxQrGGDfh+n1HIg==", "salt" : "20tfkVec7bQymdcpecBLDg==", "status" : "active", "institutions": [ ObjectId("58dfa5a4317b43114750c8cc") ], "invited" : false, "provider" : "local", "role" : "user", "urlLogin": false },
+    { "_id" : ObjectId("58e3b97be3cb4a2052c05e53"), "firstName" : "guest", "email" : "guest@mail.com", "hashedPassword" : "93bPpjbeD1hyCC4qF9YAsN8xiNfPoWkXQkabUwu3hFbPJN1yDHthuU1vyoiDoBf3n71jXhOm7nQm1dSUQR2AjQ==", "salt" : "QI6rEfxQlaoKpfmfDto+9A==", "status" : "active", "institutions": [ ObjectId("58dfa5a4317b43114750c8cc") ], "invited" : false, "provider" : "local", "role" : "user", "urlLogin": true }
   ];
   return User.create(users);
+}
+
+function insertInstitutions() {
+  var institutions = [
+    { "_id" : ObjectId("58dfa5a4317b43114750c8cc"), "institutionName" : "Institution Group 1", "status" : "active", "provider" : "local" }
+  ];
+  return Institution.create(institutions);
 }
 
 function insertUserGroups() {
@@ -71,7 +79,8 @@ function insertTermTemplates() {
         "variant" : {
             "displayAs" : "dropdown",
             "options" : []
-        }
+        },
+        "institutions" : [ ObjectId("58dfa5a4317b43114750c8cc") ]
     },
     {
         "_id" : ObjectId("58e65ed435dc110d1c525853"),
@@ -95,7 +104,8 @@ function insertTermTemplates() {
         "variant" : {
             "displayAs" : "dropdown",
             "options" : []
-        }
+        },
+        "institutions" : [ ObjectId("58dfa5a4317b43114750c8cc") ]
     },
     {
         "_id" : ObjectId("58e65fc935dc110d1c525854"),
@@ -120,7 +130,8 @@ function insertTermTemplates() {
         "variant" : {
             "displayAs" : "dropdown",
             "options" : []
-        }
+        },
+        "institutions" : [ ObjectId("58dfa5a4317b43114750c8cc") ]
     },
     {
         "_id" : ObjectId("58e6605b35dc110d1c525855"),
@@ -142,7 +153,8 @@ function insertTermTemplates() {
         "variant" : {
             "displayAs" : "dropdown",
             "options" : []
-        }
+        },
+        "institutions" : [ ObjectId("58dfa5a4317b43114750c8cc") ]
     },
     {
         "_id" : ObjectId("58e6618f35dc110d1c525856"),
@@ -163,7 +175,8 @@ function insertTermTemplates() {
         "variant" : {
             "displayAs" : "dropdown",
             "options" : []
-        }
+        },
+        "institutions" : [ ObjectId("58dfa5a4317b43114750c8cc") ]
     },
     {
         "_id" : ObjectId("58e6663f35dc110d1c525857"),
@@ -184,7 +197,8 @@ function insertTermTemplates() {
         "variant" : {
             "displayAs" : "dropdown",
             "options" : []
-        }
+        },
+        "institutions" : [ ObjectId("58dfa5a4317b43114750c8cc") ]
     },
     {
         "_id" : ObjectId("58e6674c35dc110d1c525858"),
@@ -219,7 +233,8 @@ function insertTermTemplates() {
                     "value" : "Third_Option"
                 }
             ]
-        }
+        },
+        "institutions" : [ ObjectId("58dfa5a4317b43114750c8cc") ]
     },
     {
         "_id" : ObjectId("58e667ab35dc110d1c525859"),
@@ -243,7 +258,8 @@ function insertTermTemplates() {
         "variant" : {
             "displayAs" : "dropdown",
             "options" : []
-        }
+        },
+        "institutions" : [ ObjectId("58dfa5a4317b43114750c8cc") ]
     },
     {
         "_id" : ObjectId("58e6681f35dc110d1c52585a"),
@@ -267,7 +283,8 @@ function insertTermTemplates() {
         "variant" : {
             "displayAs" : "dropdown",
             "options" : []
-        }
+        },
+        "institutions" : [ ObjectId("58dfa5a4317b43114750c8cc") ]
     },
     {
         "_id" : ObjectId("58e6684f35dc110d1c52585b"),
@@ -291,7 +308,8 @@ function insertTermTemplates() {
         "variant" : {
             "displayAs" : "dropdown",
             "options" : []
-        }
+        },
+        "institutions" : [ ObjectId("58dfa5a4317b43114750c8cc") ]
     }
   ];
   return TermTemplate.create(termtemplates);
@@ -324,6 +342,7 @@ function insertProvisionTemplates() {
             ObjectId("58e667ab35dc110d1c525859"), 
             ObjectId("58e6681f35dc110d1c52585a")
         ],
+        "institutions" : [ ObjectId("58dfa5a4317b43114750c8cc") ]
     },
     {
         "_id" : ObjectId("57fa23fad0376b53ec44ede8"),
@@ -343,7 +362,8 @@ function insertProvisionTemplates() {
             ObjectId("58e65ed435dc110d1c525853"), 
             ObjectId("58e6618f35dc110d1c525856"), 
             ObjectId("58e6663f35dc110d1c525857")
-        ]
+        ],
+        "institutions" : [ ObjectId("58dfa5a4317b43114750c8cc") ]
     },
     {
         "_id" : ObjectId("57fa2473d0376b53ec44ede9"),
@@ -359,7 +379,8 @@ function insertProvisionTemplates() {
         "termTemplates" : [ 
             ObjectId("58e6618f35dc110d1c525856"), 
             ObjectId("58e6663f35dc110d1c525857")
-        ]
+        ],
+        "institutions" : [ ObjectId("58dfa5a4317b43114750c8cc") ]
     },
     {
         "_id" : ObjectId("57fa28088eb789a5ec49d3d5"),
@@ -373,7 +394,8 @@ function insertProvisionTemplates() {
         "templateHtml" : "<p>The expressions with variant type are logical expressions. The nested content is displayed when the variable value equals selected option.  </p><ul><li>Variant expression (if variant1 === 'Option One'): <span \n        class=\"exp-ifvariant\n          {{ variables.test_variant1.state == 2 ? 'uncertain-bracket' : null }}\" \n        ng-class=\"{ \n          defaulted: $root.ifVariant(variables.test_variant1.value, 'First_Option') == \n                      $root.ifVariant(variables.test_variant1.variant.default, 'First_Option'),\n          selected: $root.ifVariant(variables.test_variant1.value, 'First_Option'),\n          unselected: !$root.ifVariant(variables.test_variant1.value, 'First_Option'),\n          highlighted: selectedVariable === variables.test_variant1\n        }\">variant1 equals option one</span><span \n        class=\"exp-unlessvariant\n          {{ variables.test_variant1.state == 2 ? 'uncertain-bracket' : null }}\" \n        ng-class=\"{ \n          defaulted: $root.ifVariant(variables.test_variant1.value, 'First_Option') != \n                      $root.ifVariant(variables.test_variant1.variant.default, 'First_Option'),\n          selected: !$root.ifVariant(variables.test_variant1.value, 'First_Option'),\n          unselected: $root.ifVariant(variables.test_variant1.value, 'First_Option'),\n          highlighted: selectedVariable === variables.test_variant1\n        }\">otherwise this is true</span></li></ul>",
         "termTemplates" : [ 
             ObjectId("58e6674c35dc110d1c525858")
-        ]
+        ],
+        "institutions" : [ ObjectId("58dfa5a4317b43114750c8cc") ]
     },
     {
         "_id" : ObjectId("58e67b22f91f3ac0be6b6c49"),
@@ -397,7 +419,8 @@ function insertProvisionTemplates() {
             ObjectId("58e667ab35dc110d1c525859"), 
             ObjectId("58e6681f35dc110d1c52585a"), 
             ObjectId("58e6684f35dc110d1c52585b")
-        ]
+        ],
+        "institutions" : [ ObjectId("58dfa5a4317b43114750c8cc") ]
     }
   ];
   return ProvisionTemplate.create(provisionTemplates);
@@ -410,6 +433,7 @@ function insertDocumentTemplateTypes() {
         "description" : "Standard Style",
         "name" : "Standard Style",
         "status" : "active",
+        "institutions" : [ ObjectId("58dfa5a4317b43114750c8cc") ],
         "styles" : "{\n\t\"font-size\": 11,\n\t\"font-name\": \"Times New Roman\",\n\t\"localeId\": 1033,\n\t\"page\": {\n\t\t\"width\": 215.9,\n\t\t\"height\": 279.4,\n\t\t\"top-margin\": 25.4,\n\t\t\"bottom-margin\": 25.4,\n\t\t\"left-margin\": 25.4,\n\t\t\"right-margin\": 25.4,\n\t\t\"header\": 19,\n\t\t\"footer\": 12.7\n\t},\n    \"defaultSettings\": {\n        \"text-align\": \"left\",\n        \"space-after\": 12,\n        \"text-indent\": 0\n    },\n    \"inlineTags\": {\n        \"del\" : {\n            \"strikethrough\" : \"true\",            \n            \"color\" : \"red\"\n        },\n        \"ins\" : {\n            \"underline\" : \"double\",\n            \"color\" : \"blue\"\n        }\n    }, \n    \n\t\n    \"comfort_letter\": {\n\t\t\"versionType2\": {\n\t\t\t\"text-align\": \"right\",\n\t\t\t\"space-after\": 24\n            },\n        \"letterHead\": {\n            \"recipient\": {\n                \"text-align\": \"left\",\n                \"space-after\": 12\n                },\n            \"letterDate\": {\n                \"text-align\": \"left\",\n                \"space-after\": 12\n                }\n        },\n        \"introduction\": {\n            \"greeting\": {\n                \"text-align\": \"left\",\n                \"space-after\": 12,\n                \"keep-together\": \"false\",\n                \"keep-with-next\": \"false\",\n                \"suppress-auto-hyphens\": \"false\",\n                \"text-decoration\": \"none\"\n                },\n            \"text2\": {\n                \"text-indent\": 25.4\n                }\n        },\n        \n        \"body\": {\n            \"content\": {\n                    \"level1\":{\n                        \"text-align\": \"justify\",\n                        \"space-after\": 12,\n                        \"left-indent\": 0,\n                        \"text-indent\": 0\n                    },\n                    \"level2\":{\n                        \"text-align\": \"justify\",\n                        \"space-after\": 12,\n                        \"left-indent\": 11.1,\n                        \"text-indent\": 0\n                    },\n                    \"level2letter\":{\n                        \"text-align\": \"justify\",\n                        \"space-after\": 12,\n                        \"left-indent\": 11.1,\n                        \"text-indent\": -6.3\n                    },\n                    \"level2number\":{\n                        \"text-align\": \"justify\",\n                        \"space-after\": 12,\n                        \"left-indent\": 0,\n                        \"text-indent\": 6.3\n                    },\n                    \"level3\":{\n                        \"text-align\": \"justify\",\n                        \"space-after\": 12,\n                        \"left-indent\": 19,\n                        \"text-indent\": -6.3\n                    },\n                     \"level3letter\":{\n                        \"text-align\": \"justify\",\n                        \"space-after\": 12,\n                        \"left-indent\": 19,\n                        \"text-indent\": -6.3\n                    },\n                     \"level3LETTER\":{\n                        \"text-align\": \"justify\",\n                        \"space-after\": 12,\n                        \"left-indent\": 6.3,\n                        \"text-indent\": -6.3\n                    },\n                    \"level4\":{\n                        \"text-align\": \"justify\",\n                        \"space-after\": 12,\n                        \"left-indent\": 28.6,\n                        \"text-indent\": -9.5\n                    }\n                    ,\n                    \"level4roman\":{\n                        \"text-align\": \"justify\",\n                        \"space-after\": 12,\n                        \"left-indent\": 28.6,\n                        \"text-indent\": -9.5\n                    }\n            }\n        },\n        \"sincerely\" : {\n            \"text-align\": \"left\",\n            \"left-indent\": 0,\n            \"text-indent\": 0\n        }    \n\t}\n}"
     }
   ];
@@ -425,6 +449,7 @@ function insertDocumentTemplates() {
         "provisionTemplates" : [ 
             ObjectId("57fa237cd0376b53ec44ede7")
         ],
+        "institutions" : [ ObjectId("58dfa5a4317b43114750c8cc") ],
         "status" : "active"
     },
     {
@@ -434,6 +459,7 @@ function insertDocumentTemplates() {
         "provisionTemplates" : [ 
             ObjectId("57fa23fad0376b53ec44ede8")
         ],
+        "institutions" : [ ObjectId("58dfa5a4317b43114750c8cc") ],
         "status" : "active",
     },
     {
@@ -443,6 +469,7 @@ function insertDocumentTemplates() {
         "provisionTemplates" : [ 
             ObjectId("57fa2473d0376b53ec44ede9")
         ],
+        "institutions" : [ ObjectId("58dfa5a4317b43114750c8cc") ],
         "status" : "active",
     },
     {
@@ -452,6 +479,7 @@ function insertDocumentTemplates() {
         "provisionTemplates" : [ 
             ObjectId("57fa28088eb789a5ec49d3d5")
         ],
+        "institutions" : [ ObjectId("58dfa5a4317b43114750c8cc") ],
         "status" : "active",
     },
     {
@@ -461,6 +489,7 @@ function insertDocumentTemplates() {
         "provisionTemplates" : [ 
             ObjectId("58e67b22f91f3ac0be6b6c49")
         ],
+        "institutions" : [ ObjectId("58dfa5a4317b43114750c8cc") ],
         "status" : "active",
     }
   ];
@@ -483,6 +512,7 @@ function insertProjectTemplates() {
         "userGroups" : [ 
             ObjectId("58dfa5a4317b43114750c8ca")
         ],
+        "institutions" : [ ObjectId("58dfa5a4317b43114750c8cc") ],
         "users" : []
     }
   ];
@@ -500,6 +530,7 @@ function insertProjects() {
         "sharedUsers" : [ 
             ObjectId("57fa20920cb5ff30ec857431")
         ],
+        "institutions" : [ ObjectId("58dfa5a4317b43114750c8cc") ],
         "values" : [ 
             {
                 "placeholder" : "[Text Variable 1]",
@@ -545,6 +576,7 @@ db
   .then(clearDb)
   .then(insertUsers)
   .then(insertUserGroups)
+  .then(insertInstitutions)
   .then(insertTermTemplates)
   .then(insertProvisionTemplates)
   .then(insertDocumentTemplateTypes)

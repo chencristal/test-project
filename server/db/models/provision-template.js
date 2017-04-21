@@ -10,9 +10,13 @@ var provisionTemplateSchema = new mongoose.Schema({
       type: String,
       required: true
     },
+    institutions: [{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'institution'
+    }],
     style: {
-        type: String,
-        enum: consts.PROVISION_STYLES
+      type: String,
+      enum: consts.PROVISION_STYLES
     },
     template: {
       type: String,

@@ -21,7 +21,7 @@ angular.module('app')
         // Second argument tells for highlighting from editor, 
         // but not from properties left-side block.
 	      $scope.$parent.$parent.highlight(variable, true, currentTarget);
-      }
+      };
       
       $timeout(function() {
         $scope.$apply(function() {
@@ -46,7 +46,7 @@ angular.module('app')
         }
       });
     }
-  }
+  };
 })
 
 .directive('ngOffset', function($filter) {
@@ -65,13 +65,13 @@ angular.module('app')
         if (newVal !== undefined) {
           var offsetDate = new Date(newVal);
           var offset = 0;
-          var is_offset_variable = element.attr('ng-date-offset-variable');
-          if (is_offset_variable == "true") {
-            var offset_variable = element.attr('ng-offset');
-            offset = scope.$eval(offset_variable);
+          var isOffsetVariable = element.attr('ng-date-offset-variable');
+          if (isOffsetVariable === 'true') {
+            var offsetVariable = element.attr('ng-offset');
+            offset = scope.$eval(offsetVariable);
           } else {
             offset = parseInt(element.attr('ng-offset'));
-            if (isNaN(offset)) offset = 0;
+            if (isNaN(offset)) { offset = 0; }
           }
           offsetDate.setDate(offsetDate.getDate() + offset);
           element.text($filter('date')(offsetDate, 'MMMM d, yyyy'));
@@ -96,13 +96,13 @@ angular.module('app')
         if (newVal !== undefined) {
           var offsetDate = new Date(newVal);
           var offset = 0;
-          var is_offset_variable = element.attr('ng-date-offset-variable');
-          if (is_offset_variable == "true") {
-            var offset_variable = element.attr('ng-offset-month');
-            offset = scope.$eval(offset_variable);
+          var isOffsetVariable = element.attr('ng-date-offset-variable');
+          if (isOffsetVariable === 'true') {
+            var offsetVariable = element.attr('ng-offset-month');
+            offset = scope.$eval(offsetVariable);
           } else {
             offset = parseInt(element.attr('ng-offset-month'));
-            if (isNaN(offset)) offset = 0;
+            if (isNaN(offset)) { offset = 0; }
           }
           offsetDate.setMonth(offsetDate.getMonth() + offset);
           element.text($filter('date')(offsetDate, 'MMMM d, yyyy'));
@@ -127,13 +127,13 @@ angular.module('app')
         if (newVal !== undefined) {
           var offsetDate = new Date(newVal);
           var offset = 0;
-          var is_offset_variable = element.attr('ng-date-offset-variable');
-          if (is_offset_variable == "true") {
-            var offset_variable = element.attr('ng-offset-year');
-            offset = scope.$eval(offset_variable);
+          var isOffsetVariable = element.attr('ng-date-offset-variable');
+          if (isOffsetVariable === 'true') {
+            var offsetVariable = element.attr('ng-offset-year');
+            offset = scope.$eval(offsetVariable);
           } else {
             offset = parseInt(element.attr('ng-offset-year'));
-            if (isNaN(offset)) offset = 0;
+            if (isNaN(offset)) { offset = 0; }
           }
           offsetDate.setFullYear(offsetDate.getFullYear() + offset);
           element.text($filter('date')(offsetDate, 'MMMM d, yyyy'));

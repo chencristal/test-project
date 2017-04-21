@@ -22,9 +22,9 @@
   "unused"        : true,     // true: Require all defined variables be used
   "strict"        : true,     // true: Requires all functions run in ES5 Strict Mode
   "maxparams"     : 4,        // {int} Max number of formal params allowed per function
-  "maxdepth"      : 3,        // {int} Max depth of nested blocks (within functions)
-  "maxstatements" : 15,       // {int} Max number statements per function
-  "maxcomplexity" : 15,       // {int} Max cyclomatic complexity per function
+  "maxdepth"      : 5,        // {int} Max depth of nested blocks (within functions)
+  "maxstatements" : 35,       // {int} Max number statements per function
+  "maxcomplexity" : 35,       // {int} Max cyclomatic complexity per function
   "maxlen"        : 120,      // {int} Max number of characters per line
 
   // Relaxing

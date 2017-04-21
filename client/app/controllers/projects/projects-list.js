@@ -15,21 +15,21 @@ angular.module('app').controller('ProjectsListCtrl',
     Project
       .query({type: 'shared'})
       .$promise
-      .then(function(shared_projects) {
-        $scope.sharedProjects = shared_projects;
+      .then(function(sharedProjects) {
+        $scope.sharedProjects = sharedProjects;
         $scope.isLoading = false;
       });
-  }
+  };
   $scope.loadData();
 
   $scope.makeSharedUserString = function(project) {
     var sharedUsers = _.map(project.sharedUsers, 'firstName');
-    return sharedUsers.join(",");
+    return sharedUsers.join(',');
   };
 
   $scope.makeSharedUserGroupString = function(project) {
     var sharedUserGroups = _.map(project.sharedUserGroups, 'groupName');
-    return sharedUserGroups.join(",");
+    return sharedUserGroups.join(',');
   };
 
   $scope.editProject = function(project) {
@@ -50,6 +50,6 @@ angular.module('app').controller('ProjectsListCtrl',
       .catch(function(err) {
         $scope.isLoading = false;
         Notifier.error(err, 'Unable to remove project');
-      })
+      });
   };
 });

@@ -5,6 +5,6 @@ angular.module('app').controller('TermOfServiceCtrl',
     $scope.terms = $cookieStore.get('terms');
     $scope.acceptTerms = function () {
       $cookieStore.put('terms', true);
-      $location.path('/projects')
+      $location.path('/projects');
     };
   });

@@ -1,12 +1,8 @@
 'use strict';
 
-var _               = require('lodash');
 var Promise         = require('bluebird');
 var customErrors    = require('n-custom-errors');
-var consts          = require('../consts');
-var projectsSrvc    = require('../data-services/projects');
 var provisionTsSrvc = require('../data-services/provision-templates');
-var termTsSrvc      = require('../data-services/term-templates');
 var validationUtil  = require('../util/validations');
 var templProc       = require('../util/template-processor');
 

@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('app').controller('UserNewCtrl',
-  function($scope, $location, Notifier, User, Identity, UserGroup) {
+  function($scope, $location, Notifier, User, Identity, UserGroup, Institution) {
 
   $scope.user = {};
   $scope.isSaving = false;
@@ -10,7 +10,7 @@ angular.module('app').controller('UserNewCtrl',
   $scope.roles = Identity.getLowerRoleNames();
   $scope.selectedRole = { 'selected' : $scope.roles[0] };
 
-  $scope.$watch('selectedRole.selected', function(newVal) {
+  $scope.$watch('selectedRole.selected', function(/*newVal*/) {
     $scope.user.userGroups = [];
     $scope.refreshUserGroups();
   });
@@ -25,6 +25,17 @@ angular.module('app').controller('UserNewCtrl',
       .$promise
       .then(function(usergroups) {
         $scope.userGroups = usergroups;
+      });
+  };
+
+  $scope.refreshInstitutions = function(query) {
+    return Institution
+      .query({ 
+        query: query
+      })
+      .$promise
+      .then(function(institutions) {
+        $scope.institutions = institutions;
       });
   };
 

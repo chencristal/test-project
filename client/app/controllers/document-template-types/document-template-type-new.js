@@ -31,7 +31,7 @@ angular.module('app').controller('DocumentTemplateTypeNewCtrl',
     function isValid(file) {
       var filename = file.name;
       var ext = filename.split('.').pop().toLowerCase();
-      return ext == 'json';
+      return ext === 'json';
     }
     var file = files[0];
     if(!isValid(file)) {
@@ -52,12 +52,12 @@ angular.module('app').controller('DocumentTemplateTypeNewCtrl',
       }
       $scope.documentTemplateType.styles = data;
       $scope.$apply();
-    }
+    };
     f.onerror = function(e) {
       $scope.documentTemplateType.styles = '';
       $scope.$apply();
       Notifier.error(e);
-    }
+    };
     f.readAsText(file);
   };
 });
@@ -73,5 +73,5 @@ angular.module('app').directive('onFileChange', function() {
       });
       element.bind('click', () => element.val(''));
     }
-  }
+  };
 });

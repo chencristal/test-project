@@ -18,6 +18,10 @@ var documentTemplateSchema = new mongoose.Schema({
     required: true,
     index: true
   },
+  institutions: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'institution'
+  }],
   provisionTemplates: [{
     type: mongoose.Schema.ObjectId,
     ref: 'provisionTemplate'

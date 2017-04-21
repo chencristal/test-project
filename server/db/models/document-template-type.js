@@ -12,6 +12,10 @@ var documentTemplateTypeSchema = new mongoose.Schema({
     unique: true,
     index: true
   },
+  institutions: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'institution'
+  }],
   description: String,
   styles: String,
   status: {

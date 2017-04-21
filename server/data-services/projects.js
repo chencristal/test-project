@@ -16,7 +16,7 @@ exports.getUserProjects = (user) => {
     .populate('sharedUsers')
     .populate('sharedUserGroups')
     .exec();
-}
+};
 
 exports.getSharedProjects = (user) => {
   return Project

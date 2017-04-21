@@ -1,0 +1,33 @@
+form.form-horizontal(name="institutionForm")
+  .form-group(ng-class="{ 'has-error': institutionForm.institutionName.$error.required }" )
+    label.col-md-3.control-label(for="institutionName") Institution Name
+    .col-md-9
+      input.form-control(name="institutionName" ng-model="institution.institutionName" placeholder="Institution Name" 
+            ng-disabled="isSaving" ng-required="true")
+
+  .form-group(ng-class="{ 'has-error': institutionForm.admins.$error.required }" )
+    label.col-md-3.control-label(for="admins") Institution Admins
+    .col-md-9
+      ui-select(name="admins" multiple="true" ng-model="institution.assigned_admins" ng-disabled="isSaving"  ng-required="true")
+        ui-select-match(placeholder="Add Admin") {{ $item.firstName }}
+        ui-select-choices(refresh="refreshAdmins($select.search)" refresh-delay="300" 
+              repeat="admin._id as admin in admins")
+          span(ng-bind-html="admin.firstName | highlight: $select.search")
+
+  .form-group(ng-class="{ 'has-error': institutionForm.authors.$error.required }" )
+    label.col-md-3.control-label(for="authors") Institution Authors
+    .col-md-9
+      ui-select(name="authors" multiple="true" ng-model="institution.assigned_authors" ng-disabled="isSaving")
+        ui-select-match(placeholder="Add Author") {{ $item.firstName }}
+        ui-select-choices(refresh="refreshAuthors($select.search)" refresh-delay="300" 
+              repeat="author._id as author in authors")
+          span(ng-bind-html="author.firstName | highlight: $select.search")
+
+  .form-group(ng-class="{ 'has-error': institutionForm.users.$error.required }" )
+    label.col-md-3.control-label(for="users") Group Members
+    .col-md-9
+      ui-select(name="users" multiple="true" ng-model="institution.assigned_users" ng-disabled="isSaving")
+        ui-select-match(placeholder="Add User") {{ $item.firstName }}
+        ui-select-choices(refresh="refreshUsers($select.search)" refresh-delay="300" 
+              repeat="user._id as user in users")
+          span(ng-bind-html="user.firstName | highlight: $select.search")

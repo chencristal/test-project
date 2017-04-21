@@ -81,7 +81,7 @@ exports.getUserGroups = function(req, res, next) {
       return;
     }
     _.each(req.query.includes, function(id) {
-      var usergroup = _.find(usergroups, d => {return d._id == id});
+      var usergroup = _.find(usergroups, d => { return d._id.equals(id); });
       orderedUserGroups.push(usergroup);
     });
     res.send(orderedUserGroups);
@@ -253,12 +253,11 @@ var _assignMembers = (userGroupData, assignedUsers) => {
       }, {
         $push: { 'userGroups': userGroupData._id }
       })
-      .then(result => {
-        return Promise.resolve(userGroupData);
-      });
+      .then(() => Promise.resolve(userGroupData));
   }
-  else
+  else {
     return Promise.resolve(userGroupData);
+  }
 };
 
 var _removeMembers = (userGroupData, assignedUsers) => {
@@ -270,10 +269,9 @@ var _removeMembers = (userGroupData, assignedUsers) => {
       }, {
         $pull: { 'userGroups': userGroupData._id }
       })
-      .then(result => {
-        return Promise.resolve(userGroupData);
-      });
+      .then(() => Promise.resolve(userGroupData));
   }
-  else
+  else {
     return Promise.resolve(userGroupData);
+  }
 };

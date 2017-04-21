@@ -12,7 +12,7 @@ mongoose.models = {};
 requireDir('./models');
 
 var connection = mongoose.connection;
-var cb_connection = null;
+var cbConnection = null;
 
 if (process.env.NODE_ENV !== 'test') {
     connection.on('error', err => {
@@ -25,8 +25,8 @@ if (process.env.NODE_ENV !== 'test') {
         //
         // For acl module initialization (db:seed will not call this callback)
         //
-        if (cb_connection) {
-            cb_connection();
+        if (cbConnection) {
+            cbConnection();
         }
     });
 
@@ -39,7 +39,7 @@ exports.connection = connection;
 
 exports.connect = function(cb) {
     var open = Promise.promisify(connection.open, { context: connection });
-    cb_connection = cb;
+    cbConnection = cb;
     return open(config.get('db'));
 };
 
